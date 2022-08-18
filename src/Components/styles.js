@@ -48,12 +48,13 @@ export const GradientButton = styled.button`
     color: ${colors.primaryLight};
     cursor: pointer;
     transition: all .2s ease-in-out;
-    &:hover { transform: scale(1.05); }
+    &:hover { opacity:.9; };
+    &:active { transform: scale(1.05); };
 `
 
 export const SpotifyModalImage = styled.div`
     background-image: url('${window.location.origin}/spotify-logo.svg');
-    height: 20%;
+    height: 2em;
     width: 120px;  
     background-size: contain;
     background-repeat: no-repeat;
@@ -61,4 +62,60 @@ export const SpotifyModalImage = styled.div`
     image-rendering: crisp-edges;
     image-rendering: pixelated;
     image-rendering: -webkit-optimize-contrast;
+`
+
+export const CollectibleCard = styled.div`
+    width: 250px;
+    height: 350px;
+    background-color: ${colors.secondaryDark};
+    border-radius: 20px;  
+    padding: 1em; 
+    margin-bottom: 1em; 
+    margin-right: 1em;
+`
+
+export const CollectibleImage = styled.div`
+    height: 260px;
+    border-radius: 20px;
+    background-image: url('${props => props.image}');
+    margin-bottom: 1em;
+    background-size: cover;
+    background-repeat: no-repeat;
+    image-rendering: auto;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: -webkit-optimize-contrast;    
+`
+
+export const CollectibleName = styled.div`
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    font-weight: 700;
+    font-size: 1.1em;
+    padding-bottom: 1em;
+    color: ${colors.primaryLight};
+`
+
+export const CollectorImage = styled.div`
+    width: 2.1em;
+    height: 2.1em;
+    border-radius: 8px;
+    background-image: url('${props => props.image}');
+    background-size: contain;
+    background-repeat: no-repeat;
+    image-rendering: auto;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: -webkit-optimize-contrast;    
+`
+
+export const CollectorLabel = styled.div`
+    color: ${colors.lightGrey};
+    font-size: .8em;
+`
+
+export const CollectorName = styled.div`
+    color: ${colors.secondaryLight};
+    font-size: .8em;
 `

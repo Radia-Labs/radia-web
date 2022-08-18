@@ -58,3 +58,16 @@ export const createSpotifyIntegration = async (pk:string, integration:object) =>
     });
     return await response.json();    
 }
+
+export const getCollectibles = async (pk:string, lastEvaluatedKey:object) => {
+    // const token = await getToken();
+    let url = `${SERVER_URL}/account/collectibles?pk=${pk}`;
+    if (lastEvaluatedKey)
+        url += `&lastEvaluatedKey=${JSON.stringify(lastEvaluatedKey)}`;
+    const response = await fetch(url, {
+        headers: {
+        // Authorization: `Bearer ${token}`,
+        },
+    });
+    return await response.json();
+}

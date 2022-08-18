@@ -3,25 +3,30 @@ import { Web3Auth } from "@web3auth/web3auth";
 import { WALLET_ADAPTERS, CHAIN_NAMESPACES, SafeEventEmitterProvider } from "@web3auth/base";
 import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
 import RPC from "../web3RPC";
-import { getSpotifyUser, getUser, createUser, getSpotifyAuth, createSpotifyIntegration } from "../utils";
+import { getSpotifyUser, getUser, createUser, getSpotifyAuth, createSpotifyIntegration, getCollectibles } from "../utils";
 import { useNavigate } from 'react-router-dom'
-import {StyledModal} from '../styles';
+import {StyledModal, Flex} from '../styles';
 import SpotifyModalBody from '../Components/SpotifyModalBody';
+import Collectible from '../Components/Collectible';
+import Pagination from '../Components/Pagination';
+import { H1 } from "../Components/styles";
 
 const clientId = "YOUR_CLIENT_ID"; // get from https://dashboard.web3auth.io
 
 function App() {
   const [web3auth, setWeb3auth] = useState<Web3Auth | null>(null);
   const [provider, setProvider] = useState<SafeEventEmitterProvider | null>(null);
+  const [user, setUser] = useState<any>({});
   const [isSpotifyModalOpen, setSpotifyModalIsOpen] = useState(false)
-
+  const [collectibles, setCollectibles] = useState<any[]>([]);
+  const [previousCollectibles, setPreviousCollectibles] = useState<any[]>([]);
+  const [page, setPage] = useState(0);
+  const [lastEvaluatedKey, setLastEvaluatedKey] = useState<object>();
   const navigate = useNavigate()  
-
 
   useEffect(() => {
     const init = async () => {
       try {
-
       const web3auth = new Web3Auth({
         clientId,
         chainConfig: {
@@ -131,6 +136,7 @@ function App() {
         // Get user information from web3auth and Radia database
         const authUser = await getUserInfo()
         const radiaUser = await getUser(authUser?.verifierId as string)
+        setUser(radiaUser.Items[0])
 
         // If Radia user doesn't exist, create new user
         if (authUser && !radiaUser.Items.length) {
@@ -176,7 +182,20 @@ function App() {
       }
     }
     init()
-  }, [web3auth, provider])  
+  }, [web3auth, provider])
+
+  useEffect(() => {
+    const init = async () => {
+      const authUser = await getUserInfo()
+      if (authUser) {
+        const collectibles = await getCollectibles(authUser.verifierId as string, lastEvaluatedKey as object)
+        setLastEvaluatedKey(collectibles.LastEvaluatedKey)
+        setCollectibles(collectibles.Items)
+      }
+    }
+    init()
+  }, [web3auth, provider])
+  
 
   const login = async () => {
     if (!web3auth) {
@@ -195,6 +214,31 @@ function App() {
     const user = await web3auth.getUserInfo();
     return user
   };
+
+  const getNextCollectibles = async () => {
+    setPage(page + 1)
+    setPreviousCollectibles(collectibles)
+    const _collectibles = await getCollectibles(user.pk as string, lastEvaluatedKey as object)
+    setLastEvaluatedKey(_collectibles.LastEvaluatedKey)
+    setCollectibles(_collectibles.Items)
+    
+    return _collectibles.Items
+  }
+
+  const getPreviousCollectibles = async () => {
+    setPage(page - 1)
+    let _lastEvaluatedKey: object | undefined = {}
+    _lastEvaluatedKey = {pk: previousCollectibles[0].pk, sk: previousCollectibles[0].sk}
+    if (page - 1 === 0){
+      _lastEvaluatedKey = undefined
+    }
+    setLastEvaluatedKey(_lastEvaluatedKey)
+    const _collectibles = await getCollectibles(user.pk as string, _lastEvaluatedKey as object)
+    setLastEvaluatedKey(_collectibles.LastEvaluatedKey)
+    setCollectibles(_collectibles.Items)
+    return _collectibles.Items    
+  }
+
 
   const logout = async () => {
     if (!web3auth) {
@@ -280,8 +324,31 @@ function App() {
   function toggleModal() {
     setSpotifyModalIsOpen(!isSpotifyModalOpen)
   }
+
+  function getCollectibleType(collectible:any) {
+    if(collectible.sk.includes('streamed01Hour')) {
+      return `${collectible.name} | 1 Hour Streamed`
+    }
+
+    if(collectible.sk.includes('streamed05Hours')) {
+      return `${collectible.name} | 5 Hours Streamed`
+    }
+    
+    if(collectible.sk.includes('streamed10Hours')) {
+      return `${collectible.name} | 10 Hours Streamed`
+    }
+    
+    if(collectible.sk.includes('streamed15Hours')) {
+      return `${collectible.name} | 15 Hours Streamed`
+    }    
+
+    if(collectible.sk.includes('streamed20Hours')) {
+      return `${collectible.name} | 20 Hours Streamed`
+    }        
+  }
   
-  const loggedInView = (
+
+  const myCollectionView = (
     <>
       {/* <button onClick={getUserInfo} >
         Get User Info
@@ -292,9 +359,26 @@ function App() {
       <button onClick={getPrivateKey} >
         Get Private Key
       </button> */}
+
       <button onClick={logout} >
         Log Out
       </button>
+      <Flex>
+        <H1>In Progress</H1>
+        <Pagination onBack={getPreviousCollectibles} onNext={getNextCollectibles} page={page}/>
+      </Flex>
+      <Flex justifyContent="left" alignItems="center">
+        {collectibles.length ? collectibles.map(collectible => {
+          const collectibleType = getCollectibleType(collectible);
+          return <Collectible
+          collectibleImage="https://via.placeholder.com/150"
+          collectibleName={collectibleType as string}
+          collectorImage={user.profileImage}
+          collectorName={user.name}
+          />
+        }) : null}
+      </Flex>
+
 
       <StyledModal
         isOpen={isSpotifyModalOpen}
@@ -304,20 +388,17 @@ function App() {
       </StyledModal>     
     </>
   );
-
+  
+  // TODO: we might want to show some kind of partial view here with skeletons or something. 
   const unloggedInView = (
-    <div>Logged out
-    </div>
+    <div>Logged out</div>
   );
 
   return (
     <div>
 
 
-      <div >{provider ? loggedInView : unloggedInView}</div>
-
- 
-      
+      <div >{provider ? myCollectionView : unloggedInView}</div>
 
       <footer >
         

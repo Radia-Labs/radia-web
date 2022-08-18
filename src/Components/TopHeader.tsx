@@ -3,8 +3,8 @@ import {Flex} from "../styles";
 
 const TopHeader = () => (
     <Header>
-        <Flex>
-            <Flex justifyContent="flex-start" flexWrap="no-wrap" alignItems="baseline" width="10%">
+        <Flex width="100%">
+            <Flex justifyContent="flex-start" flexWrap="no-wrap" alignItems="baseline" >
                 <Logo/>
                 <H1>
                     Radia
