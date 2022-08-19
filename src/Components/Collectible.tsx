@@ -20,7 +20,7 @@ const Collectible = ({ collectibleImage, collectibleName, collectorImage, collec
         <CollectibleImage image={collectibleImage}/>
         <CollectibleName title={collectibleName}>{collectibleName}</CollectibleName>
         <Flex justifyContent="flex-start">
-            <CollectorImage image={collectorImage}/>
+            <CollectorImage referrerPolicy="no-referrer" src={collectorImage}/>
             <Flex margin="auto 10px" flexDirection="column" alignItems="flex-start">
                 <CollectorLabel>Collector</CollectorLabel>
                 <CollectorName>{collectorName}</CollectorName>

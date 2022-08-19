@@ -1,14 +1,15 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { Web3Auth } from "@web3auth/web3auth";
 import { WALLET_ADAPTERS, CHAIN_NAMESPACES, SafeEventEmitterProvider } from "@web3auth/base";
 import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
 import RPC from "../web3RPC";
-import { getSpotifyUser, getUser, createUser, getSpotifyAuth, createSpotifyIntegration, getCollectibles } from "../utils";
+import { getSpotifyUser, getUser, createUser, getSpotifyAuth, createSpotifyIntegration, getCollectibles, getArtists } from "../utils";
 import { useNavigate } from 'react-router-dom'
 import {StyledModal, Flex} from '../styles';
 import SpotifyModalBody from '../Components/SpotifyModalBody';
 import Collectible from '../Components/Collectible';
 import Pagination from '../Components/Pagination';
+import Artist from '../Components/Artist';
 import { H1 } from "../Components/styles";
 
 const clientId = "YOUR_CLIENT_ID"; // get from https://dashboard.web3auth.io
@@ -16,12 +17,16 @@ const clientId = "YOUR_CLIENT_ID"; // get from https://dashboard.web3auth.io
 function App() {
   const [web3auth, setWeb3auth] = useState<Web3Auth | null>(null);
   const [provider, setProvider] = useState<SafeEventEmitterProvider | null>(null);
+  const [loadingNext, setNextLoading] = useState(false);
+  const [loadingBack, setBackLoading] = useState(false);
   const [user, setUser] = useState<any>({});
   const [isSpotifyModalOpen, setSpotifyModalIsOpen] = useState(false)
-  const [collectibles, setCollectibles] = useState<any[]>([]);
-  const [previousCollectibles, setPreviousCollectibles] = useState<any[]>([]);
-  const [page, setPage] = useState(0);
-  const [lastEvaluatedKey, setLastEvaluatedKey] = useState<object>();
+  const [collectibles, setCollectibles] = useState<Array<object>>();
+  const [lastEvaluatedKeys, setLastEvaluatedKeys] = useState<Array<{pk: string, sk: string}>>([]);
+  const [artists, setArtists] = useState<Array<object>>();
+  const [lastEvaluatedKeysArtists, setLastEvaluatedKeysArtists] = useState<Array<{pk: string, sk: string}>>([]);  
+  const [page, setPage] = useState(-1);
+  const [artistsPage, setArtistsPage] = useState(-1);
   const navigate = useNavigate()  
 
   useEffect(() => {
@@ -188,14 +193,28 @@ function App() {
     const init = async () => {
       const authUser = await getUserInfo()
       if (authUser) {
-        const collectibles = await getCollectibles(authUser.verifierId as string, lastEvaluatedKey as object)
-        setLastEvaluatedKey(collectibles.LastEvaluatedKey)
+        let lastEvaluatedKey;
+        const collectibles = await getCollectibles(authUser.verifierId as string, lastEvaluatedKey)
         setCollectibles(collectibles.Items)
+        setLastEvaluatedKeys([collectibles.LastEvaluatedKey])
       }
     }
     init()
   }, [web3auth, provider])
-  
+
+  useEffect(() => {
+    const init = async () => {
+      const authUser = await getUserInfo()
+      if (authUser) {
+        let lastEvaluatedKey;
+        const artists = await getArtists(authUser.verifierId as string, lastEvaluatedKey)
+        setArtists(artists.Items)
+        setLastEvaluatedKeysArtists([artists.LastEvaluatedKey])
+      }
+    }
+    init()
+  }, [web3auth, provider])  
+
 
   const login = async () => {
     if (!web3auth) {
@@ -215,40 +234,6 @@ function App() {
     return user
   };
 
-  const getNextCollectibles = async () => {
-    setPage(page + 1)
-    setPreviousCollectibles(collectibles)
-    const _collectibles = await getCollectibles(user.pk as string, lastEvaluatedKey as object)
-    setLastEvaluatedKey(_collectibles.LastEvaluatedKey)
-    setCollectibles(_collectibles.Items)
-    
-    return _collectibles.Items
-  }
-
-  const getPreviousCollectibles = async () => {
-    setPage(page - 1)
-    let _lastEvaluatedKey: object | undefined = {}
-    _lastEvaluatedKey = {pk: previousCollectibles[0].pk, sk: previousCollectibles[0].sk}
-    if (page - 1 === 0){
-      _lastEvaluatedKey = undefined
-    }
-    setLastEvaluatedKey(_lastEvaluatedKey)
-    const _collectibles = await getCollectibles(user.pk as string, _lastEvaluatedKey as object)
-    setLastEvaluatedKey(_collectibles.LastEvaluatedKey)
-    setCollectibles(_collectibles.Items)
-    return _collectibles.Items    
-  }
-
-
-  const logout = async () => {
-    if (!web3auth) {
-      console.log("web3auth not initialized yet");
-      return;
-    }
-    await web3auth.logout();
-    setProvider(null);
-  };
-
   const authSpotify = () => {
     const authEndpoint = "https://accounts.spotify.com/authorize";
     const redirectURL = "http://localhost:3000";
@@ -260,16 +245,6 @@ function App() {
     window.open(loginURL, "_self");
   }
 
-  // const getChainId = async () => {
-  //   if (!provider) {
-  //     console.log("provider not initialized yet");
-  //     return;
-  //   }
-  //   const rpc = new RPC(provider);
-  //   const chainId = await rpc.getChainId();
-  //   console.log(chainId);
-  // };
-
   const getAccounts = async () => {
     if (!provider) {
       console.log("provider not initialized yet");
@@ -279,6 +254,25 @@ function App() {
     const address = await rpc.getAccounts();
     return address
   };
+
+  // const logout = async () => {
+  //   if (!web3auth) {
+  //     console.log("web3auth not initialized yet");
+  //     return;
+  //   }
+  //   await web3auth.logout();
+  //   setProvider(null);
+  // };  
+
+  // const getChainId = async () => {
+  //   if (!provider) {
+  //     console.log("provider not initialized yet");
+  //     return;
+  //   }
+  //   const rpc = new RPC(provider);
+  //   const chainId = await rpc.getChainId();
+  //   console.log(chainId);
+  // };
 
   // const getBalance = async () => {
   //   if (!provider) {
@@ -310,75 +304,125 @@ function App() {
   //   console.log(signedMessage);
   // };
 
-  const getPrivateKey = async () => {
-    if (!provider) {
-      console.log("provider not initialized yet");
-      return;
-    }
-    const rpc = new RPC(provider);
-    const privateKey = await rpc.getPrivateKey();
-    // TODO: remove this console.log
-    console.log(privateKey);
-  };
+  // const getPrivateKey = async () => {
+  //   if (!provider) {
+  //     console.log("provider not initialized yet");
+  //     return;
+  //   }
+  //   const rpc = new RPC(provider);
+  //   const privateKey = await rpc.getPrivateKey();
+  //   // TODO: remove this console.log
+  //   // console.log(privateKey);
+  // };
 
-  function toggleModal() {
-    setSpotifyModalIsOpen(!isSpotifyModalOpen)
+  const getPreviousCollectibles = async () => {
+    setBackLoading(true)
+    setPage(page-1)
+    const prevCollectibles = await getCollectibles(user?.verifierId as string, lastEvaluatedKeys[page-1])
+    setCollectibles(prevCollectibles.Items)    
+    setBackLoading(false)
   }
+
+  const getNextCollectibles = async () => {
+    setNextLoading(true)
+    setPage(page+1)
+    const nextCollectibles = await getCollectibles(user?.verifierId as string, lastEvaluatedKeys[page+1])
+    setCollectibles(nextCollectibles.Items)
+    setLastEvaluatedKeys([...lastEvaluatedKeys, nextCollectibles.LastEvaluatedKey])
+    setNextLoading(false)
+  }    
 
   function getCollectibleType(collectible:any) {
-    if(collectible.sk.includes('streamed01Hour')) {
-      return `${collectible.name} | 1 Hour Streamed`
+    const currentAchievement = getCurrentAcheivement(collectible)
+    return `${collectible.name} - ${currentAchievement}`    
+  }
+
+  function getCurrentAcheivement(collectible:any) {
+        
+    if (collectible.streamedMilliseconds < 3600000 ) {
+      return '1 Hour Streamed'
     }
 
-    if(collectible.sk.includes('streamed05Hours')) {
-      return `${collectible.name} | 5 Hours Streamed`
-    }
+    if (collectible.streamedMilliseconds > 3600000 && collectible.streamedMilliseconds < 3600000 * 5) {
+      return '5 Hours Streamed'
+    }  
     
-    if(collectible.sk.includes('streamed10Hours')) {
-      return `${collectible.name} | 10 Hours Streamed`
-    }
-    
-    if(collectible.sk.includes('streamed15Hours')) {
-      return `${collectible.name} | 15 Hours Streamed`
-    }    
+    if (collectible.streamedMilliseconds > 3600000 * 5 && collectible.streamedMilliseconds < 3600000 * 10) {
+      return '10 Hours Streamed'
+    }       
 
-    if(collectible.sk.includes('streamed20Hours')) {
-      return `${collectible.name} | 20 Hours Streamed`
+    if (collectible.streamedMilliseconds > 3600000 * 10 && collectible.streamedMilliseconds < 3600000 * 15) {
+      return '15 Hours Streamed'
     }        
+  
+    if (collectible.streamedMilliseconds > 3600000 * 15 && collectible.streamedMilliseconds < 3600000 * 25) {
+      return '25 Hours Streamed'
+    }     
+
+  }
+
+  const getPreviousArtists = async () => {
+    setBackLoading(true)
+    setArtistsPage(artistsPage-1)
+    const prevArtists = await getArtists(user?.verifierId as string, lastEvaluatedKeysArtists[artistsPage-1])
+    setArtists(prevArtists.Items)    
+    setBackLoading(false)
+  }
+
+  const getNextArtists = async () => {
+    setNextLoading(true)
+    setArtistsPage(artistsPage+1)
+    const nextArtists = await getArtists(user?.verifierId as string, lastEvaluatedKeysArtists[artistsPage+1])
+    setArtists(nextArtists.Items)
+    setLastEvaluatedKeysArtists([...lastEvaluatedKeysArtists, nextArtists.LastEvaluatedKey])
+    setNextLoading(false)
+  }    
+
+  function goToArtistProfile(artist:any) {
+    navigate(`/artist/${artist.id}`)
   }
   
-
   const myCollectionView = (
     <>
-      {/* <button onClick={getUserInfo} >
-        Get User Info
-      </button>
-      <button onClick={getAccounts} >
-        Get Accounts
-      </button>
-      <button onClick={getPrivateKey} >
-        Get Private Key
+      {/* <button onClick={logout} >
+        Log Out
       </button> */}
 
-      <button onClick={logout} >
-        Log Out
-      </button>
-      <Flex>
-        <H1>In Progress</H1>
-        <Pagination onBack={getPreviousCollectibles} onNext={getNextCollectibles} page={page}/>
-      </Flex>
-      <Flex justifyContent="left" alignItems="center">
-        {collectibles.length ? collectibles.map(collectible => {
-          const collectibleType = getCollectibleType(collectible);
-          return <Collectible
-          collectibleImage="https://via.placeholder.com/150"
-          collectibleName={collectibleType as string}
-          collectorImage={user.profileImage}
-          collectorName={user.name}
-          />
-        }) : null}
+      <Flex margin="0 0 5em 0" flexDirection="column" alignItems="left" justifyContent="flex-start">
+        <Flex>
+          <H1 fontSize="1.5rem">In Progress</H1>
+          <Pagination loadingNext={loadingNext} loadingBack={loadingBack} onBack={getPreviousCollectibles} onNext={getNextCollectibles} page={page} lastEvaluatedKey={lastEvaluatedKeys[page+1]}/>
+        </Flex>
+        <Flex justifyContent="flex-start" alignItems="left">
+
+          {collectibles?.length == 0 && <H1 fontSize="1em">Calculating Data... Check back in a minute or so!</H1>}
+
+          {collectibles?.map((collectible:object) => {
+            const collectibleType = getCollectibleType(collectible);
+            return <Collectible
+              collectibleImage="https://via.placeholder.com/150"
+              collectibleName={collectibleType as string}
+              collectorImage={user.profileImage}
+              collectorName={user.name}
+            />
+          })}
+        </Flex>
       </Flex>
 
+      <Flex>
+        <H1 fontSize="1.5rem">Trending Artists</H1>
+        <Pagination loadingNext={loadingNext} loadingBack={loadingBack} onBack={getPreviousArtists} onNext={getNextArtists} page={artistsPage} lastEvaluatedKey={lastEvaluatedKeysArtists[artistsPage+1]}/>
+      </Flex>
+
+      {collectibles?.length == 0 && <Flex justifyContent="flex-start" alignItems="left">
+        <H1 fontSize="1em">Calculating Data... Check back in a minute or so!</H1>
+      </Flex>}
+
+      <Flex justifyContent="flex-start" alignItems="center">
+        {artists?.map((artist:any) => {
+          return <Artist artistImage={artist.images[0]?.url} artistName={artist.name} onClick={() => goToArtistProfile(artist)}/>
+        })}
+      </Flex>
 
       <StyledModal
         isOpen={isSpotifyModalOpen}
@@ -391,19 +435,11 @@ function App() {
   
   // TODO: we might want to show some kind of partial view here with skeletons or something. 
   const unloggedInView = (
-    <div>Logged out</div>
+    <div></div>
   );
 
   return (
-    <div>
-
-
-      <div >{provider ? myCollectionView : unloggedInView}</div>
-
-      <footer >
-        
-      </footer>
-    </div>
+    <>{provider ? myCollectionView : unloggedInView}</>
   );
 }
 
