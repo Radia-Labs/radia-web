@@ -1,3 +1,4 @@
+
 function ArtistProfile() {
     return (
         <>"Artist Profile"</>

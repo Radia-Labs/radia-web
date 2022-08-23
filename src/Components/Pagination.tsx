@@ -10,11 +10,11 @@ type Props = {
 }
 const Pagination = ({ loadingBack, loadingNext, onNext, onBack, page, lastEvaluatedKey }: Props) => (
     <Flex>
-        <PaginateBackWrapper page={page} >
-            {loadingBack ? <Spinner/> : <PaginateBackBtn onClick={page !== -1 ? onBack : null}/> }
+        <PaginateBackWrapper page={page} onClick={page !== -1 ? onBack : null}>
+            {loadingBack ? <Spinner/> : <PaginateBackBtn /> }
         </PaginateBackWrapper>
-        <PaginateNextWrapper page={page} lastEvaluatedKey={lastEvaluatedKey}>
-            {loadingNext ? <Spinner/> : <PaginateNextBtn onClick={lastEvaluatedKey ? onNext : null}/> }
+        <PaginateNextWrapper page={page} lastEvaluatedKey={lastEvaluatedKey} onClick={lastEvaluatedKey ? onNext : null}>
+            {loadingNext ? <Spinner/> : <PaginateNextBtn /> }
         </PaginateNextWrapper>
     </Flex>
 )

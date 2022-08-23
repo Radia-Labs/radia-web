@@ -1,4 +1,18 @@
-export const MEDIA_CDN_HOST = "https://d2sad41dyn6p9s.cloudfront.net/images";
+export const MEDIA_CDN_HOST = "https://d2sad41dyn6p9s.cloudfront.net/images"  as const;
+
+export const WEB3AUTH_NETWORK = {
+  mainnet: {
+    displayName: "Mainnet",
+  },
+  testnet: {
+    displayName: "Testnet",
+  },
+  cyan: {
+    displayName: "Cyan",
+  },
+} as const;
+
+export type WEB3AUTH_NETWORK_TYPE = keyof typeof WEB3AUTH_NETWORK;
 
 export const colors = {
     primaryDark: '#141420',
@@ -10,7 +24,7 @@ export const colors = {
     brightGreen: '#2fbd59',
     darkGrey: '#464649',
     lightGrey: '#8A8AA0',
-}
+} as const;
 
 const size = {
     mobileS: '320px',
@@ -31,4 +45,6 @@ const size = {
     laptopL: `(min-width: ${size.laptopL})`,
     desktop: `(min-width: ${size.desktop})`,
     desktopL: `(min-width: ${size.desktop})`
-  };
+  } as const;
+
+  

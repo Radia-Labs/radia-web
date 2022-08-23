@@ -13,6 +13,14 @@ export const Header = styled.div`
     background-color: ${colors.secondaryDark};
 `  
 
+export const LogoWrapper = styled.div`
+    cursor: pointer;
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: no-wrap; 
+    align-items: baseline;
+`
+
 export const Logo = styled.div`
     background-image: url('${window.location.origin}/logo.svg');
     height: 1rem;
@@ -32,8 +40,8 @@ export const Paragraph = styled.div`
 
 export const H1 = styled.h1`
     font-size: ${props => props.fontSize || '1.2rem'}; 
-    font-weight: 700;
-    color: ${colors.primaryLight};
+    font-weight: ${props => props.fontWeight || '700'}; 
+    color:  ${props => props.color || colors.primaryLight}; 
 `
 
 export const GradientButton = styled.button`
@@ -100,7 +108,8 @@ export const CollectibleImage = styled.div`
     image-rendering: auto;
     image-rendering: crisp-edges;
     image-rendering: pixelated;
-    image-rendering: -webkit-optimize-contrast;    
+    image-rendering: -webkit-optimize-contrast; 
+    cursor: pointer;  
 
     @media ${device.laptop} { 
         height: 14.6em;
@@ -108,8 +117,7 @@ export const CollectibleImage = styled.div`
 
     @media ${device.laptopL} { 
         height: 14.6em;
-    }    
-     
+    }      
 `
 
 export const CollectibleName = styled.div`
@@ -120,6 +128,7 @@ export const CollectibleName = styled.div`
     font-size: 1.1em;
     padding-bottom: 1em;
     color: ${colors.primaryLight};
+    transition: all .2s ease-in-out; 
 `
 
 export const CollectorImage = styled.img`
@@ -132,7 +141,11 @@ export const CollectorImage = styled.img`
     image-rendering: auto;
     image-rendering: crisp-edges;
     image-rendering: pixelated;
-    image-rendering: -webkit-optimize-contrast;    
+    image-rendering: -webkit-optimize-contrast;
+    cursor: pointer;
+    transition: all .2s ease-in-out;
+    &:hover { opacity:.9; };
+    &:active { transform: scale(1.05); };      
 `
 
 export const CollectorLabel = styled.div`
@@ -143,7 +156,9 @@ export const CollectorLabel = styled.div`
 export const CollectorName = styled.div`
     color: ${colors.secondaryLight};
     font-size: .8em;
-    
+    &:hover { opacity:.9; };
+    &:active { transform: scale(1.05); };      
+    cursor: pointer;        
 `
 
 const rotate360 = keyframes`
@@ -288,4 +303,59 @@ export const LetterAvatar = styled.div`
         width: 7em;
         height: 7em;
     }    
+`
+export const ProfileHeader = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    height: 12em;
+    border-radius: 12px;
+    background-color: ${colors.secondaryDark};
+    margin-bottom: 5em;
+`
+
+export const ProfileImage = styled.div`
+    width: 8em;
+    height: 8em;
+    border-radius: 8px;
+    border: none;
+    margin-left: 2em;
+    background-image: url('${props => props.image}');
+    background-size: contain;
+    background-repeat: no-repeat;
+    image-rendering: auto;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: -webkit-optimize-contrast;
+`
+
+export const ProfileUserName = styled.div`
+    font-size: 1.2em;
+    color: ${colors.primaryLight};
+    font-weight: 700;
+    margin-bottom: .5em;
+`
+
+export const ProfileWalletAddress = styled.div`
+    font-size: .8em;
+    color: ${colors.lightGrey};
+    background-color: ${colors.secondaryLight};
+    padding: .5em 1.5em;
+    border-radius: 12px;
+    transition: all .2s ease-in-out;
+    &:hover { opacity:.9; };
+    &:active { transform: scale(1.05); };      
+    cursor: pointer;    
+`
+
+export const CopyIcon = styled.div`
+    margin-left: .5em;
+    display: inline-block;
+    height: .75em;
+    width: .75em;
+    background: url('${MEDIA_CDN_HOST}/copy-icon.svg'), transparent;  
+    background-size: contain;   
+    background-repeat: no-repeat;
+    background-position: center;
 `

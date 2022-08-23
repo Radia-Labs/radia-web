@@ -1,21 +1,26 @@
-import {Header, Logo, H1, GradientButton} from "./styles";
+import {Header, LogoWrapper, Logo, H1, GradientButton} from "./styles";
 import {Flex} from "../styles";
+import { useNavigate } from "react-router-dom";
 
-const TopHeader = () => (
-    <Header>
-        <Flex width="100%">
-            <Flex justifyContent="flex-start" flexWrap="no-wrap" alignItems="baseline" >
-                <Logo/>
-                <H1>
-                    Radia
-                </H1>
+const TopHeader = () => {
+    const navigate = useNavigate();
+    const goToHome = () => {
+        navigate('/')
+    }
+
+    return (
+        <Header>
+            <Flex width="100%">
+                <LogoWrapper onClick={goToHome}>
+                    <Logo/>
+                    <H1>Radia</H1>
+                </LogoWrapper>
+   
+                <GradientButton onClick={goToHome}>My Collection</GradientButton>
             </Flex>
-            <GradientButton>
-                My Collection
-            </GradientButton>
-        </Flex>
-    </Header>
-)
+        </Header>
+    )
+}
 
 
 export default TopHeader;

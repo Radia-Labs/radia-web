@@ -17,6 +17,7 @@ export const Flex = styled.div`
  position: relative;
   display: flex;
   justify-content: ${props => props.justifyContent || 'space-between'};
+  flex-grow: ${props => props.flexGrow || 'none'};
   align-items: ${props => props.alignItems || 'center'};
   flex-direction: ${props => props.flexDirection || 'row'};
   flex-wrap: ${props => props.flexWrap || 'wrap'};

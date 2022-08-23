@@ -85,6 +85,18 @@ export const getArtists = async (pk:string, lastEvaluatedKey:object|undefined) =
     return await response.json();
 }
 
+
+export const getTopArtists = async (refreshToken:string) => {
+    // const token = await getToken();
+    let url = `${SERVER_URL}/account/artists/top?refreshToken=${refreshToken}`;
+    const response = await fetch(url, {
+        headers: {
+        // Authorization: `Bearer ${token}`,
+        },
+    });
+    return await response.json();
+}
+
   
   // function reduceByPercentageComplete (collectibles:any) {
   //   return Object.values(collectibles.reduce((r:any, o:any) => {
