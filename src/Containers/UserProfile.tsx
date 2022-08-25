@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 import UserProfileHeader from '../Components/UserProfileHeader';
 import InProgress from '../Components/InProgress';
 import TopArtists from '../Components/TopArtists';
-
+import { getPublicCompressed } from "@toruslabs/eccrypto";
 
 function UserProfile() {
 
@@ -22,12 +22,14 @@ function UserProfile() {
     useEffect(() => {
         const init = async () => {
             const authUser = await web3Auth?.getUserInfo();
-            const radiaUser = await getUser(authUser?.verifierId as string);
+            const appScopedPrivateKey = await provider?.getPrivateKey()
+            const appPubKey = getPublicCompressed(Buffer.from(appScopedPrivateKey.padStart(64, "0"), "hex")).toString("hex");          
+            const radiaUser = await getUser(authUser?.idToken as string, appPubKey as string, authUser?.verifierId as string)  
             setCreatedAt(radiaUser.Items[0].created)
             setUser(authUser as User)
             setWalletAddress(radiaUser.Items[0].addresses.polygon)
 
-            const allCollectibles = await getCollectibles(authUser?.verifierId as string);
+            const allCollectibles = await getCollectibles(authUser?.idToken as string, appPubKey as string, authUser?.verifierId as string);
             const completed = [];
             allCollectibles.Items.map((collectible:object) => {
                 if ("transaction" in collectible)

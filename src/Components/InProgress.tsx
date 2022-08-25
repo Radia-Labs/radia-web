@@ -5,13 +5,13 @@ import {H1} from './styles';
 import Pagination from './Pagination';
 import { getCollectibles } from "../utils";
 import Collectible from '../Components/Collectible';
+import { getPublicCompressed } from "@toruslabs/eccrypto";
 import { 
     getUser
   } from "../utils";
-  import {User} from '../Models/User'
+import {User} from '../Models/User'
 
 const InProgress = () => {
-
     const { provider, web3Auth } = useWeb3Auth();
     const [loading, setLoading] = useState(true)
     const [loadingNext, setNextLoading] = useState(false);
@@ -25,12 +25,14 @@ const InProgress = () => {
     useEffect(() => {
         const init = async () => {
           const authUser = await web3Auth?.getUserInfo()
-          const radiaUser = await getUser(authUser?.verifierId as string)
+          const appScopedPrivateKey = await provider?.getPrivateKey()
+          const appPubKey = getPublicCompressed(Buffer.from(appScopedPrivateKey.padStart(64, "0"), "hex")).toString("hex");           
+          const radiaUser = await getUser(authUser?.idToken as string, appPubKey as string, authUser?.verifierId as string)
           setUser(radiaUser.Items[0])
           
           if (authUser) {
             let lastEvaluatedKey;
-            const collectibles = await getCollectibles(authUser.verifierId as string, limit, lastEvaluatedKey)
+            const collectibles = await getCollectibles(authUser?.idToken as string, appPubKey as string, authUser.verifierId as string, limit, lastEvaluatedKey)
             setCollectibles(collectibles.Items)
             setLastEvaluatedKeys([collectibles.LastEvaluatedKey])
             setLoading(false)
@@ -46,7 +48,10 @@ const InProgress = () => {
     const getPreviousCollectibles = async () => {
         setBackLoading(true)
         setPage(page-1)
-        const prevCollectibles = await getCollectibles(user?.verifierId as string, limit, lastEvaluatedKeys[page-1])
+        const authUser = await web3Auth?.getUserInfo()
+        const appScopedPrivateKey = await provider?.getPrivateKey()
+        const appPubKey = getPublicCompressed(Buffer.from(appScopedPrivateKey.padStart(64, "0"), "hex")).toString("hex");                   
+        const prevCollectibles = await getCollectibles(authUser?.idToken as string, appPubKey as string, user?.verifierId as string, limit, lastEvaluatedKeys[page-1])
         setCollectibles(prevCollectibles.Items)    
         setBackLoading(false)
       }
@@ -54,7 +59,10 @@ const InProgress = () => {
       const getNextCollectibles = async () => {
         setNextLoading(true)
         setPage(page+1)
-        const nextCollectibles = await getCollectibles(user?.verifierId as string, limit, lastEvaluatedKeys[page+1])
+        const authUser = await web3Auth?.getUserInfo()
+        const appScopedPrivateKey = await provider?.getPrivateKey()
+        const appPubKey = getPublicCompressed(Buffer.from(appScopedPrivateKey.padStart(64, "0"), "hex")).toString("hex");         
+        const nextCollectibles = await getCollectibles(authUser?.idToken as string, appPubKey as string, user?.verifierId as string, limit, lastEvaluatedKeys[page+1])
         setCollectibles(nextCollectibles.Items)
         setLastEvaluatedKeys([...lastEvaluatedKeys, nextCollectibles.LastEvaluatedKey])
         setNextLoading(false)

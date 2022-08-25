@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useWeb3Auth } from "../Services/web3auth";
-import { useNavigate } from 'react-router-dom'
 import {StyledModal, Flex} from '../styles';
 import SpotifyModalBody from '../Components/SpotifyModalBody';
 import InProgress from '../Components/InProgress';
 import TrendingArtists from '../Components/TrendingArtists';
+import { getPublicCompressed } from "@toruslabs/eccrypto";
 import { 
   getSpotifyUser, 
   getUser, 
@@ -31,18 +31,22 @@ function App() {
 
         // Get user information from web3auth and Radia database
         const authUser = await web3Auth?.getUserInfo()
-        const radiaUser = await getUser(authUser?.verifierId as string)
+        
+        const appScopedPrivateKey = await provider?.getPrivateKey()
+        const appPubKey = getPublicCompressed(Buffer.from(appScopedPrivateKey.padStart(64, "0"), "hex")).toString("hex");        
+        
+        const radiaUser = await getUser(authUser?.idToken as string, appPubKey, authUser?.verifierId as string, )
 
         // If Radia user doesn't exist, create new user
         if (authUser && !radiaUser.Items.length) {
           const walletAddress = await provider?.getAccounts()
           const addresses = {"polygon": walletAddress[0]}
-          await createUser(authUser as object, addresses as object)
+          await createUser(authUser?.idToken as string, appPubKey, authUser as object, addresses as object)
         }
 
         // If authUser, then run query to get user's spotify integration
         if(authUser) {
-          const spotifyUser = await getSpotifyUser(authUser.verifierId as string)
+          const spotifyUser = await getSpotifyUser(authUser?.idToken as string, appPubKey, authUser.verifierId as string)
           if (!spotifyUser.Items.length) {
             // If user not found, then create user in radia
             // Trigger spotify login flow, get accessTokens and add to radia database 
@@ -63,9 +67,11 @@ function App() {
       let code = params.get('code') 
       const authUser = await web3Auth?.getUserInfo()
       if (code && authUser) {
-        const spotifyAuth = await getSpotifyAuth(code as string)
+        const appScopedPrivateKey = await provider?.getPrivateKey()
+        const appPubKey = getPublicCompressed(Buffer.from(appScopedPrivateKey.padStart(64, "0"), "hex")).toString("hex");                
+        const spotifyAuth = await getSpotifyAuth(authUser?.idToken as string, appPubKey, code as string)
         if (spotifyAuth) {
-          await createSpotifyIntegration(authUser?.verifierId as string, spotifyAuth)
+          await createSpotifyIntegration(authUser?.idToken as string, appPubKey, authUser?.verifierId as string, spotifyAuth)
           setSpotifyModalIsOpen(false)
           params.delete('code')
           window.history.pushState({}, document.title, "/");

@@ -18,11 +18,6 @@ const polygonProvider = (provider: SafeEventEmitterProvider, uiConsole: (...args
   const getPrivateKey = async () => {
     try {
       const web3 = new Web3(provider as any);
-      // const privateKey = await this.provider.request({
-      //   method: "eth_private_key",
-      // });
-      
-
       const privateKey = await (web3.currentProvider as any)?.request(
         {
           method: "eth_private_key"
@@ -34,8 +29,6 @@ const polygonProvider = (provider: SafeEventEmitterProvider, uiConsole: (...args
           uiConsole("Eth request private key", result);
         }
       );      
-      
-      console.log(privateKey)
       return privateKey;
     } catch (error) {
       return error as string;

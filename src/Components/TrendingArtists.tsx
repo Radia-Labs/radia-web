@@ -6,7 +6,8 @@ import {H1} from './styles';
 import Pagination from './Pagination';
 import { getArtists, getUser } from "../utils";
 import Artist from '../Components/Artist';
-  import {User} from '../Models/User'
+import {User} from '../Models/User'
+import { getPublicCompressed } from "@toruslabs/eccrypto";
 
 const TrendingArtists = () => {
 
@@ -22,11 +23,13 @@ const TrendingArtists = () => {
     useEffect(() => {
         const init = async () => {
           const authUser = await web3Auth?.getUserInfo()
-          const radiaUser = await getUser(authUser?.verifierId as string)
+          const appScopedPrivateKey = await provider?.getPrivateKey()
+          const appPubKey = getPublicCompressed(Buffer.from(appScopedPrivateKey.padStart(64, "0"), "hex")).toString("hex");          
+          const radiaUser = await getUser(authUser?.idToken as string, appPubKey as string, authUser?.verifierId as string)          
           setUser(radiaUser.Items[0])          
           if (authUser) {
             let lastEvaluatedKey;
-            const artists = await getArtists(authUser.verifierId as string, lastEvaluatedKey)
+            const artists = await getArtists(authUser?.idToken as string, appPubKey as string, authUser.verifierId as string, lastEvaluatedKey)
             setArtists(artists.Items)
             setLastEvaluatedKeysArtists([artists.LastEvaluatedKey])
           }
@@ -37,7 +40,10 @@ const TrendingArtists = () => {
     const getPreviousArtists = async () => {
         setBackLoading(true)
         setArtistsPage(artistsPage-1)
-        const prevArtists = await getArtists(user?.verifierId as string, lastEvaluatedKeysArtists[artistsPage-1])
+        const appScopedPrivateKey = await provider?.getPrivateKey()
+        const appPubKey = getPublicCompressed(Buffer.from(appScopedPrivateKey.padStart(64, "0"), "hex")).toString("hex"); 
+        const authUser = await web3Auth?.getUserInfo()                
+        const prevArtists = await getArtists(authUser?.idToken as string, appPubKey as string, user?.verifierId as string, lastEvaluatedKeysArtists[artistsPage-1])
         setArtists(prevArtists.Items)    
         setBackLoading(false)
       }
@@ -45,7 +51,10 @@ const TrendingArtists = () => {
       const getNextArtists = async () => {
         setNextLoading(true)
         setArtistsPage(artistsPage+1)
-        const nextArtists = await getArtists(user?.verifierId as string, lastEvaluatedKeysArtists[artistsPage+1])
+        const appScopedPrivateKey = await provider?.getPrivateKey()
+        const appPubKey = getPublicCompressed(Buffer.from(appScopedPrivateKey.padStart(64, "0"), "hex")).toString("hex"); 
+        const authUser = await web3Auth?.getUserInfo()          
+        const nextArtists = await getArtists(authUser?.idToken as string, appPubKey as string, user?.verifierId as string, lastEvaluatedKeysArtists[artistsPage+1])
         setArtists(nextArtists.Items)
         setLastEvaluatedKeysArtists([...lastEvaluatedKeysArtists, nextArtists.LastEvaluatedKey])
         setNextLoading(false)
