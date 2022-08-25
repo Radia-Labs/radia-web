@@ -12,7 +12,7 @@ import {
 
 const InProgress = () => {
 
-    const { provider, login, logout, getAccounts, web3Auth } = useWeb3Auth();
+    const { provider, web3Auth } = useWeb3Auth();
     const [loading, setLoading] = useState(true)
     const [loadingNext, setNextLoading] = useState(false);
     const [loadingBack, setBackLoading] = useState(false);
@@ -20,6 +20,7 @@ const InProgress = () => {
     const [page, setPage] = useState(-1);
     const [collectibles, setCollectibles] = useState<Array<object>>();
     const [lastEvaluatedKeys, setLastEvaluatedKeys] = useState<Array<{pk: string, sk: string}>>([]);
+    const limit = 4;
 
     useEffect(() => {
         const init = async () => {
@@ -27,10 +28,9 @@ const InProgress = () => {
           const radiaUser = await getUser(authUser?.verifierId as string)
           setUser(radiaUser.Items[0])
           
-          
           if (authUser) {
             let lastEvaluatedKey;
-            const collectibles = await getCollectibles(authUser.verifierId as string, lastEvaluatedKey)
+            const collectibles = await getCollectibles(authUser.verifierId as string, limit, lastEvaluatedKey)
             setCollectibles(collectibles.Items)
             setLastEvaluatedKeys([collectibles.LastEvaluatedKey])
             setLoading(false)
@@ -46,7 +46,7 @@ const InProgress = () => {
     const getPreviousCollectibles = async () => {
         setBackLoading(true)
         setPage(page-1)
-        const prevCollectibles = await getCollectibles(user?.verifierId as string, lastEvaluatedKeys[page-1])
+        const prevCollectibles = await getCollectibles(user?.verifierId as string, limit, lastEvaluatedKeys[page-1])
         setCollectibles(prevCollectibles.Items)    
         setBackLoading(false)
       }
@@ -54,7 +54,7 @@ const InProgress = () => {
       const getNextCollectibles = async () => {
         setNextLoading(true)
         setPage(page+1)
-        const nextCollectibles = await getCollectibles(user?.verifierId as string, lastEvaluatedKeys[page+1])
+        const nextCollectibles = await getCollectibles(user?.verifierId as string, limit, lastEvaluatedKeys[page+1])
         setCollectibles(nextCollectibles.Items)
         setLastEvaluatedKeys([...lastEvaluatedKeys, nextCollectibles.LastEvaluatedKey])
         setNextLoading(false)
@@ -67,28 +67,49 @@ const InProgress = () => {
     
       function getCurrentAcheivement(collectible:any) {
             
-        if (collectible.streamedMilliseconds < 3600000 ) {
+        if (collectible.streamedMilliseconds <= 3600000 ) {
           return '1 Hour Streamed'
         }
     
-        if (collectible.streamedMilliseconds > 3600000 && collectible.streamedMilliseconds < 3600000 * 5) {
+        if (collectible.streamedMilliseconds >= 3600000 && collectible.streamedMilliseconds <= 3600000 * 5) {
           return '5 Hours Streamed'
         }  
         
-        if (collectible.streamedMilliseconds > 3600000 * 5 && collectible.streamedMilliseconds < 3600000 * 10) {
+        if (collectible.streamedMilliseconds >= 3600000 * 5 && collectible.streamedMilliseconds <= 3600000 * 10) {
           return '10 Hours Streamed'
         }       
     
-        if (collectible.streamedMilliseconds > 3600000 * 10 && collectible.streamedMilliseconds < 3600000 * 15) {
+        if (collectible.streamedMilliseconds >= 3600000 * 10 && collectible.streamedMilliseconds <= 3600000 * 15) {
           return '15 Hours Streamed'
         }        
       
-        if (collectible.streamedMilliseconds > 3600000 * 15 && collectible.streamedMilliseconds < 3600000 * 25) {
+        if (collectible.streamedMilliseconds >= 3600000 * 15 && collectible.streamedMilliseconds <= 3600000 * 25) {
           return '25 Hours Streamed'
         }     
     
       }
 
+      const calculateProgress = (collectible:{streamedMilliseconds: number}) => {
+        if (collectible.streamedMilliseconds <= 3600000 ) {
+          return (collectible.streamedMilliseconds / 3600000).toFixed(0)
+        }
+    
+        if (collectible.streamedMilliseconds >= 3600000 && collectible.streamedMilliseconds <= 3600000 * 5) {
+          return (collectible.streamedMilliseconds / 3600000 * 5).toFixed(0)
+        }  
+        
+        if (collectible.streamedMilliseconds >= 3600000 * 5 && collectible.streamedMilliseconds <= 3600000 * 10) {
+          return (collectible.streamedMilliseconds / 3600000 * 10).toFixed(0)
+        }       
+    
+        if (collectible.streamedMilliseconds >= 3600000 * 10 && collectible.streamedMilliseconds <= 3600000 * 15) {
+          return (collectible.streamedMilliseconds / 3600000 * 15).toFixed(0)
+        }        
+      
+        if (collectible.streamedMilliseconds >= 3600000 * 15 && collectible.streamedMilliseconds <= 3600000 * 25) {
+          return (collectible.streamedMilliseconds / 3600000 * 25).toFixed(0)
+        }  
+      }
     
     return (
         <Flex margin="0 0 5em 0" flexDirection="column" alignItems="left" justifyContent="flex-start">
@@ -100,13 +121,17 @@ const InProgress = () => {
 
             {collectibles?.length == 0 && !loading ? <H1 fontSize="1em">Calculating Data... Check back in a minute or so!</H1> : null}
 
-            {collectibles?.map((collectible:object) => {
+            {collectibles?.map((collectible:any) => {
                 const collectibleType = getCollectibleType(collectible);
+                const progress = calculateProgress(collectible)
                 return <Collectible
-                collectibleImage="https://via.placeholder.com/150"
+                key={collectible.sk}
+                collectibleId={collectible.sk}
+                collectibleImage={collectible.images[0].url}
                 collectibleName={collectibleType as string}
                 collectorImage={user?.profileImage}
                 collectorName={user?.name}
+                progress={progress as string}
                 />
             })}
             </Flex>

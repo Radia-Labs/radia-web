@@ -28,7 +28,7 @@ function App() {
 
   useEffect(() => {
     const init = async () => {
-      
+
         // Get user information from web3auth and Radia database
         const authUser = await web3Auth?.getUserInfo()
         const radiaUser = await getUser(authUser?.verifierId as string)
@@ -90,7 +90,6 @@ function App() {
     const loginURL = `${authEndpoint}?client_id=${spotifyClientId}&redirect_uri=${redirectURL}&scope=${scopes.join("%20")}&response_type=code&show_dialog=true&usePKCE=false`;
     window.open(loginURL, "_self");
   }  
-  
   
   const myCollectionView = (
     <>

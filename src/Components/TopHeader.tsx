@@ -8,6 +8,10 @@ const TopHeader = () => {
         navigate('/')
     }
 
+    const goToAccount = () => {
+        navigate('/account')
+    }    
+
     return (
         <Header>
             <Flex width="100%">
@@ -16,7 +20,7 @@ const TopHeader = () => {
                     <H1>Radia</H1>
                 </LogoWrapper>
    
-                <GradientButton onClick={goToHome}>My Collection</GradientButton>
+                <GradientButton onClick={goToAccount}>My Collection</GradientButton>
             </Flex>
         </Header>
     )

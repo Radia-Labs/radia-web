@@ -3,6 +3,35 @@ import Web3 from "web3";
 import { IWalletProvider } from "./walletProvider";
 
 const ethProvider = (provider: SafeEventEmitterProvider, uiConsole: (...args: unknown[]) => void): IWalletProvider => {
+
+  const getPrivateKey = async () => {
+    try {
+      const web3 = new Web3(provider as any);
+      // const privateKey = await this.provider.request({
+      //   method: "eth_private_key",
+      // });
+      
+
+      const privateKey = await (web3.currentProvider as any)?.request(
+        {
+          method: "eth_private_key"
+        },
+        (err: Error, result: any) => {
+          if (err) {
+            return uiConsole(err);
+          }
+          uiConsole("Eth request private key", result);
+        }
+      );      
+      
+      console.log(privateKey)
+      return privateKey;
+    } catch (error) {
+      return error as string;
+    }
+  } 
+  
+  
   const getAccounts = async () => {
     try {
       const web3 = new Web3(provider as any);
@@ -82,7 +111,7 @@ const ethProvider = (provider: SafeEventEmitterProvider, uiConsole: (...args: un
       uiConsole("error", error);
     }
   };
-  return { getAccounts, getBalance, signMessage, signAndSendTransaction, signTransaction };
+  return { getPrivateKey, getAccounts, getBalance, signMessage, signAndSendTransaction, signTransaction };
 };
 
 export default ethProvider;

@@ -68,7 +68,11 @@ const TrendingArtists = () => {
 
         <Flex justifyContent="flex-start" alignItems="center">
             {artists?.map((artist:any) => {
-            return <Artist artistImage={artist.images[0]?.url} artistName={artist.name} onClick={() => goToArtistProfile(artist)}/>
+            return <Artist 
+            key={artist.id}
+            artistImage={artist.images[0]?.url} 
+            artistName={artist.name} 
+            onClick={() => goToArtistProfile(artist)}/>
             })}
         </Flex>
       </Flex>

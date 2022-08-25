@@ -43,6 +43,12 @@ export const H1 = styled.h1`
     font-weight: ${props => props.fontWeight || '700'}; 
     color:  ${props => props.color || colors.primaryLight}; 
 `
+export const Text = styled.h1`
+    font-size: ${props => props.fontSize || '1.2rem'}; 
+    font-weight: ${props => props.fontWeight || '700'}; 
+    color:  ${props => props.color || colors.primaryLight}; 
+    cursor: ${props => props.cursor || "none"}; 
+`
 
 export const GradientButton = styled.button`
     border: none;
@@ -74,12 +80,42 @@ export const SpotifyModalImage = styled.div`
     image-rendering: -webkit-optimize-contrast;
 `
 
+export const ProgressCard = styled.div`
+    background-color: ${colors.secondaryDark};
+    border-radius: 20px;  
+    padding: 1em; 
+    margin-bottom: 1em; 
+    margin-right: 1em;
+    cursor: pointer;
+    transition: all .2s ease-in-out;
+    &:hover { opacity:.9; };    
+
+    @media ${device.laptop} { 
+        width: 16.2em;
+        height: 22em;
+    }
+
+    @media ${device.laptopL} { 
+        width: 17.5em;
+        height: 22.5em;
+    }    
+    
+    @media ${device.desktop} {
+        width: 20em;
+        height: 22.5em;
+    }
+
+`
+
 export const CollectibleCard = styled.div`
     background-color: ${colors.secondaryDark};
     border-radius: 20px;  
     padding: 1em; 
     margin-bottom: 1em; 
     margin-right: 1em;
+    cursor: pointer;
+    transition: all .2s ease-in-out;
+    &:hover { opacity:.9; };    
 
     @media ${device.laptop} { 
         width: 16.2em;
@@ -109,7 +145,8 @@ export const CollectibleImage = styled.div`
     image-rendering: crisp-edges;
     image-rendering: pixelated;
     image-rendering: -webkit-optimize-contrast; 
-    cursor: pointer;  
+    filter: ${props => props.filter || 'none'};
+     
 
     @media ${device.laptop} { 
         height: 14.6em;
@@ -145,7 +182,6 @@ export const CollectorImage = styled.img`
     cursor: pointer;
     transition: all .2s ease-in-out;
     &:hover { opacity:.9; };
-    &:active { transform: scale(1.05); };      
 `
 
 export const CollectorLabel = styled.div`
@@ -156,9 +192,19 @@ export const CollectorLabel = styled.div`
 export const CollectorName = styled.div`
     color: ${colors.secondaryLight};
     font-size: .8em;
-    &:hover { opacity:.9; };
-    &:active { transform: scale(1.05); };      
-    cursor: pointer;        
+    &:hover { opacity:.9; };  
+    cursor: pointer;       
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;       
+`
+
+export const CollectorWrapper = styled.div`
+    width:40%;
+    margin: auto 10px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;        
 `
 
 const rotate360 = keyframes`
@@ -235,7 +281,7 @@ export const ArtistImage = styled.div`
     height: 6em;
     border-radius: 8px;
     background-image: url('${props => props.image}');
-    background-size: contain;
+    background-size: cover;
     background-repeat: no-repeat;
     image-rendering: auto;
     image-rendering: crisp-edges;
@@ -359,3 +405,68 @@ export const CopyIcon = styled.div`
     background-repeat: no-repeat;
     background-position: center;
 `
+
+export const FanCard = styled.div`
+    background-color: ${colors.secondaryDark};
+    border-radius: 14px;  
+    padding: 1em; 
+    display:  flex;
+    width: 10%;
+    justify-content: flex-start;
+    margin-bottom: 5em;
+`
+
+export const FanImage = styled.img`
+    width: 2.1em;
+    height: 2.1em;
+    border-radius: 8px;
+    background-image: url('${props => props.image}');
+    background-size: contain;
+    background-repeat: no-repeat;
+    image-rendering: auto;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: -webkit-optimize-contrast;
+    margin-right: 1em;
+`
+
+export const FanNameWrapper = styled.div`
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;   
+`
+
+export const FanName = styled.div`
+    font-size: .8em;
+    color: ${colors.lightGrey};
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;      
+ 
+`
+
+export const ProgressBarContainer = styled.div`
+  height: 1em;
+  width: 100%;
+  position: relative;
+  margin-right:10px;
+`;
+
+export const ProgressBaseBox = styled.div`
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 12px;
+  transition: width 5s ease-in-out;
+`;
+
+export const ProgressBarBackground = styled(ProgressBaseBox)`
+  background: grey;
+  width: 100%;
+`;
+
+export const Progress = styled(ProgressBaseBox)`
+  background: ${colors.seaGreen};
+  width: ${({ percent }) => percent}%;
+`;

@@ -1,37 +1,57 @@
 import {
-    CollectibleCard, 
+    ProgressCard, 
     CollectibleImage, 
     CollectibleName,
     CollectorImage,
     CollectorLabel,
     CollectorName,
+    CollectorWrapper,
+    ProgressBarContainer,
+    ProgressBarBackground,
+    Progress,
+    Text
 } from "./styles";
 
 import {Flex} from '../styles'
 
 type Props = {
+    collectibleId: string | undefined,
     collectibleImage: string | undefined,
     collectibleName: string | undefined,
     collectorImage: string | undefined,
-    collectorName: string | undefined
+    collectorName: string | undefined,
+    progress: string | undefined
 }
 
-const goToMyProfile = () => {
+const goToMyProfile = (event:any) => {
+    event.stopPropagation()
     window.location.href = "/account"
 }
 
-const Collectible = ({ collectibleImage, collectibleName, collectorImage, collectorName }: Props) => (
-    <CollectibleCard>
-        <CollectibleImage image={collectibleImage}/>
+const goToCollectible = (id:string) => {
+    window.location.href = `/account/${id}`
+}
+
+const Collectible = ({ collectibleId, collectibleImage, collectibleName, collectorImage, collectorName, progress }: Props) => (
+    <ProgressCard onClick={() => goToCollectible(collectibleId as string)}>
+        <CollectibleImage image={collectibleImage} filter="saturate(0%)"/>
         <CollectibleName title={collectibleName} >{collectibleName}</CollectibleName>
-        <Flex justifyContent="flex-start">
-            <CollectorImage referrerPolicy="no-referrer" src={collectorImage} onClick={goToMyProfile}/>
-            <Flex margin="auto 10px" flexDirection="column" alignItems="flex-start">
-                <CollectorLabel>Collector</CollectorLabel>
-                <CollectorName onClick={goToMyProfile}>{collectorName}</CollectorName>
+        
+            <Flex margin="0 0 1em 0" justifyContent="flex-start">
+                <CollectorImage referrerPolicy="no-referrer" src={collectorImage} onClick={goToMyProfile}/>
+                <CollectorWrapper>
+                    <CollectorLabel>Collector</CollectorLabel>
+                    <CollectorName onClick={goToMyProfile}>{collectorName}</CollectorName>
+                </CollectorWrapper>
+            </Flex>       
+            <Flex flexWrap="nowrap">
+                <ProgressBarContainer>
+                    <ProgressBarBackground />
+                    <Progress percent={progress} />
+                </ProgressBarContainer>       
+                <Text fontSize=".8em">{`${progress}%`}</Text>      
             </Flex>
-        </Flex>            
-    </CollectibleCard>
+    </ProgressCard>
 )
 
 

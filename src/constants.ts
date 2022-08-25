@@ -24,6 +24,7 @@ export const colors = {
     brightGreen: '#2fbd59',
     darkGrey: '#464649',
     lightGrey: '#8A8AA0',
+    seaGreen: '#28cf8d',
 } as const;
 
 const size = {

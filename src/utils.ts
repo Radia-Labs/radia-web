@@ -59,11 +59,13 @@ export const createSpotifyIntegration = async (pk:string, integration:object) =>
     return await response.json();    
 }
 
-export const getCollectibles = async (pk:string, lastEvaluatedKey:object|undefined) => {
+export const getCollectibles = async (pk:string, limit?:number, lastEvaluatedKey?:object) => {
     // const token = await getToken();
     let url = `${SERVER_URL}/account/collectibles?pk=${pk}`;
+    if (limit)
+        url += `&limit=${limit}`;
     if (lastEvaluatedKey)
-        url += `&lastEvaluatedKey=${JSON.stringify(lastEvaluatedKey)}`;
+        url += `&lastEvaluatedKey=${JSON.stringify(lastEvaluatedKey)}`;        
     const response = await fetch(url, {
         headers: {
         // Authorization: `Bearer ${token}`,
@@ -85,6 +87,49 @@ export const getArtists = async (pk:string, lastEvaluatedKey:object|undefined) =
     return await response.json();
 }
 
+export const getArtist = async (id:string) => {
+    // const token = await getToken();
+    let url = `${SERVER_URL}/artist/${id}`;
+    const response = await fetch(url, {
+        headers: {
+        // Authorization: `Bearer ${token}`,
+        },
+    });
+    return await response.json();
+}
+
+export const getArtistCollectibles = async (id:string) => {
+    // const token = await getToken();
+    let url = `${SERVER_URL}/artist/collectibles/${id}`;
+    const response = await fetch(url, {
+        headers: {
+        // Authorization: `Bearer ${token}`,
+        },
+    });
+    return await response.json();
+}
+
+export const getArtistCollectiblesBySk = async (sk:string) => {
+    // const token = await getToken();
+    let url = `${SERVER_URL}/artist/collectibles/sk?sk=${sk}`;
+    const response = await fetch(url, {
+        headers: {
+        // Authorization: `Bearer ${token}`,
+        },
+    });
+    return await response.json();
+}
+
+export const getArtistCollectors = async (id:string) => {
+    // const token = await getToken();
+    let url = `${SERVER_URL}/artist/collectors/${id}`;
+    const response = await fetch(url, {
+        headers: {
+        // Authorization: `Bearer ${token}`,
+        },
+    });
+    return await response.json();
+}
 
 export const getTopArtists = async (refreshToken:string) => {
     // const token = await getToken();

@@ -5,6 +5,7 @@ import polygonProvider from "./polygonProvider";
 // import tezosProvider  from "./tezosProvider";
 
 export interface IWalletProvider {
+  getPrivateKey: () => Promise<any>;
   getAccounts: () => Promise<any>;
   getBalance: () => Promise<any>;
   signAndSendTransaction: () => Promise<void>;
