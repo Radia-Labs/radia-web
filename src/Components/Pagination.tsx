@@ -5,17 +5,18 @@ type Props = {
     loadingNext: boolean,
     onBack: () => void;
     onNext: () => void;
-    page: number;
-    lastEvaluatedKey: object | undefined;
+    disabledBack: boolean;
+    disabledNext: boolean;
 }
-const Pagination = ({ loadingBack, loadingNext, onNext, onBack, page, lastEvaluatedKey }: Props) => (
+const Pagination = ({ loadingBack, loadingNext, onNext, onBack, disabledBack, disabledNext }: Props) => (
     <Flex>
-        <PaginateBackWrapper page={page} onClick={page !== -1 ? onBack : null}>
+        <PaginateBackWrapper disabled={disabledBack} onClick={disabledBack ? null : onBack}>
             {loadingBack ? <Spinner/> : <PaginateBackBtn /> }
         </PaginateBackWrapper>
-        <PaginateNextWrapper page={page} lastEvaluatedKey={lastEvaluatedKey} onClick={lastEvaluatedKey ? onNext : null}>
+        <PaginateNextWrapper disabled={disabledNext} onClick={ disabledNext ? null : onNext }>
             {loadingNext ? <Spinner/> : <PaginateNextBtn /> }
-        </PaginateNextWrapper>
+        </PaginateNextWrapper> 
+        
     </Flex>
 )
 

@@ -2,6 +2,7 @@
 import {Flex} from '../styles';
 import {
     H1,
+    LetterProfileImage,
     ProfileHeader, 
     ProfileImage,
     ProfileUserName,
@@ -18,7 +19,7 @@ type Props = {
 function ArtistProfileHeader({artist, collectors, collectibles}: Props) {
     return (
        artist ? <ProfileHeader>
-            <ProfileImage image={artist.images[0].url}/>
+            {artist.images[0]?.url ? <ProfileImage image={artist.images[0]?.url}/> : <LetterProfileImage artistName={artist.name} />}
             <Flex margin="0 0 0 2em" flexDirection="row" flexGrow="1" justifyContent="space-between" alignItems="center">
                 <Flex margin="0 0 0 2em" flexDirection="column" justifyContent="flex-start" alignItems="flex-start">
                     <H1 fontSize="1em" fontWeight="400" color={colors.secondaryLight}>

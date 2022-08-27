@@ -8,11 +8,11 @@ type Props = {
 const ArtistTopAchievements = ({topAchievements}: Props) => {
 
       function getCollectibleType(collectible:any) {
-        const currentAchievement = getCurrentAcheivement(collectible)
-        return `${collectible.name} - ${currentAchievement}`    
+        const currentAchievement = getEarnedAcheivement(collectible)
+        return `${collectible.artist.name} - ${currentAchievement}`    
       }
     
-      function getCurrentAcheivement(collectible:any) {
+      function getEarnedAcheivement(collectible:any) {
     
         if (collectible.streamedMilliseconds >= 3600000 && collectible.streamedMilliseconds <= 3600000 * 5) {
           return '1 Hour Streamed'
@@ -47,8 +47,9 @@ const ArtistTopAchievements = ({topAchievements}: Props) => {
             {topAchievements?.map((collectible:any) => {
                 const collectibleType = getCollectibleType(collectible);
                 return <Achievement
+                key={collectible.sk}
                 collectibleId={collectible.sk}
-                collectibleImage={collectible.images[0].url}
+                collectibleImage={collectible.artist.images[0]?.url}
                 collectibleName={collectibleType as string}
                 collectorImage={collectible.user?.profileImage}
                 collectorName={collectible.user?.addresses.polygon}

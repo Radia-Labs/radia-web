@@ -1,4 +1,5 @@
 import {
+    LetterCollectibleImage,
     CollectibleCard, 
     CollectibleImage, 
     CollectibleName,
@@ -25,12 +26,12 @@ const goToProfile = (event:any) => {
 }
 
 const goToCollectible = (id:string) => {
-    window.location.href = `/account/${id}`
+    window.location.href = `/collectible/${id}`
 }
 
 const Achievement = ({ collectibleId, collectibleImage, collectibleName, collectorImage, collectorName }: Props) => (
     <CollectibleCard onClick={() => goToCollectible(collectibleId as string)}>
-        <CollectibleImage image={collectibleImage}/>
+        {collectibleImage ? <CollectibleImage image={collectibleImage}/> : <LetterCollectibleImage artistName={collectibleName}/>}
         <CollectibleName title={collectibleName} >{collectibleName}</CollectibleName>
         <Flex justifyContent="flex-start">
             <CollectorImage referrerPolicy="no-referrer" src={collectorImage}/>

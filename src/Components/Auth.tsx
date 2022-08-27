@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
+import { ModalProvider } from 'styled-react-modal'
 import { useWeb3Auth } from "../Services/web3auth";
-import {StyledModal, Flex} from '../styles';
-import SpotifyModalBody from '../Components/SpotifyModalBody';
-import InProgress from '../Components/InProgress';
-import TrendingArtists from '../Components/TrendingArtists';
+import {StyledModal} from '../styles';
+import SpotifyIntegrationModalBody from '../Components/SpotifyIntegrationModalBody';
+import SpotifyLoadingModalBody from '../Components/SpotifyLoadingModalBody';
 import { getPublicCompressed } from "@toruslabs/eccrypto";
 import { 
   getSpotifyUser, 
@@ -15,14 +15,15 @@ import {
 
 function App() {
   const { provider, login, logout, getAccounts, web3Auth } = useWeb3Auth();
-  const [isSpotifyModalOpen, setSpotifyModalIsOpen] = useState(false)  
+  const [isSpotifyModalOpen, setSpotifyModalIsOpen] = useState(false) 
+  const [isSpotifyLoadingModalOpen, setSpotifyLoadingModalIsOpen] = useState(false)  
   
   useEffect(() => {
     const init = async () => {
-        if (web3Auth && !provider) 
-          login()
+      login()
     }
-    init()
+    if (web3Auth && !provider) 
+      init()
   }, [web3Auth, provider])
   
 
@@ -75,13 +76,15 @@ function App() {
           setSpotifyModalIsOpen(false)
           params.delete('code')
           window.history.pushState({}, document.title, "/");
+          setSpotifyLoadingModalIsOpen(true)
         } else {
           alert("Could not veryify Spotify authorization. Please try again.")
-          setSpotifyModalIsOpen(false)
+          setSpotifyModalIsOpen(true)
         }
       }
     }
-    init()
+    if (web3Auth && provider)
+      init()
   }, [web3Auth, provider])     
 
 
@@ -97,28 +100,25 @@ function App() {
     window.open(loginURL, "_self");
   }  
   
-  const myCollectionView = (
-    <>
-      <InProgress/>
-      <TrendingArtists/>
-    </>
-  );
-  
-  // TODO: we might want to show some kind of partial view here with skeletons or something. 
-  const unloggedInView = (
-    <div></div>
-  );
+
 
   return (
     <>
-    {provider ? myCollectionView : unloggedInView}
+    <ModalProvider>
+      <StyledModal
+          isOpen={isSpotifyModalOpen}
+          onBackgroundClick={null}
+          onEscapeKeydown={null}>
+          <SpotifyIntegrationModalBody openSpotifyAuth={authSpotify}/>
+      </StyledModal>
 
-    <StyledModal
-        isOpen={isSpotifyModalOpen}
-        onBackgroundClick={null}
-        onEscapeKeydown={null}>
-        <SpotifyModalBody openSpotifyAuth={authSpotify}/>
-    </StyledModal>    
+      <StyledModal
+          isOpen={isSpotifyLoadingModalOpen}
+          onBackgroundClick={null}
+          onEscapeKeydown={null}>
+          <SpotifyLoadingModalBody setSpotifyLoadingModalIsOpen={setSpotifyLoadingModalIsOpen}/>
+      </StyledModal>        
+    </ModalProvider>
     </>
   );
 }

@@ -12,14 +12,16 @@ import {
 import ArtistProfileHeader from '../Components/ArtistProfileHeader';
 import ArtistTopFans from '../Components/ArtistTopFans';
 import ArtistTopAchievements from '../Components/ArtistTopAchievements';
+import ArtistRecentlyEarned from '../Components/ArtistRecentlyEarned';
 import {Artist} from '../Models/Artist';
 
 function ArtistProfile() {
-    const { provider, login, logout, getAccounts, web3Auth } = useWeb3Auth();
+    const { provider, web3Auth } = useWeb3Auth();
     const [artist, setArtist] = useState<Artist| undefined>();
     const [collectibles, setCollectibles] = useState<Number| undefined>();
     const [collectors, setCollectors] = useState<Number| undefined>();
     const [topAchievements, setTopAchievements] = useState<object[]| undefined>();
+    const [recentlyEarned, setRecentlyEarned] = useState<object[]| undefined>();
     const [topFans, setTopFans] = useState<object[]| undefined>();
     const params = useParams();
 
@@ -38,6 +40,7 @@ function ArtistProfile() {
             
             // This might not scale well as we grow. Move this process to a scheduled lambda eventually.
             const _collectors = await getArtistCollectors(authUser?.idToken as string, appPubKey, params.id as string);
+            console.log()
             setCollectors(_collectors.Count)
 
             const topFans = _collectors.Items.sort((a:{collectibleCount: number},b:{collectibleCount:number}) => a.collectibleCount - b.collectibleCount);
@@ -46,7 +49,11 @@ function ArtistProfile() {
             const allCollectibles = await getArtistCollectiblesBySk(authUser?.idToken as string, appPubKey, `Collectible|spotify|streamedMilliseconds|${params.id}` as string);
             const filteredCollectibles = allCollectibles.Items.filter((collectible:{streamedMilliseconds:number}) => collectible.streamedMilliseconds > 3600000);
             const sortedTopAchievements = filteredCollectibles.sort((a:{streamedMilliseconds:number}, b:{streamedMilliseconds:number}) => (a.streamedMilliseconds > b.streamedMilliseconds) ? 1 : -1)
+            console.log(sortedTopAchievements)
             setTopAchievements(sortedTopAchievements.slice(0, 4))
+
+            const sortedRecentlyEarned = filteredCollectibles.sort((a:{created:number}, b:{created:number}) => (a.created > b.created) ? 1 : -1)
+            setRecentlyEarned(sortedRecentlyEarned)
 
         }
 
@@ -59,6 +66,7 @@ function ArtistProfile() {
         <ArtistProfileHeader artist={artist as Artist} collectibles={collectibles as Number} collectors={collectors as Number}/>
         <ArtistTopFans topFans={topFans}/>
         <ArtistTopAchievements topAchievements={topAchievements as object[]}/>
+        <ArtistRecentlyEarned recentlyEarned={recentlyEarned as object[]}/>
         </>
     )
 }

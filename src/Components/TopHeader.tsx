@@ -1,4 +1,4 @@
-import {Header, LogoWrapper, Logo, H1, GradientButton} from "./styles";
+import {Header, LogoWrapper, Logo, H1, RadiaButton} from "./styles";
 import {Flex} from "../styles";
 import { useNavigate } from "react-router-dom";
 
@@ -20,7 +20,7 @@ const TopHeader = () => {
                     <H1>Radia</H1>
                 </LogoWrapper>
    
-                <GradientButton onClick={goToAccount}>My Collection</GradientButton>
+                <RadiaButton onClick={goToAccount}>My Collection</RadiaButton>
             </Flex>
         </Header>
     )

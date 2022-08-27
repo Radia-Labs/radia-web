@@ -9,15 +9,18 @@ import { toast } from 'react-toastify';
 import UserProfileHeader from '../Components/UserProfileHeader';
 import InProgress from '../Components/InProgress';
 import TopArtists from '../Components/TopArtists';
+import RecentlyEarned from '../Components/RecentlyEarned';
+
 import { getPublicCompressed } from "@toruslabs/eccrypto";
 
 function UserProfile() {
 
-    const { provider, web3Auth } = useWeb3Auth();
+    const { provider, logout, web3Auth } = useWeb3Auth();
     const [user, setUser] = useState<User| undefined>();
     const [walletAddress, setWalletAddress] = useState<String| undefined>();
     const [createdAt, setCreatedAt] = useState<string| undefined>();
     const [completedCollectibles, setCompletedCollectibles] = useState<number| undefined>();
+    const [artistsSupported, setArtistsSupported] = useState<number| undefined>();
 
     useEffect(() => {
         const init = async () => {
@@ -31,14 +34,18 @@ function UserProfile() {
 
             const allCollectibles = await getCollectibles(authUser?.idToken as string, appPubKey as string, authUser?.verifierId as string);
             const completed = [];
-            allCollectibles.Items.map((collectible:object) => {
-                if ("transaction" in collectible)
+            const supported:object[] = []
+            allCollectibles.Items.map((collectible:{artist: object}) => {
+                if ("transaction" in collectible) {
                     completed.push(collectible)
+                    console.log(collectible.artist)
+                    if (collectible.artist && !supported.includes(collectible.artist)) {
+                        supported.push(collectible.artist)
+                    }
+                }
             })
             setCompletedCollectibles(completed.length)
-
-            // TODO: loop the completed collectibles and filter out duplicate artists  
-            // const artistsSupported = 
+            setArtistsSupported(supported.length)
         }
         init()
     }, [web3Auth, provider])
@@ -52,6 +59,10 @@ function UserProfile() {
         alert(privateKey)
     }    
     
+    const _logout = async () => {
+        logout()
+    }
+
     return (
         <>
         <UserProfileHeader 
@@ -60,11 +71,13 @@ function UserProfile() {
         exportPrivateKey={exportPrivateKey} 
         handleCopy={handleCopy} 
         createdAt={createdAt as string}
+        artistsSupported={artistsSupported as number}        
         totalCollectibles={completedCollectibles as number}
         />
-
+        {/* <button onClick={_logout}>logitu</button> */}
         <InProgress/>
         <TopArtists/>
+        <RecentlyEarned/>
         </>
 
     )

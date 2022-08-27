@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import Main from './Main';
 import {GlobalStyle} from "./styles";
-import { ModalProvider } from 'styled-react-modal'
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -11,9 +10,6 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <GlobalStyle />
-    <ModalProvider>
-      <Main />
-    </ModalProvider>
-  
+    <Main />
   </React.StrictMode>
 );

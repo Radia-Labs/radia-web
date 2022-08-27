@@ -1,8 +1,6 @@
 // const SERVER_URL = 'https://qk8wia3761.execute-api.us-east-1.amazonaws.com/prod'
 const SERVER_URL = 'http://localhost:8000'
 
-// TODO: add authentication tokens to each request 
-
 export const getUser = async (idToken:string, appPubKey:string, pk:string, ) => {
     const response = await fetch(`${SERVER_URL}/account/user?&pk=${pk}&appPubKey=${appPubKey}`, {
         headers: {
@@ -69,7 +67,18 @@ export const getCollectibles = async (idToken:string, appPubKey:string, pk:strin
     return await response.json();
 }
 
-export const getArtists = async (idToken:string, appPubKey:string, pk:string, lastEvaluatedKey:object|undefined) => {
+
+export const getCollectible = async (idToken:string, appPubKey:string, pk:string, sk:string) => {
+    let url = `${SERVER_URL}/account/collectible?pk=${pk}&sk=${sk}&appPubKey=${appPubKey}`;  
+    const response = await fetch(url, {
+        headers: {
+        Authorization: `Bearer ${idToken}`,
+        },
+    });
+    return await response.json();
+}
+
+export const getArtists = async (idToken:string, appPubKey:string, pk:string, limit?:number, lastEvaluatedKey?:object) => {
     let url = `${SERVER_URL}/account/artists?pk=${pk}&appPubKey=${appPubKey}`;
     if (lastEvaluatedKey)
         url += `&lastEvaluatedKey=${JSON.stringify(lastEvaluatedKey)}`;

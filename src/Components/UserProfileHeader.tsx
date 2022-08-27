@@ -23,10 +23,11 @@ type Props = {
     exportPrivateKey: () => void;
     handleCopy: () => void;
     createdAt: string;
+    artistsSupported: number;
     totalCollectibles: number;
 }
 
-function UserProfileHeader({user, walletAddress, exportPrivateKey, handleCopy, createdAt, totalCollectibles} : Props) {
+function UserProfileHeader({user, walletAddress, exportPrivateKey, handleCopy, createdAt, artistsSupported, totalCollectibles} : Props) {
     return (
         user && walletAddress ? <ProfileHeader>
             <ProfileImage image={user?.profileImage}/>
@@ -74,7 +75,7 @@ function UserProfileHeader({user, walletAddress, exportPrivateKey, handleCopy, c
                             Artists Supported
                         </H1>
                         <H1 fontSize="1.2em" fontWeight="700">
-                            TODO
+                            {artistsSupported}
                         </H1>                        
                     </Flex>
      

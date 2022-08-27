@@ -1,4 +1,5 @@
 import {
+    LetterCollectibleImage,
     ProgressCard, 
     CollectibleImage, 
     CollectibleName,
@@ -28,13 +29,13 @@ const goToMyProfile = (event:any) => {
     window.location.href = "/account"
 }
 
-const goToCollectible = (id:string) => {
-    window.location.href = `/account/${id}`
+const goToCollectible = (sk:string) => {
+    window.location.href = `/collectible/${sk}`
 }
 
 const Collectible = ({ collectibleId, collectibleImage, collectibleName, collectorImage, collectorName, progress }: Props) => (
     <ProgressCard onClick={() => goToCollectible(collectibleId as string)}>
-        <CollectibleImage image={collectibleImage} filter="saturate(0%)"/>
+        {collectibleImage ? <CollectibleImage image={collectibleImage} filter="saturate(0%)"/> : <LetterCollectibleImage artistName={collectibleName} filter="saturate(0%)"/>}
         <CollectibleName title={collectibleName} >{collectibleName}</CollectibleName>
         
             <Flex margin="0 0 1em 0" justifyContent="flex-start">

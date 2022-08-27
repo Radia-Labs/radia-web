@@ -14,7 +14,7 @@ export const GlobalStyle = createGlobalStyle`
 `
 
 export const Flex = styled.div`
- position: relative;
+  position: relative;
   display: flex;
   justify-content: ${props => props.justifyContent || 'space-between'};
   flex-grow: ${props => props.flexGrow || 'none'};
