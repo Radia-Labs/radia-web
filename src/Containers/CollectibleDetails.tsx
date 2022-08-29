@@ -1,35 +1,28 @@
 
 import {useEffect, useState} from 'react';
 import { useParams } from 'react-router-dom';
-import { useWeb3Auth } from "../Services/web3auth";
-import { getPublicCompressed } from "@toruslabs/eccrypto";
 import Details from '../Components/Details';
 import {
-  getUser,
   getCollectible
 } from '../utils';
+import { useCurrentUser } from "../Providers/Auth"
+
 
 function CollectibleDetails() {
-  const { provider, web3Auth } = useWeb3Auth();
   const [collectible, setCollectible] = useState<object>();
   const params = useParams();
+  const { currentUser } = useCurrentUser()
 
   useEffect(() => {
-    // fetch collectible details
-
     const init = async () => {
-      const appScopedPrivateKey = await provider?.getPrivateKey()
-      const appPubKey = getPublicCompressed(Buffer.from(appScopedPrivateKey.padStart(64, "0"), "hex")).toString("hex"); 
-      const authUser = await web3Auth?.getUserInfo()
-      const radiaUser = await getUser(authUser?.idToken as string, appPubKey as string, authUser?.verifierId as string)  
-      const _collectible = await getCollectible(authUser?.idToken as string, appPubKey, radiaUser.Items[0].pk ,params.sk as string);
-      console.log(_collectible.Items[0])
+      const _collectible = await getCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string, params.sk as string);
       setCollectible(_collectible.Items[0])
     }
 
-    if (!collectible && provider)
+    if (!collectible && currentUser)
       init()
-  }, [provider]);
+
+  }, [currentUser]);
 
 
   return (

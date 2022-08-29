@@ -7,7 +7,7 @@ import {
 import { Web3AuthProvider } from "./Services/web3auth";
 import { CHAIN_CONFIG_TYPE } from "./Services/chainConfig";
 import { WEB3AUTH_NETWORK_TYPE } from "./constants";
-import Auth from "./Components/Auth";
+import {AuthProvider} from "./Providers/Auth";
 import TopHeader from "./Components/TopHeader";
 import Layout from "./Components/Layout";
 import Index from "./Containers/Index";
@@ -23,16 +23,17 @@ const Main = () => {
     return (
         <BrowserRouter>
             <Web3AuthProvider chain={chain} web3AuthNetwork={web3AuthNetwork}>
-                <Auth/>
-                <TopHeader/>
-                <Layout>
-                    <Routes>
-                        <Route path="/" element={<Index/>} />
-                        <Route path="/account" element={<UserProfile/>} />
-                        <Route path="/artist/:id" element={<ArtistProfile/>} />
-                        <Route path="/collectible/:sk" element={<CollectibleDetails/>} />
-                    </Routes>
-                </Layout>    
+                <AuthProvider>
+                    <TopHeader/>
+                    <Layout>
+                        <Routes>
+                            <Route path="/" element={<Index/>} />
+                            <Route path="/account" element={<UserProfile/>} />
+                            <Route path="/artist/:id" element={<ArtistProfile/>} />
+                            <Route path="/collectible/:sk" element={<CollectibleDetails/>} />
+                        </Routes>
+                    </Layout>    
+                </AuthProvider>
             </Web3AuthProvider>
         </BrowserRouter>
     )

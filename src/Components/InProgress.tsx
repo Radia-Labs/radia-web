@@ -1,18 +1,13 @@
 import {useState, useEffect} from 'react';
-import { useWeb3Auth } from "../Services/web3auth";
 import {Flex} from "../styles";
 import {H1} from './styles';
 import Pagination from './Pagination';
 import { getCollectibles } from "../utils";
 import Collectible from '../Components/Collectible';
-import { getPublicCompressed } from "@toruslabs/eccrypto";
-import { 
-    getUser
-  } from "../utils";
 import {User} from '../Models/User'
+import { useCurrentUser } from "../Providers/Auth"
 
 const InProgress = () => {
-    const { provider, web3Auth } = useWeb3Auth();
     const [loading, setLoading] = useState(true)
     const [loadingNext, setNextLoading] = useState(false);
     const [loadingBack, setBackLoading] = useState(false);
@@ -21,31 +16,26 @@ const InProgress = () => {
     const [allCollectibles, setAllCollectibles] = useState<Array<object>>([]);
     const [collectibles, setCollectibles] = useState<Array<object>>();
     const limit = undefined;
-
+    const { currentUser } = useCurrentUser()
+ 
     useEffect(() => {
-        const init = async () => {
-          const authUser = await web3Auth?.getUserInfo()
-          const appScopedPrivateKey = await provider?.getPrivateKey()
-          const appPubKey = getPublicCompressed(Buffer.from(appScopedPrivateKey.padStart(64, "0"), "hex")).toString("hex");           
-          const radiaUser = await getUser(authUser?.idToken as string, appPubKey as string, authUser?.verifierId as string)
-          setUser(radiaUser.Items[0])
-          
-          if (authUser) {
+          const init = async () => {
+          if (currentUser) {
             let lastEvaluatedKey;
-            const collectibles = await getCollectibles(authUser?.idToken as string, appPubKey as string, authUser.verifierId as string, limit, lastEvaluatedKey)
+            const collectibles = await getCollectibles(currentUser?.idToken as string, currentUser.appPubKey as string, currentUser.verifierId as string, limit, lastEvaluatedKey)
             const filteredCollectibles = collectibles.Items.filter((collectible: {transaction: object}) => !("transaction" in collectible))
             const sorted = filteredCollectibles.sort((a:{streamedMilliseconds: number},b:{streamedMilliseconds: number}) => b.streamedMilliseconds - a.streamedMilliseconds);
+            setUser(currentUser)
             setAllCollectibles(sorted)
             setCollectibles(sorted.slice(0, 4))
             setLoading(false)
           }
         }
     
-        if (web3Auth && provider)
+        if (currentUser)
           init()
     
-      }, [web3Auth, provider])
-  
+      }, [currentUser])
 
     const getPreviousCollectibles = async () => {
         setBackLoading(true)

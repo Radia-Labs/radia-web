@@ -1,7 +1,6 @@
 import {useState, useEffect} from 'react';
 import { useWeb3Auth } from "../Services/web3auth";
-import { 
-    getUser, 
+import {
     getCollectibles,
   } from "../utils";
 import {User} from '../Models/User';  
@@ -10,8 +9,8 @@ import UserProfileHeader from '../Components/UserProfileHeader';
 import InProgress from '../Components/InProgress';
 import TopArtists from '../Components/TopArtists';
 import RecentlyEarned from '../Components/RecentlyEarned';
+import { useCurrentUser } from "../Providers/Auth"
 
-import { getPublicCompressed } from "@toruslabs/eccrypto";
 
 function UserProfile() {
 
@@ -21,18 +20,16 @@ function UserProfile() {
     const [createdAt, setCreatedAt] = useState<string| undefined>();
     const [completedCollectibles, setCompletedCollectibles] = useState<number| undefined>();
     const [artistsSupported, setArtistsSupported] = useState<number| undefined>();
+    const { currentUser } = useCurrentUser()
+
 
     useEffect(() => {
         const init = async () => {
-            const authUser = await web3Auth?.getUserInfo();
-            const appScopedPrivateKey = await provider?.getPrivateKey()
-            const appPubKey = getPublicCompressed(Buffer.from(appScopedPrivateKey.padStart(64, "0"), "hex")).toString("hex");          
-            const radiaUser = await getUser(authUser?.idToken as string, appPubKey as string, authUser?.verifierId as string)  
-            setCreatedAt(radiaUser.Items[0].created)
-            setUser(authUser as User)
-            setWalletAddress(radiaUser.Items[0].addresses.polygon)
+            setCreatedAt(currentUser?.created as any)
+            setUser(currentUser as User)
+            setWalletAddress(currentUser?.addresses.polygon)
 
-            const allCollectibles = await getCollectibles(authUser?.idToken as string, appPubKey as string, authUser?.verifierId as string);
+            const allCollectibles = await getCollectibles(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.verifierId as string);
             const completed = [];
             const supported:object[] = []
             allCollectibles.Items.map((collectible:{artist: object}) => {
@@ -47,8 +44,10 @@ function UserProfile() {
             setCompletedCollectibles(completed.length)
             setArtistsSupported(supported.length)
         }
-        init()
-    }, [web3Auth, provider])
+
+        if (currentUser)
+            init()
+    }, [currentUser])
 
     const handleCopy = () => {
         toast("Address copied to clipboard");
@@ -74,7 +73,7 @@ function UserProfile() {
         artistsSupported={artistsSupported as number}        
         totalCollectibles={completedCollectibles as number}
         />
-        {/* <button onClick={_logout}>logitu</button> */}
+        <button onClick={_logout}>logout</button>
         <InProgress/>
         <TopArtists/>
         <RecentlyEarned/>
