@@ -9,6 +9,7 @@ import UserProfileHeader from '../Components/UserProfileHeader';
 import InProgress from '../Components/InProgress';
 import TopArtists from '../Components/TopArtists';
 import RecentlyEarned from '../Components/RecentlyEarned';
+import Collections from '../Components/Collections';
 import { useCurrentUser } from "../Providers/Auth"
 
 
@@ -76,6 +77,7 @@ function UserProfile() {
         <button onClick={_logout}>logout</button>
         <InProgress/>
         <TopArtists/>
+        <Collections/>
         <RecentlyEarned/>
         </>
 

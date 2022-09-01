@@ -14,6 +14,8 @@ import Index from "./Containers/Index";
 import ArtistProfile from "./Containers/ArtistProfile";
 import UserProfile from "./Containers/UserProfile";
 import CollectibleDetails from "./Containers/CollectibleDetails";
+import AllNFTs from "./Containers/AllNFTs";
+import NewMusicReleases from "./Containers/NewMusicReleases";
 
 
 const Main = () => {
@@ -29,8 +31,10 @@ const Main = () => {
                         <Routes>
                             <Route path="/" element={<Index/>} />
                             <Route path="/account" element={<UserProfile/>} />
+                            <Route path="/account/nfts" element={<AllNFTs/>} />
                             <Route path="/artist/:id" element={<ArtistProfile/>} />
                             <Route path="/collectible/:sk" element={<CollectibleDetails/>} />
+                            <Route path="/new-music" element={<NewMusicReleases/>} />
                         </Routes>
                     </Layout>    
                 </AuthProvider>

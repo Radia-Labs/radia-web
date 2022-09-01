@@ -6,7 +6,7 @@ import {
     FanName,
     FanNameWrapper,
     NFTDetailsWrapper,
-    RadiaButton,
+    Button,
     Text
 } from "./styles";
 
@@ -156,13 +156,13 @@ const Details = ({collectible}: Props) => (
                     
                 </NFTDetailsWrapper> : null}    
 
-                {!collectible.transaction ? <RadiaButton 
+                {!collectible.transaction ? <Button 
                 background="transparent" 
                 border={`1px solid ${colors.primaryLight}`} 
                 width="100%" 
                 padding="1em 5em"
                 onClick={() => window.open(collectible.artist.external_urls.spotify, '_blank')}
-                >Earn Collectible</RadiaButton> : null}
+                >Earn Collectible</Button> : null}
             
             </Flex>
         </Flex>

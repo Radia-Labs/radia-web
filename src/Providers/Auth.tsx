@@ -9,8 +9,10 @@ import {
   getSpotifyUser, 
   getUser, 
   createUser, 
+  updateUser,
   getSpotifyAuth, 
-  createSpotifyIntegration
+  createSpotifyIntegration,
+  getSpotifyProfile
 } from "../utils";
 import {User} from '../Models/User'
 
@@ -36,25 +38,26 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     }
     if (web3Auth && !provider) 
       init()
+
   }, [web3Auth, provider])
   
 
   useEffect(() => {
     const init = async () => {
-
-        // Get user information from web3auth and Radia database
+        // Social login 
         let authUser = await web3Auth?.getUserInfo()
         let appPubKey;
-        let radiaUser;
+        // let radiaUser;
         if (Object.keys(authUser as object).length) {
           const appScopedPrivateKey = await provider?.getPrivateKey()
           appPubKey = getPublicCompressed(Buffer.from(appScopedPrivateKey.padStart(64, "0"), "hex")).toString("hex");                 
-          radiaUser = await getUser(authUser?.idToken as string, appPubKey, authUser?.verifierId as string)
+          // radiaUser = await getUser(authUser?.idToken as string, appPubKey, authUser?.verifierId as string)
         } else {
+          // External wallet login
           authUser = await web3Auth?.authenticateUser()
           const accounts = await provider?.getAccounts()
           appPubKey = accounts[0];
-          radiaUser = await getUser(authUser?.idToken as string, appPubKey, appPubKey as string)
+          // radiaUser = await getUser(authUser?.idToken as string, appPubKey, appPubKey as string)
         }
 
         // If user isn't authenticated using Social Login and doesn't have a verifierId, then use appPubKey as verifierId.
@@ -64,17 +67,26 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
             verifierId: appPubKey,
             idToken: authUser?.idToken,
           }
-        }   
-        
-        // Set the current user
-        setCurrentUser(radiaUser.Items[0] as User)
+        }
 
+        // Get Radia user
+        const radiaUser = await getUser(authUser?.idToken as string, appPubKey, user.verifierId as string)        
+        
+        if (radiaUser.Items.length) {
+          // Update user with current idToken
+          console.log("updating user with...", user)
+          await updateUser(user.idToken as string, appPubKey, user.verifierId as string, user)
+          // Set the current user
+          setCurrentUser(radiaUser.Items[0] as User)          
+        }
+        
         // If Radia user doesn't exist, create new user
         if (user && !radiaUser.Items.length) {
           const walletAddress = await provider?.getAccounts()
           const addresses = {"polygon": walletAddress[0]}
-          radiaUser = await createUser(user?.idToken as string, appPubKey, user as object, addresses as object)
-          setCurrentUser(radiaUser.Items[0] as User)          
+          const radiaUser = await createUser(user?.idToken as string, appPubKey, user as object, addresses as object)
+          if (radiaUser.Items)
+            setCurrentUser(radiaUser.Items[0] as User)          
         } 
 
         // If authUser, then run query to get user's spotify integration
@@ -121,10 +133,24 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
         }         
       
       if (code && user) {
-        // TODO: update the Auth| model with spotify email and profile image, if none exists on that user.
-        const spotifyAuth = await getSpotifyAuth(user?.idToken as string, appPubKey, code as string)
+        let spotifyAuth = await getSpotifyAuth(user?.idToken as string, appPubKey, code as string)
         if (spotifyAuth) {
-          await createSpotifyIntegration(user?.idToken as string, appPubKey, user?.verifierId as string, spotifyAuth)
+         let _spotifyAuth = await createSpotifyIntegration(user?.idToken as string, appPubKey, user?.verifierId as string, spotifyAuth)
+          // TODO: update the Auth| model with spotify email and profile image, if none exists on that user.
+          if (!authUser?.verifierId) {
+            const spotifyProfile = await getSpotifyProfile(user?.idToken as string, appPubKey, spotifyAuth.refresh_token as string)          
+            console.log("PROFILE::", spotifyProfile)
+            // TODO: update user with spotify profile image and email
+            const walletAddress = await provider?.getAccounts()
+            const addresses = {"polygon": walletAddress[0]}        
+            const updatedUser = {
+              ...user,
+              name: spotifyProfile.display_name,
+              email: spotifyProfile.email,
+              profileImage: spotifyProfile.images[0].url
+            }
+            await createUser(user?.idToken as string, appPubKey, updatedUser as object, addresses as object)
+          }
           setSpotifyModalIsOpen(false)
           params.delete('code')
           window.history.pushState({}, document.title, "/");
@@ -137,8 +163,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     }
     if (web3Auth && provider)
       init()
-  }, [web3Auth, provider])     
-
+  }, [web3Auth, provider])
 
   const authSpotify = () => {
     const authEndpoint = "https://accounts.spotify.com/authorize";

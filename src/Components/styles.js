@@ -42,16 +42,21 @@ export const H1 = styled.h1`
     font-size: ${props => props.fontSize || '1.2rem'}; 
     font-weight: ${props => props.fontWeight || '700'}; 
     color:  ${props => props.color || colors.primaryLight}; 
+    margin: ${props => props.margin || 'none'}; 
 `
 export const Text = styled.span`
     font-size: ${props => props.fontSize || '1.2rem'}; 
     font-weight: ${props => props.fontWeight || '700'}; 
     color:  ${props => props.color || colors.primaryLight}; 
-    cursor: ${props => props.cursor || "none"}; 
+    cursor: ${props => props.cursor || "inherit"}; 
     margin: ${props => props.margin || 'none'}; 
+    transition: all .2s ease-in-out;
+    &:hover {
+        opacity: ${props => props.cursor ? '.7' : '1'};
+    }
 `
 
-export const RadiaButton = styled.button`
+export const Button = styled.button`
     border: none;
     border-radius: 30px;
     padding: ${props => props.padding || '0.5rem 3rem'};
@@ -64,11 +69,44 @@ export const RadiaButton = styled.button`
     color: ${colors.primaryLight};
     cursor: pointer;
     transition: all .2s ease-in-out;
-    &:hover { opacity:.9; };
-    &:active { transform: scale(1.05); };
     margin: ${props => props.margin || 'none'}; 
     white-space: nowrap;
+    opacity: ${props => props.disabled ? '.5' : '1'};
+        
+    &:hover { opacity: ${props => props.disabled ? '.5' : '.9'}; };
+    &:active { transform: scale(1.05); };
 `
+
+export const Input = styled.input`
+    width: -webkit-fill-available;
+    border-radius: 30px;
+    padding: ${props => props.padding || '0.5rem 1.5rem'};
+    background:  ${props => props.background || colors.primaryLight};
+    border:  ${props => props.border || 'none'};
+    margin: ${props => props.margin || 'none'};
+`
+
+export const Box = styled.div`
+    margin: ${props => props.margin || 'none'};
+    padding: ${props => props.padding || 'none'};
+    text-align: ${props => props.textAlign || 'none'};
+    border: ${props => props.border || 'none'};
+    border-radius: ${props => props.borderRadius || 'none'};
+`
+
+export const Select = styled.select`
+  width: 100%;
+  border-radius: 30px;
+  border: none;
+  background: white;
+  color: gray;
+  padding: ${props => props.padding || '0.5rem 1.5rem'};
+  margin-bottom:1em;
+
+  option {
+    color: ${colors.primaryDark};
+  }
+`;
 
 export const SpotifyModalImage = styled.div`
     background-image: url('${window.location.origin}/spotify-logo.svg');
@@ -109,7 +147,7 @@ export const ProgressCard = styled.div`
 
 `
 
-export const CollectibleCard = styled.div`
+export const SimilarArtistCard = styled.div`
     background-color: ${colors.secondaryDark};
     border-radius: 20px;  
     padding: 1em; 
@@ -118,6 +156,34 @@ export const CollectibleCard = styled.div`
     cursor: pointer;
     transition: all .2s ease-in-out;
     &:hover { opacity:.9; };    
+
+    @media ${device.laptop} { 
+        width: 16.2em;
+        height: 18em;
+    }
+
+    @media ${device.laptopL} { 
+        width: 17.5em;
+        height: 18.5em;
+    }    
+    
+    @media ${device.desktop} {
+        width: 20em;
+        height: 18.5em;
+    }
+
+`
+
+export const CollectibleCard = styled.div`
+    background-color: ${colors.secondaryDark};
+    border-radius: 20px;  
+    padding: 1em; 
+    margin-bottom: 1em; 
+    margin-right: 1em;
+    cursor: pointer;
+    border: ${props => props.isSelected ? `1px solid ${colors.darkPurple}` : 'none'};
+    transition: all .2s ease-in-out;
+    &:hover { opacity:.9; };
 
     @media ${device.laptop} { 
         width: 16.2em;
@@ -219,6 +285,7 @@ const rotate360 = keyframes`
 `;
 
 export const Spinner = styled.div`
+  display: inline-block;
   animation: ${rotate360} 1s linear infinite;
   transform: translateZ(0);
   border-top: 1px solid ${colors.lightGrey};
@@ -226,8 +293,8 @@ export const Spinner = styled.div`
   border-bottom: 1px solid ${colors.lightGrey};
   border-left: 2px solid ${colors.lightGrey};
   background: transparent;
-  width: .5em;
-  height: .5em;
+  width: .8em;
+  height: .8em;
   border-radius: 50%;
 `
 
@@ -546,7 +613,7 @@ export const ProgressBaseBox = styled.div`
   left: 0;
   top: 0;
   border-radius: 12px;
-  transition: width 5s ease-in-out;
+  transition: width 1s ease-in-out;
 `;
 
 export const ProgressBarBackground = styled(ProgressBaseBox)`
@@ -561,7 +628,8 @@ export const Progress = styled(ProgressBaseBox)`
 
 export const CollectibleDetailsWrapper = styled.div`
     display: flex;
-    margin: 0 10em;
+    margin: 0 10em 5em;
+
 `
 
 export const CollectibleDetailsImage = styled.img`
@@ -587,4 +655,28 @@ export const NFTDetailsWrapper = styled.div`
     width: 40%;
     overflow: hidden;
     white-space: nowrap;  
+`
+
+export const CollectionWrapper = styled.div`
+    border-radius: 1em;
+    background-color: ${colors.secondaryDark};
+    padding: 1em;
+    margin: 0 1em 1em 0;
+    width: 25em;
+    max-height: 25em;
+`
+export const CollectionItem = styled.div`
+    width: 6em;
+    height: 6em;
+    border-radius: 6px;
+    background-image: url('${props => props.image}');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    image-rendering: auto;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: -webkit-optimize-contrast;
+    margin: 0 .5em .5em 0;
+    flex: 1 1 7em;
 `

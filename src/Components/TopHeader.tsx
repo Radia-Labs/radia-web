@@ -1,26 +1,22 @@
-import {Header, LogoWrapper, Logo, H1, RadiaButton} from "./styles";
+import {Header, LogoWrapper, Logo, H1, Text, Button} from "./styles";
 import {Flex} from "../styles";
 import { useNavigate } from "react-router-dom";
 
 const TopHeader = () => {
     const navigate = useNavigate();
-    const goToHome = () => {
-        navigate('/')
-    }
-
-    const goToAccount = () => {
-        navigate('/account')
-    }    
 
     return (
         <Header>
             <Flex width="100%">
-                <LogoWrapper onClick={goToHome}>
+                <LogoWrapper onClick={() => navigate('/')}>
                     <Logo/>
                     <H1>Radia</H1>
                 </LogoWrapper>
-   
-                <RadiaButton onClick={goToAccount}>My Collection</RadiaButton>
+                <Flex  justifyContent="flex-end">
+                    <Text onClick={() => navigate('/new-music')} cursor="pointer" fontSize=".8em" margin="0 3em 0 0">New Music</Text>
+                    <Text onClick={() => navigate('/account/nfts')} cursor="pointer" fontSize=".8em" margin="0 3em 0 0">My Collectibles</Text>
+                    <Button onClick={() => navigate('/account')}>My Collection</Button>
+                </Flex>
             </Flex>
         </Header>
     )

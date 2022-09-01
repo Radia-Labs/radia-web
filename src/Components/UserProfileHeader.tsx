@@ -34,7 +34,7 @@ function UserProfileHeader({user, walletAddress, exportPrivateKey, handleCopy, c
             <Flex margin="0 0 0 2em" flexDirection="row" flexGrow="1" justifyContent="space-between" alignItems="center">
                 <Flex margin="0 0 0 2em" flexDirection="column" justifyContent="flex-start" alignItems="flex-start">
                     <ProfileUserName>
-                        {user?.verifierId}
+                        {user?.email}
                     </ProfileUserName>
 
                     <Flex >

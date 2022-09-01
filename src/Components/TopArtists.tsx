@@ -4,33 +4,28 @@ import { useNavigate } from 'react-router-dom'
 import {Flex} from "../styles";
 import {H1} from './styles';
 import Pagination from './Pagination';
-import { getArtists, getUser } from "../utils";
+import { getArtists } from "../utils";
 import Artist from '../Components/Artist';
 import {User} from '../Models/User'
-import { getPublicCompressed } from "@toruslabs/eccrypto";
+import { useCurrentUser } from "../Providers/Auth"
 
 const TrendingArtists = () => {
 
     const { provider, login, logout, getAccounts, web3Auth } = useWeb3Auth();
     const [loadingNext, setNextLoading] = useState(false);
     const [loadingBack, setBackLoading] = useState(false);
-    const [user, setUser] = useState<User | null>(null);
     const [artists, setArtists] = useState<Array<object>>();
     const [allArtists, setAllArtists] = useState<Array<object>>([]);
     const [index, setIndex] = useState(9);
     const navigate = useNavigate() 
+    const { currentUser } = useCurrentUser()
     const limit = undefined;
 
     useEffect(() => {
         const init = async () => {
-          const authUser = await web3Auth?.getUserInfo()
-          const appScopedPrivateKey = await provider?.getPrivateKey()
-          const appPubKey = getPublicCompressed(Buffer.from(appScopedPrivateKey.padStart(64, "0"), "hex")).toString("hex");          
-          const radiaUser = await getUser(authUser?.idToken as string, appPubKey as string, authUser?.verifierId as string)          
-          setUser(radiaUser.Items[0])          
-          if (authUser) {
+          if (currentUser) {
             let lastEvaluatedKey;
-            const artists = await getArtists(authUser?.idToken as string, appPubKey as string, authUser.verifierId as string, limit, lastEvaluatedKey)
+            const artists = await getArtists(currentUser?.idToken as string, currentUser.appPubKey as string, currentUser.verifierId as string, limit, lastEvaluatedKey)
             setAllArtists(artists.Items)
             setArtists(artists.Items.slice(0, index))
           }

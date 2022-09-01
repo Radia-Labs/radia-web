@@ -27,6 +27,8 @@ function ArtistProfile() {
 
     useEffect(() => {
         const init = async () => {
+            
+            // TODO: update this to use AuthProvider
 
             const appScopedPrivateKey = await provider?.getPrivateKey()
             const appPubKey = getPublicCompressed(Buffer.from(appScopedPrivateKey.padStart(64, "0"), "hex")).toString("hex"); 

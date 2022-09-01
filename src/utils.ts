@@ -22,6 +22,18 @@ export const createUser = async (idToken:string, appPubKey:string, user:object, 
     return await response.json();
 }
 
+export const updateUser = async (idToken:string, appPubKey:string, pk:string, data:object) => {
+    const response = await fetch(`${SERVER_URL}/account/user`, {
+        method: 'PUT',
+        headers: {
+        Authorization: `Bearer ${idToken}`,
+        "Content-Type": "application/json"
+        },
+        body: JSON.stringify({...data, verifierId:pk, appPubKey})  
+    });
+    return await response.json();
+}
+
 export const getSpotifyAuth = async (idToken:string, appPubKey:string, code:string) => {
     const response = await fetch(`${SERVER_URL}/integration/spotify/auth?code=${code}&appPubKey=${appPubKey}`, {
         headers: {
@@ -34,6 +46,15 @@ export const getSpotifyAuth = async (idToken:string, appPubKey:string, code:stri
 
 export const getSpotifyUser = async (idToken:string, appPubKey:string, pk:string) => {
     const response = await fetch(`${SERVER_URL}/account/integration?type=spotify&pk=${pk}&appPubKey=${appPubKey}`, {
+        headers: {
+        Authorization: `Bearer ${idToken}`,
+        },
+    });
+    return await response.json();
+}
+
+export const getSpotifyProfile= async (idToken:string, appPubKey:string, refreshToken:string) => {
+    const response = await fetch(`${SERVER_URL}/account/spotify/me?refreshToken=${refreshToken}&appPubKey=${appPubKey}`, {
         headers: {
         Authorization: `Bearer ${idToken}`,
         },
@@ -138,4 +159,73 @@ export const getTopArtists = async (idToken:string, appPubKey:string, refreshTok
         },
     });
     return await response.json();
+}
+
+export const getSimilarArtists = async (idToken:string, appPubKey:string, id:string, refreshToken:string) => {
+    let url = `${SERVER_URL}/account/artists/similar?id=${id}&refreshToken=${refreshToken}&appPubKey=${appPubKey}`;
+    const response = await fetch(url, {
+        headers: {
+        Authorization: `Bearer ${idToken}`,
+        },
+    });
+    return await response.json();
+}
+
+export const getNewMusic = async (idToken:string, appPubKey:string, refreshToken:string, nextUrl:string) => {
+    let url = `${SERVER_URL}/account/artists/new-music?refreshToken=${refreshToken}&appPubKey=${appPubKey}`;
+    if (nextUrl)
+        url += `&nextUrl=${encodeURIComponent(nextUrl)}`;
+    console.log(url)
+    const response = await fetch(url, {
+        headers: {
+        Authorization: `Bearer ${idToken}`,
+        },
+    });
+    return await response.json();
+}
+
+export const getNFTs = async (idToken:string, appPubKey:string, chains:string, addresses:string, nextUrl:string) => {
+    let url = `${SERVER_URL}/account/nfts?chains=${chains}&addresses=${addresses}&appPubKey=${appPubKey}`;
+    if (nextUrl)
+        url += `&nextUrl=${encodeURIComponent(nextUrl)}`; 
+    
+    console.log(url)
+    const response = await fetch(url, {
+        headers: {
+        Authorization: `Bearer ${idToken}`,
+        },
+    });
+    return await response.json();
+}
+
+export const getCollections = async (idToken:string, appPubKey:string, pk:string) => {
+    let url = `${SERVER_URL}/account/collections?pk=${pk}&appPubKey=${appPubKey}`;
+    const response = await fetch(url, {
+        headers: {
+        Authorization: `Bearer ${idToken}`,
+        },
+    });
+    return await response.json();
+}
+
+export const getCollection = async (idToken:string, appPubKey:string, pk:string, sk:string) => {
+    let url = `${SERVER_URL}/account/collections?pk=${pk}&sk=${sk}&appPubKey=${appPubKey}`;
+    const response = await fetch(url, {
+        headers: {
+        Authorization: `Bearer ${idToken}`,
+        },
+    });
+    return await response.json();
+}
+
+export const createCollection = async (idToken:string, appPubKey:string, pk:string, name:string, nfts: object[]) => {
+    const response = await fetch(`${SERVER_URL}/account/collections/${pk}?appPubKey=${appPubKey}`, {
+        method: 'POST',
+        headers: {
+        Authorization: `Bearer ${idToken}`,
+        "Content-Type": "application/json"
+        },
+        body: JSON.stringify({name, nfts})  
+    });
+    return await response.json();    
 }

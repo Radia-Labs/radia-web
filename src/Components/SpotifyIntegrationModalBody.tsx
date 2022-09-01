@@ -1,4 +1,4 @@
-import {H1, Paragraph, RadiaButton, SpotifyModalImage} from "./styles";
+import {H1, Paragraph, Button, SpotifyModalImage} from "./styles";
 import {Flex} from "../styles";
 import {colors} from "../constants";
 
@@ -11,7 +11,7 @@ const SpotifyIntegrationModalBody = ({ openSpotifyAuth }: Props) => (
        <SpotifyModalImage/>
        <H1>Connect Your Spotify Account</H1>
        <Paragraph fontSize=".8em" padding="0 6em" textAlign="center">Integrate Spotify with your Radia account to start earning.</Paragraph>
-       <RadiaButton background={`${colors.brightGreen}`} onClick={openSpotifyAuth}>Integarate with Spotify</RadiaButton>
+       <Button background={`${colors.brightGreen}`} onClick={openSpotifyAuth}>Integarate with Spotify</Button>
     </Flex>
 )
 

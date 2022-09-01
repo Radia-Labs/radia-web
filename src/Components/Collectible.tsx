@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import {
     LetterCollectibleImage,
     ProgressCard, 
@@ -24,16 +25,21 @@ type Props = {
     progress: string | undefined
 }
 
-const goToMyProfile = (event:any) => {
-    event.stopPropagation()
-    window.location.href = "/account"
-}
 
-const goToCollectible = (sk:string) => {
-    window.location.href = `/collectible/${sk}`
-}
 
-const Collectible = ({ collectibleId, collectibleImage, collectibleName, collectorImage, collectorName, progress }: Props) => (
+const Collectible = ({ collectibleId, collectibleImage, collectibleName, collectorImage, collectorName, progress }: Props) => {
+    const navigate = useNavigate()
+
+    const goToMyProfile = (event:any) => {
+        event.stopPropagation()
+        navigate("/account")
+    }
+    
+    const goToCollectible = (sk:string) => {
+        navigate(`/collectible/${sk}`)
+    }    
+
+    return (
     <ProgressCard onClick={() => goToCollectible(collectibleId as string)}>
         {collectibleImage ? <CollectibleImage image={collectibleImage} filter="saturate(0%)"/> : <LetterCollectibleImage artistName={collectibleName} filter="saturate(0%)"/>}
         <CollectibleName title={collectibleName} >{collectibleName}</CollectibleName>
@@ -53,7 +59,8 @@ const Collectible = ({ collectibleId, collectibleImage, collectibleName, collect
                 <Text fontSize=".8em">{`${progress}%`}</Text>      
             </Flex>
     </ProgressCard>
-)
+    )
+}
 
 
 export default Collectible;
