@@ -1,5 +1,5 @@
 import {Flex} from "../styles";
-import {H1} from './styles';
+import {SimilarArtistTitle, SimilarArtistWrapper} from './styles';
 import SimilarArtist from '../Components/SimilarArtist';
 
 type Props = {
@@ -7,11 +7,6 @@ type Props = {
 }
 
 const SimilarArtists = ({similarArtists}: Props) => {
-    
-    function getCollectibleType(collectible:any) {
-      const currentAchievement = getCurrentAcheivement(collectible)
-      return `${collectible.artist.name} - ${currentAchievement}`    
-    }
   
     function getCurrentAcheivement(collectible:any) {
           
@@ -36,34 +31,10 @@ const SimilarArtists = ({similarArtists}: Props) => {
       }     
   
     }
-
-    const calculateProgress = (collectible:{streamedMilliseconds: number}) => {
-      if (collectible.streamedMilliseconds <= 3600000 ) {
-        return (collectible.streamedMilliseconds / 3600000).toFixed(0)
-      }
-  
-      if (collectible.streamedMilliseconds >= 3600000 && collectible.streamedMilliseconds <= 3600000 * 5) {
-        return (collectible.streamedMilliseconds / 3600000 * 5).toFixed(0)
-      }  
-      
-      if (collectible.streamedMilliseconds >= 3600000 * 5 && collectible.streamedMilliseconds <= 3600000 * 10) {
-        return (collectible.streamedMilliseconds / 3600000 * 10).toFixed(0)
-      }       
-  
-      if (collectible.streamedMilliseconds >= 3600000 * 10 && collectible.streamedMilliseconds <= 3600000 * 15) {
-        return (collectible.streamedMilliseconds / 3600000 * 15).toFixed(0)
-      }        
-    
-      if (collectible.streamedMilliseconds >= 3600000 * 15 && collectible.streamedMilliseconds <= 3600000 * 25) {
-        return (collectible.streamedMilliseconds / 3600000 * 25).toFixed(0)
-      }  
-    }
     
     return (
-        similarArtists?.length ? <Flex margin="0 0 5em 0" flexDirection="column" alignItems="left" justifyContent="flex-start">
-            <Flex>
-            <H1 fontSize="1.5rem" >You Might Be Interested In</H1>
-            </Flex>
+        similarArtists?.length ? <SimilarArtistWrapper>
+            <SimilarArtistTitle fontSize="1.5rem" >You Might Be Interested In</SimilarArtistTitle>
             <Flex justifyContent="flex-start" alignItems="left">
 
             {similarArtists?.map((artist:any) => {
@@ -75,7 +46,7 @@ const SimilarArtists = ({similarArtists}: Props) => {
                 />
             })}
             </Flex>
-        </Flex> : null
+        </SimilarArtistWrapper> : null
     )
 }
 

@@ -1,5 +1,5 @@
 import styled, { createGlobalStyle } from 'styled-components';
-import {colors} from './constants';
+import {colors, device, size} from './constants';
 import Modal from 'styled-react-modal'
 
 
@@ -24,6 +24,11 @@ export const Flex = styled.div`
   height: ${props => props.height || 'auto'};
   padding: ${props => props.padding || '0'};
   margin: ${props => props.margin || '0'};
+
+  @media (max-width: ${size.mobileL}) {
+    display: ${props => props.responsive === 'hidden' ? 'none' : 'flex'};
+  } 
+  
 `
 
 export const StyledModal = Modal.styled`

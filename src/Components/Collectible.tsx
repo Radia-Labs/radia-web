@@ -25,8 +25,6 @@ type Props = {
     progress: string | undefined
 }
 
-
-
 const Collectible = ({ collectibleId, collectibleImage, collectibleName, collectorImage, collectorName, progress }: Props) => {
     const navigate = useNavigate()
 
@@ -43,7 +41,6 @@ const Collectible = ({ collectibleId, collectibleImage, collectibleName, collect
     <ProgressCard onClick={() => goToCollectible(collectibleId as string)}>
         {collectibleImage ? <CollectibleImage image={collectibleImage} filter="saturate(0%)"/> : <LetterCollectibleImage artistName={collectibleName} filter="saturate(0%)"/>}
         <CollectibleName title={collectibleName} >{collectibleName}</CollectibleName>
-        
             <Flex margin="0 0 1em 0" justifyContent="flex-start">
                 <CollectorImage referrerPolicy="no-referrer" src={collectorImage} onClick={goToMyProfile}/>
                 <CollectorWrapper>

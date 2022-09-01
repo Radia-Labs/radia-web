@@ -62,6 +62,16 @@ export const getSpotifyProfile= async (idToken:string, appPubKey:string, refresh
     return await response.json();
 }
 
+export const getSpotifyArtist = async (idToken:string, appPubKey:string, id:string, refreshToken:string) => {
+    let url = `${SERVER_URL}/integration/spotify/artist?id=${id}&refreshToken=${refreshToken}&appPubKey=${appPubKey}`;
+    const response = await fetch(url, {
+        headers: {
+        Authorization: `Bearer ${idToken}`,
+        },
+    });
+    return await response.json();
+}
+
 export const createSpotifyIntegration = async (idToken:string, appPubKey:string, pk:string, integration:object) => {
     const response = await fetch(`${SERVER_URL}/account/integration/spotify/${pk}?appPubKey=${appPubKey}`, {
         method: 'POST',

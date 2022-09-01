@@ -6,6 +6,7 @@ import {
     ProfileHeader, 
     ProfileImage,
     ProfileUserName,
+    ArtistPorifileWrapper
 } from './styles';
 
 import { colors } from '../constants';
@@ -20,7 +21,8 @@ function ArtistProfileHeader({artist, collectors, collectibles}: Props) {
     return (
        artist ? <ProfileHeader>
             {artist.images[0]?.url ? <ProfileImage image={artist.images[0]?.url}/> : <LetterProfileImage artistName={artist.name} />}
-            <Flex margin="0 0 0 2em" flexDirection="row" flexGrow="1" justifyContent="space-between" alignItems="center">
+            <ArtistPorifileWrapper >
+                
                 <Flex margin="0 0 0 2em" flexDirection="column" justifyContent="flex-start" alignItems="flex-start">
                     <H1 fontSize="1em" fontWeight="400" color={colors.secondaryLight}>
                         Artist Profile
@@ -28,7 +30,6 @@ function ArtistProfileHeader({artist, collectors, collectibles}: Props) {
                     <ProfileUserName>
                         {artist?.name}
                     </ProfileUserName>
-
                 </Flex>
 
                 <Flex margin="0 2em 0 2em" flexDirection="row" flexGrow=".5"  justifyContent="space-between" alignItems="center">
@@ -53,7 +54,7 @@ function ArtistProfileHeader({artist, collectors, collectibles}: Props) {
      
                 </Flex>
 
-            </Flex>
+            </ArtistPorifileWrapper>
         </ProfileHeader> : null 
     )
 }

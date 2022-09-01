@@ -4,4 +4,5 @@ export type Artist = {
     images: {url:string}[];
     name: string;
     url: string;
+    external_urls: {spotify: string};
 }

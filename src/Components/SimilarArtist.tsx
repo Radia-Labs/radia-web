@@ -17,6 +17,7 @@ const SimilarArtist = ({ collectibleId, collectibleImage, collectibleName}: Prop
     
     const goToCollectible = (sk:string) => {
         navigate(`/collectible/${sk}`)
+        navigate(0) // hack to get it to refresh (?)
     }    
 
     return (

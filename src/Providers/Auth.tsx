@@ -34,30 +34,17 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
   
   useEffect(() => {
     const init = async () => {
-      login()
-    }
-    if (web3Auth && !provider) 
-      init()
-
-  }, [web3Auth, provider])
-  
-
-  useEffect(() => {
-    const init = async () => {
         // Social login 
         let authUser = await web3Auth?.getUserInfo()
         let appPubKey;
-        // let radiaUser;
         if (Object.keys(authUser as object).length) {
           const appScopedPrivateKey = await provider?.getPrivateKey()
           appPubKey = getPublicCompressed(Buffer.from(appScopedPrivateKey.padStart(64, "0"), "hex")).toString("hex");                 
-          // radiaUser = await getUser(authUser?.idToken as string, appPubKey, authUser?.verifierId as string)
         } else {
           // External wallet login
           authUser = await web3Auth?.authenticateUser()
           const accounts = await provider?.getAccounts()
           appPubKey = accounts[0];
-          // radiaUser = await getUser(authUser?.idToken as string, appPubKey, appPubKey as string)
         }
 
         // If user isn't authenticated using Social Login and doesn't have a verifierId, then use appPubKey as verifierId.
@@ -74,8 +61,10 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
         
         if (radiaUser.Items.length) {
           // Update user with current idToken
-          console.log("updating user with...", user)
-          await updateUser(user.idToken as string, appPubKey, user.verifierId as string, user)
+          if (radiaUser.Items[0].idToken !== user.idToken) {
+            console.log("updating user with...", user)
+            await updateUser(user.idToken as string, appPubKey, user.verifierId as string, user)
+          }
           // Set the current user
           setCurrentUser(radiaUser.Items[0] as User)          
         }
@@ -164,6 +153,15 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     if (web3Auth && provider)
       init()
   }, [web3Auth, provider])
+
+  useEffect(() => {
+    const init = async () => {
+      login()
+    }
+    if (web3Auth && !provider) 
+      init()
+
+  }, [web3Auth, provider])  
 
   const authSpotify = () => {
     const authEndpoint = "https://accounts.spotify.com/authorize";

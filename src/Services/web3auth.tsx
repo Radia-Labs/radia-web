@@ -102,7 +102,7 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
           uiConfig: {
             theme: "dark",
             loginMethodsOrder: ["facebook", "google"],
-            appLogo: "https://web3auth.io/images/w3a-L-Favicon-1.svg", // Your App Logo Here
+            appLogo: `${window.location.origin}/logo.svg`//"https://web3auth.io/images/w3a-L-Favicon-1.svg", // Your App Logo Here
           },
         });
         const adapter = new OpenloginAdapter({ adapterSettings: { network: web3AuthNetwork, clientId } });

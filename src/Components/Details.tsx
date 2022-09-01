@@ -1,6 +1,9 @@
 import {
     CollectibleDetailsWrapper,
     CollectibleDetailsImage,
+    CollectibleTextWrapper,
+    CollectibleTitle,
+    FanWrapper,
     FanCard,
     FanImage,
     FanName,
@@ -49,8 +52,6 @@ function getCollectibleType(collectible:any) {
   }
 
 function getCurrentAcheivement(collectible:any) {
-
-    console.log("In Progress!!")
         
 if (collectible.streamedMilliseconds <= 3600000 ) {
     return '1 Hour Streamed'
@@ -101,71 +102,72 @@ if (collectible.streamedMilliseconds >= 3600000 * 25) {
 const Details = ({collectible}: Props) => (
     <CollectibleDetailsWrapper>
         <CollectibleDetailsImage src={collectible.artist.images[0].url}/>
-        <Flex flexDirection="column" >
-            <Flex flexDirection="column" margin="0 0 0 3em" alignItems="flex-start">
-                <Text fontSize="2em" margin="0 0 .5em 0">{getCollectibleType(collectible)}</Text>
+        
+        <CollectibleTextWrapper >
+            <CollectibleTitle>{getCollectibleType(collectible)}</CollectibleTitle>
 
-                <Flex alignItems="flex-start" justifyContent="flex-start" margin="0 0 1em 0">
+            <FanWrapper>
 
-                    <FanCard width="40%" margin="0 1em 0 0">
-                        <FanImage referrerPolicy="no-referrer" src={collectible.user.profileImage}/>
-                        <FanNameWrapper>
-                            <FanName color={colors.lightGrey} fontSize=".5em">
-                            {collectible.transaction ? "Owned By" : "Earning By"}
-                            
-                            </FanName>
-                            <FanName title={collectible.user.addresses.polygon.length ? collectible.user.addresses.polygon : collectible.user.name} color={colors.primaryLight}>{collectible.user.addresses.polygon.length ? collectible.user.addresses.polygon : collectible.user.name}</FanName>
-                        </FanNameWrapper>
-                    </FanCard>
+                {collectible.user && <FanCard width="45%" margin="0 1em 0 0">
+                    {collectible.user && <FanImage referrerPolicy="no-referrer" src={collectible.user.profileImage}/>}
+                    <FanNameWrapper>
+                        <FanName color={colors.lightGrey} fontSize=".5em">
+                        {collectible.transaction ? "Owned By" : "Earning By"}
+                        
+                        </FanName>
+                        <FanName title={collectible.user.addresses.polygon.length ? collectible.user.addresses.polygon : collectible.user.name} color={colors.primaryLight}>{collectible.user.addresses.polygon.length ? collectible.user.addresses.polygon : collectible.user.name}</FanName>
+                    </FanNameWrapper>
+                </FanCard> }
 
-                    <FanCard width="40%">
-                        <FanImage referrerPolicy="no-referrer" src={collectible.user.profileImage}/>
-                        <FanNameWrapper>
-                            <FanName color={colors.lightGrey} fontSize=".5em">Artist</FanName>
-                            <FanName title={collectible.artist.name} color={colors.primaryLight}>{collectible.artist.name}</FanName>
-                        </FanNameWrapper>
-                    </FanCard> 
+                <FanCard width={collectible.user ? "45%" : "100%"}>
+                    <FanImage referrerPolicy="no-referrer" src={collectible.artist.images[0].url}/>
+                    <FanNameWrapper>
+                        <FanName color={colors.lightGrey} fontSize=".5em">Artist</FanName>
+                        <FanName title={collectible.artist.name} color={colors.primaryLight}>{collectible.artist.name}</FanName>
+                    </FanNameWrapper>
+                </FanCard> 
+            </FanWrapper>
+
+            {collectible.transaction ? <NFTDetailsWrapper margin="0 0 1em 0">
+
+                <Flex>
+                    <Text color={colors.lightGrey} fontSize=".8em" margin="0 .5em 0" fontWeight="400">Date Earned</Text>
+                    <Text fontSize=".8em"  fontWeight="400">{new Date(collectible.created).toLocaleDateString()}</Text>
                 </Flex>
 
-                {collectible.transaction ? <NFTDetailsWrapper margin="0 0 1em 0">
+                <Flex>
+                    <Text color={colors.lightGrey} fontSize=".8em"  fontWeight="400" margin="0 .5em 0">Edition</Text>
+                    <Text fontSize=".8em"  fontWeight="400">#1</Text>
+                </Flex>                    
 
-                    <Flex>
-                        <Text color={colors.lightGrey} fontSize=".8em" margin="0 .5em 0" fontWeight="400">Date Earned</Text>
-                        <Text fontSize=".8em"  fontWeight="400">{new Date(collectible.created).toLocaleDateString()}</Text>
-                    </Flex>
-
-                    <Flex>
-                        <Text color={colors.lightGrey} fontSize=".8em"  fontWeight="400" margin="0 .5em 0">Edition</Text>
-                        <Text fontSize=".8em"  fontWeight="400">#1</Text>
-                    </Flex>                    
-
-                    <Flex>
-                        <Text color={colors.lightGrey} fontSize=".8em" fontWeight="400" margin="0 .5em 0">Collection</Text>
-                        <Text fontSize=".8em"  fontWeight="400">Radia NFT</Text>
-                    </Flex>
-                
-                    {collectible.transaction.transaction.receipt.contractAddress ? <Flex>
-                        <Text color={colors.lightGrey} fontSize=".8em"  fontWeight="400" margin="0 .5em 0">Contract Address</Text>
-                        <Text fontSize=".8em"  fontWeight="400">
-                            {`${collectible.transaction.transaction.receipt.contractAddress?.slice(0, 6)}
-                            ...
-                            ${collectible.transaction.transaction.receipt.contractAddress?.slice(collectible.transaction.transaction.receipt.contractAddress?.length-6, 
-                            collectible.transaction.transaction.receipt.contractAddress?.length)}`}
-                            </Text> 
-                    </Flex> : null}
-                    
-                </NFTDetailsWrapper> : null}    
-
-                {!collectible.transaction ? <Button 
-                background="transparent" 
-                border={`1px solid ${colors.primaryLight}`} 
-                width="100%" 
-                padding="1em 5em"
-                onClick={() => window.open(collectible.artist.external_urls.spotify, '_blank')}
-                >Earn Collectible</Button> : null}
+                <Flex>
+                    <Text color={colors.lightGrey} fontSize=".8em" fontWeight="400" margin="0 .5em 0">Collection</Text>
+                    <Text fontSize=".8em"  fontWeight="400">Radia NFT</Text>
+                </Flex>
             
-            </Flex>
-        </Flex>
+                {collectible.transaction.transaction.receipt.contractAddress ? <Flex>
+                    <Text color={colors.lightGrey} fontSize=".8em"  fontWeight="400" margin="0 .5em 0">Contract Address</Text>
+                    <Text fontSize=".8em"  fontWeight="400">
+                        {`${collectible.transaction.transaction.receipt.contractAddress?.slice(0, 6)}
+                        ...
+                        ${collectible.transaction.transaction.receipt.contractAddress?.slice(collectible.transaction.transaction.receipt.contractAddress?.length-6, 
+                        collectible.transaction.transaction.receipt.contractAddress?.length)}`}
+                        </Text> 
+                </Flex> : null}
+                
+            </NFTDetailsWrapper> : null}    
+
+            {!collectible.transaction ? 
+            <Button 
+            background="transparent" 
+            border={`1px solid ${colors.primaryLight}`} 
+            width="100%" 
+            padding="1em 5em"
+            onClick={() => window.open(collectible.artist.external_urls.spotify, '_blank')}
+            >Earn Collectible</Button> : null}
+        
+        </CollectibleTextWrapper>
+      
     </CollectibleDetailsWrapper>
 )
 

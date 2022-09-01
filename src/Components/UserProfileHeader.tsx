@@ -5,10 +5,14 @@ import {Flex} from '../styles';
 import {
     H1,
     Text,
+    ProfileUserWrapper,
+    ProfileHeaderWrapper,
     ProfileHeader, 
     ProfileImage,
     ProfileUserName,
+    ProfileWalletWrapper,
     ProfileWalletAddress,
+    ProfileDetailsWrapper,
     CopyIcon
 } from './styles';
 
@@ -29,28 +33,28 @@ type Props = {
 
 function UserProfileHeader({user, walletAddress, exportPrivateKey, handleCopy, createdAt, artistsSupported, totalCollectibles} : Props) {
     return (
-        user && walletAddress ? <ProfileHeader>
+        user && walletAddress ? <>
+        <ProfileHeader>
             <ProfileImage image={user?.profileImage}/>
-            <Flex margin="0 0 0 2em" flexDirection="row" flexGrow="1" justifyContent="space-between" alignItems="center">
-                <Flex margin="0 0 0 2em" flexDirection="column" justifyContent="flex-start" alignItems="flex-start">
+            <ProfileHeaderWrapper>
+                <ProfileUserWrapper>
                     <ProfileUserName>
                         {user?.email}
                     </ProfileUserName>
 
-                    <Flex >
-                        <Flex margin="0 1em 0 0" >
-                            <CopyToClipboard text={walletAddress as string} >
-                                <ProfileWalletAddress onClick={handleCopy}>
-                                    {`${walletAddress?.slice(0, 6)}...${walletAddress?.slice(walletAddress.length-6, walletAddress.length)}`}
-                                    <CopyIcon/>
-                                </ProfileWalletAddress>                
-                            </CopyToClipboard>
-                        </Flex>
-                        <Text onClick={exportPrivateKey} fontSize=".8em" color={colors.lightGrey} cursor="pointer">Export Private Key</Text>
-                    </Flex>
-                </Flex>
+                   
+                    <ProfileWalletWrapper  >
+                        <CopyToClipboard text={walletAddress as string} >
+                            <ProfileWalletAddress onClick={handleCopy}>
+                                {`${walletAddress?.slice(0, 6)}...${walletAddress?.slice(walletAddress.length-6, walletAddress.length)}`}
+                                <CopyIcon/>
+                            </ProfileWalletAddress>                
+                        </CopyToClipboard>
+                        <Text margin="0 0 0 1em" onClick={exportPrivateKey} fontSize=".8em" color={colors.lightGrey} cursor="pointer">Export Private Key</Text>
+                    </ProfileWalletWrapper> 
+                </ProfileUserWrapper>
 
-                <Flex margin="0 2em 0 2em" flexDirection="row" flexGrow=".5"  justifyContent="space-between" alignItems="center">
+                <ProfileDetailsWrapper >
 
                     {createdAt ? <Flex margin="0 0 0 2em" flexDirection="column" justifyContent="center" alignItems="center">
                         <H1 fontSize="1em" fontWeight="400" color={colors.secondaryLight}>
@@ -79,15 +83,17 @@ function UserProfileHeader({user, walletAddress, exportPrivateKey, handleCopy, c
                         </H1>                        
                     </Flex>
      
-                </Flex>
+                </ProfileDetailsWrapper>
 
-            </Flex>
-            <ToastContainer 
-            position="bottom-right"
-            theme="dark"
-            hideProgressBar={true}
-            />
-        </ProfileHeader> : null 
+            </ProfileHeaderWrapper>
+        </ProfileHeader>
+                    <ToastContainer 
+                    position="bottom-right"
+                    theme="dark"
+                    hideProgressBar={true}
+                    />
+        </>
+        : null 
     )
 }
 

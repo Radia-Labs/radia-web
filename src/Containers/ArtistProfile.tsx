@@ -8,7 +8,7 @@ import {
     getArtistCollectiblesBySk
   } from "../utils";
 import {Flex} from '../styles';
-import {H1, Box} from '../Components/styles';
+import {H1, Box, Text} from '../Components/styles';
 import {colors} from '../constants';
 import SimilarArtist from '../Components/SimilarArtist';
 import ArtistProfileHeader from '../Components/ArtistProfileHeader';
@@ -38,7 +38,6 @@ function ArtistProfile() {
 
             const _collectibles = await getArtistCollectibles(currentUser?.idToken as string, currentUser?.appPubKey as string, params.id as string);
             setCollectibles(_collectibles)
-            console.log(_collectibles)
             
             // This might not scale well as we grow. Move this process to a scheduled lambda eventually.
             const _collectors = await getArtistCollectors(currentUser?.idToken as string, currentUser?.appPubKey as string, params.id as string);
@@ -46,7 +45,6 @@ function ArtistProfile() {
 
             const topFans = _collectors.Items.sort((a:{collectibleCount: number},b:{collectibleCount:number}) => a.collectibleCount - b.collectibleCount);
             setTopFans(topFans.slice(0,12))
-            console.log(topFans)
 
             const allCollectibles = await getArtistCollectiblesBySk(currentUser?.idToken as string, currentUser?.appPubKey as string, `Collectible|spotify|streamedMilliseconds|${params.id}` as string);
             const filteredCollectibles = allCollectibles.Items.filter((collectible:{streamedMilliseconds:number}) => collectible.streamedMilliseconds > 3600000);
@@ -64,56 +62,45 @@ function ArtistProfile() {
             init()
     }, [currentUser])
 
-    // const goToSpotify = () => {
-    //     console.log(artist)
-    // }
+    const goToSpotify = () => {
+        console.log(artist)
+        window.open(artist?.external_urls.spotify, '_blank');
+    }
 
-    // const renderEmpty = () => {        
-    //     return (
-    //       <Box
-    //         padding="1em"
-    //         borderRadius="1em"
-    //         border={`1px solid ${colors.primaryLight}`}
-    //       >
-    //         <Text fontSize=".8">Be the first! <Text fontSize=".8" cursor="pointer" color={colors.brightGreen} onClick={goToSpotify}>Click here </Text>to start earning.</Text>
-    //       </Box >
-    //     )
-    //   }    
-
-    const renderAchievements = () => {
+    const renderEmptyAchievements = () => {
         return (
             <Box>
             <H1 fontsize="1.5em">Top Achievements</H1>
             <Flex justifyContent="flex-start" alignItems="flex-start" >
                 <SimilarArtist
-                key={collectibles?.Items[0].sk}
+                key={1}
                 collectibleId={collectibles?.Items[0].sk}
                 collectibleImage={artist?.images[0]?.url}
                 collectibleName={`${artist?.name} - 1 Hour Streamed`}
                 /> 
                 <SimilarArtist
-                key={collectibles?.Items[0].sk}
+                key={2}
                 collectibleId={collectibles?.Items[0].sk}
                 collectibleImage={artist?.images[0]?.url}
                 collectibleName={`${artist?.name} - 5 Hours Streamed`}
                 />     
 
                 <SimilarArtist
-                key={collectibles?.Items[0].sk}
+                key={3}
                 collectibleId={collectibles?.Items[0].sk}
                 collectibleImage={artist?.images[0]?.url}
                 collectibleName={`${artist?.name} - 10 Hours Streamed`}
                 />     
 
                 <SimilarArtist
-                key={collectibles?.Items[0].sk}
+                key={4}
                 collectibleId={collectibles?.Items[0].sk}
                 collectibleImage={artist?.images[0]?.url}
                 collectibleName={`${artist?.name} - 15 Hours Streamed`}
                 />                                              
                 
                 <SimilarArtist
-                key={collectibles?.Items[0].sk}
+                key={5}
                 collectibleId={collectibles?.Items[0].sk}
                 collectibleImage={artist?.images[0]?.url}
                 collectibleName={`${artist?.name} - 25 Hours Streamed`}
@@ -125,11 +112,21 @@ function ArtistProfile() {
         )
     }
 
+    const renderEmptyTopFans = () => {
+        return (
+        <Box margin="0 0 5em 0">
+            <H1 fontsize="1.5em">Top Fans</H1>
+            <Text fontSize="1em" fontWeight="400">This artist does not have any Top Fans yet. Be the first - <Text cursor="pointer" fontSize="1em" fontWeight="400" color={colors.brightGreen} onClick={goToSpotify}>click here</Text> to start earning!</Text>
+        </Box>
+        )
+        
+    }
+
     return (
         <>
         <ArtistProfileHeader artist={artist as Artist} collectibles={collectibles?.Count as Number} collectors={collectors as Number}/>
-        {topFans?.length && !loading ? <ArtistTopFans topFans={topFans}/> : null}
-        {topAchievements?.length && !loading ? <ArtistTopAchievements topAchievements={topAchievements as object[]}/> : !loading && renderAchievements()}
+        {topFans?.length && !loading ? <ArtistTopFans topFans={topFans}/> : !loading && renderEmptyTopFans()}
+        {topAchievements?.length && !loading ? <ArtistTopAchievements topAchievements={topAchievements as object[]}/> : !loading && renderEmptyAchievements()}
         <ArtistRecentlyEarned recentlyEarned={recentlyEarned as object[]}/>
         </>
     )

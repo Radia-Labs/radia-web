@@ -1,5 +1,5 @@
 import {Flex} from "../styles";
-import {H1, Button} from '../Components/styles';
+import {H1, Button, FixedFooter} from '../Components/styles';
 import { useCurrentUser } from "../Providers/Auth"
 import AddToCollectionModalBody from './AddToCollectionModalBody';
 import NFT from '../Components/NFT';
@@ -32,17 +32,13 @@ const NFTs = ({
   const { currentUser } = useCurrentUser()
 
     return (
-      <Flex margin="0 0 5em 0" flexDirection="column" alignItems="left" justifyContent="flex-start">
+
+      <Flex margin="0 0 2em 0" flexDirection="column" alignItems="left" justifyContent="flex-start">
+
       
       <Flex>
-        <H1 fontSize="1.5rem">Your NFTs</H1>
-        <Button
-          onClick={showAddToCollection}
-          background="transparent" 
-          border={`1px solid ${colors.primaryLight}`} 
-          disabled={selectedNFTs.length == 0}> 
-          {collections && collections.length ? "Add To Collection" : "Create Collection"}
-        </Button>
+        <H1 fontSize="1.5rem">Your Collectibles</H1>
+
       </Flex>    
 
         <Flex justifyContent="flex-start" alignItems="left">
@@ -79,6 +75,7 @@ const NFTs = ({
           </ModalProvider>
 
         </Flex> 
+        
     )
 }
 

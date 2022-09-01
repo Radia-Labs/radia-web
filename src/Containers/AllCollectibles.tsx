@@ -7,14 +7,14 @@ import {
   getCollection,
   createCollection
 } from '../utils';
-import { Button } from '../Components/styles';
+import { Text, Button, FixedFooter, Box } from '../Components/styles';
 import { useCurrentUser } from "../Providers/Auth"
 import { toast } from 'react-toastify';
 import { ToastContainer } from 'react-toastify';
 import { setUncaughtExceptionCaptureCallback } from 'process';
 import { colors } from '../constants';
 
-function AllNFTs() {
+function AllCollectibles() {
     const [nfts, setNFTs] = useState<Array<object>>();
     const [nextUrl, setNextUrl] = useState<string|undefined>();
     const [loading, setLoading] = useState<boolean>(false);
@@ -123,20 +123,34 @@ function AllNFTs() {
     }      
 
   return (
-    <>
+    <Box margin="0 0 5em 0">
       {nfts ? <NFTs loading={loading} nfts={nfts as object[]} collections={collections as object[]} selectedNFTs={selectedNFTs} 
       showAddToCollection={showAddToCollection} setSelected={setSelected} showAddToCollectionModal={showAddToCollectionModal}
       hideAddToCollection={hideAddToCollection} handleNameChange={handleNameChange} handleCollectionChange={handleCollectionChange}
       collectionName={collectionName} submitCollection={submitCollection} updateCollection={updateCollection} collection={collection}
       /> : null}
-      {nextUrl ? <Button background="transparent" border={`1px solid ${colors.primaryLight}`} disabled={!nextUrl} onClick={loadMore}>Load More</Button>: null}
+      
+      {nextUrl ? <Button margin="0 0 0 0" background="transparent" border={`1px solid ${colors.primaryLight}`} disabled={!nextUrl} onClick={loadMore}>Load More</Button>: null}
+      
+      <FixedFooter show={selectedNFTs.length}>
+        <Text fontWeight="400">{selectedNFTs.length} {selectedNFTs.length > 1 ? 'collectibles' : 'collectible'} selected</Text>
+        <Button
+          margin="0 3em 0 0"
+          onClick={showAddToCollection}
+          background="transparent" 
+          border={`1px solid ${colors.primaryLight}`} 
+          disabled={selectedNFTs.length == 0}> 
+          {collections && collections.length ? "Add To Collection" : "Create Collection"}
+        </Button>
+      </FixedFooter>
+
     <ToastContainer 
     position="bottom-right"
     theme="dark"
     hideProgressBar={true}
     />      
-    </>
+    </Box>
   );
 }
 
-export default AllNFTs;
+export default AllCollectibles;

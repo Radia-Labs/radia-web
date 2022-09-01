@@ -1,20 +1,27 @@
 import {Flex} from '../styles'
 import {H1, Text, SimilarArtistCard, CollectibleImage, LetterCollectibleImage} from './styles';
-import {Artist} from '../Models/Artist'
+import { useNavigate } from 'react-router-dom'
 import { colors } from '../constants';
 type Props = {
     newMusic: Array<object>
 }
 
 
-const NewMusic = ({newMusic} : Props) =>  (
+const NewMusic = ({newMusic} : Props) =>  {
+    const navigate = useNavigate()
+
+    const goToArtistCollectible = (album:{artists:any}) => {
+        navigate(`/collectible/${album.artists[0].id}`)
+    }
+
+    return (
     <Flex flexDirection="column" alignItems="flex-start" justifyContent="flex-start">
         <H1 fontSize="1.5rem">New Music Releases</H1>
         <Flex alignItems="flex-start" justifyContent="flex-start">
         {newMusic?.length ? newMusic.map((album:any) => {
             const artists = album.artists.map((artist:any) => artist.name).join(', ')
             const collectibleImage = album.images[0].url;
-            return (<SimilarArtistCard>
+            return (<SimilarArtistCard onClick={() => goToArtistCollectible(album)}>
                 {collectibleImage ? <CollectibleImage image={collectibleImage} /> : <LetterCollectibleImage artistName={artists} />}
                 <Flex flexDirection="column" alignItems="flex-start" justifyContent="flex-start">
                     <Text fontSize=".5em" color={colors.lightGrey} title={artists} >{artists}</Text>
@@ -24,6 +31,7 @@ const NewMusic = ({newMusic} : Props) =>  (
         }) : null}
         </Flex>
     </Flex>
+    )
 
-)
+}
 export default NewMusic;
