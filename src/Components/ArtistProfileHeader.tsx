@@ -47,7 +47,7 @@ function ArtistProfileHeader({artist, collectors, collectibles}: Props) {
                             Collectibles
                         </H1>
                         <H1 fontSize="1.2em" fontWeight="700">
-                            {collectibles}
+                            {collectibles as number + 4}
                         </H1>                        
                     </Flex>
      
