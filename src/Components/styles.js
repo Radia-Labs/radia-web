@@ -74,7 +74,7 @@ export const Button = styled.button`
     font-size: .8rem;
     font-weight: 700;
     line-height: .8rem;
-    color: ${colors.primaryLight};
+    color: ${props => props.color || colors.primaryLight};
     cursor: pointer;
     transition: all .2s ease-in-out;
     margin: ${props => props.margin || 'none'}; 
@@ -214,18 +214,31 @@ export const SimilarArtistCard = styled.div`
 `
 
 export const CollectibleCard = styled.div`
+    position: relative;
     background-color: ${colors.secondaryDark};
     border-radius: 20px;  
     padding: 1em; 
     margin-bottom: 1em; 
+    margin-right: 1em;
     cursor: pointer;
-    border: ${props => props.isSelected ? `1px solid ${colors.darkPurple}` : 'none'};
-    transition: all .2s ease-in-out;
+    border: ${props => props.isSelected ? `2px solid ${colors.darkPurple}` : 'none'};
+    transition: all .1s ease-in-out;
     &:hover { opacity:.9; };
+
+    &:after {
+        position: absolute;
+        content:"";
+        top:2.5%;
+        left:87%;
+        bottom:0;
+        right:10px;
+        background: ${props => props.isSelected ? `url(${MEDIA_CDN_HOST}/purple-check.svg) no-repeat;` : 'none'};
+    }
 
     @media (max-width: ${size.mobileL}) { 
         flex-basis: 100%;
-      }         
+        margin-right: 0;
+    }         
 
     @media ${device.laptop} { 
         width: 16.2em;
@@ -327,13 +340,14 @@ const rotate360 = keyframes`
 `;
 
 export const Spinner = styled.div`
-  display: inline-block;
+  display: inherit;
   animation: ${rotate360} 1s linear infinite;
   transform: translateZ(0);
   border-top: 1px solid ${colors.lightGrey};
   border-right: 1px solid ${colors.lightGrey};
   border-bottom: 1px solid ${colors.lightGrey};
   border-left: 2px solid ${colors.lightGrey};
+  margin: ${props => props.margin ? props.margin : '0'};
   background: transparent;
   width: .8em;
   height: .8em;
@@ -482,7 +496,7 @@ export const LetterCollectibleImage = styled.div`
     opacity:.5;
     filter: ${props => props.filter || 'none'};
     &:after{
-        content:"${props => props.artistName.slice(0, 1)}";
+        content:"${props => props.name === '0x' ? '0x' : props.name.slice(0, 1)}";
         font-size:1.5em;
     }   
 `
@@ -502,7 +516,7 @@ export const LetterAvatar = styled.div`
     margin-bottom:1em;
     opacity:.5;
     &:after{
-        content:"${props => props.artistName.slice(0, 1)}";
+        content:"${props => props.name === '0x' ? '0x' : props.name.slice(0, 1)}";
         font-size:1.5em;
     }
 
@@ -521,6 +535,29 @@ export const LetterAvatar = styled.div`
         height: 7em;
     }    
 `
+
+export const LetterAvatarSm = styled.div`
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    font-size:.6em;
+    width: 2.1em;
+    height: 2.1em;
+    text-align:center;
+    border-radius:8px;
+    margin: ${props => props.margin || `0`};
+    padding: ${props => props.name === '0x' ? '.6em .9em' : `.6em`};
+    background:${colors.primaryDark};
+    vertical-align:middle;
+    color:white;
+    opacity:.5;
+    &:after{
+        content:"${props => props.name === '0x' ? '0x' : props.name.slice(0, 1)}";
+        font-size:1.5em;
+    }
+   
+`
+
 export const ProfileHeader = styled.div`
     display: flex;
     align-items: center;
@@ -532,14 +569,16 @@ export const ProfileHeader = styled.div`
     margin-bottom: 5em;
 
     @media (max-width: ${size.mobileL}) { 
+        text-align: center;
         display: block;
         width: 100%;
         height: 100%;
         padding-top: 1em;
+        margin-bottom: 2em;
     }    
 `
 
-export const ProfileImage = styled.div`
+export const ProfileImage = styled.img`
     width: 8em;
     height: 8em;
     border-radius: 8px;
@@ -610,7 +649,7 @@ export const LetterProfileImage = styled.div`
     color:white;
     opacity:.5;
     &:after{
-        content:"${props => props.artistName.slice(0, 1)}";
+        content:"${props => props.name === '0x' ? '0x' : props.name.slice(0, 1)}";
         font-size:1.5em;
     }  
     
@@ -625,6 +664,7 @@ export const LetterProfileImage = styled.div`
 `
 
 export const ArtistPorifileWrapper = styled.div`
+    width: 100%;
     display: flex;
     margin: 0 0 0 2em;
     flexDirection: row;
@@ -725,6 +765,7 @@ export const FanWrapper = styled.div`
 `
 
 export const FanCard = styled.div`
+    cursor: pointer;
     background-color: ${colors.secondaryDark};
     border-radius: 14px;  
     padding: 1em; 
@@ -793,6 +834,7 @@ export const ProgressBarBackground = styled(ProgressBaseBox)`
 export const Progress = styled(ProgressBaseBox)`
   background: ${colors.seaGreen};
   width: ${({ percent }) => percent}%;
+  min-width: ${props => props.percent ? '5.5px' : '0'};
 `;
 
 export const CollectibleDetailsWrapper = styled.div`
@@ -806,15 +848,19 @@ export const CollectibleDetailsWrapper = styled.div`
     }   
 `
 
-export const CollectibleDetailsImage = styled.img`
+export const CollectibleDetailsImage = styled.div`
+    background-image: url('${props => props.image}');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
     width: 28em;
     height: 28em;
     border-radius: 8px;
     margin-bottom: .5em;
 
     @media (max-width: ${size.mobileL}) { 
-        width: 100%;
-        height: 100%;
+        width: auto;
+        height: 20em;
     }       
 `
 
@@ -871,8 +917,13 @@ export const CollectionWrapper = styled.div`
     background-color: ${colors.secondaryDark};
     padding: 1em;
     margin: 0 1em 1em 0;
-    width: 25em;
-    max-height: 25em;
+    width: 20em;
+    max-height: 20em;
+    cursor: pointer;
+    transition: all .2s ease-in-out;
+    &:hover {
+        opacity: .7;
+    }    
 
     @media (max-width: ${size.mobileL}) { 
         margin: 0;
@@ -911,6 +962,24 @@ export const FixedFooter= styled.div`
     width: 100%;
     transition: all .2s ease-in-out;
     box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;    
+
+    @media (max-width: ${size.mobileL}) { 
+        
+        & > span {
+            display: none;
+        }
+
+    }   
+
+`
+
+export const FooterActionsWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-right: 2em;
+    text-align:center;
+
 `
 
 
@@ -971,3 +1040,25 @@ export const MobileNavUl = styled.ul`
 
   
 `;
+
+export const DeleteIcon = styled.div`
+    margin-left: .5em;
+    display: inline-block;
+    height: .75em;
+    width: .75em;
+    background: url('${MEDIA_CDN_HOST}/delete-icon.svg'), transparent;  
+    background-size: contain;   
+    background-repeat: no-repeat;
+    background-position: center;
+`
+
+export const Chip = styled.div`
+    background-color: ${props => props.backgroundColor || colors.lightGrey};
+    color: ${props => props.color || colors.primaryDark};
+    padding: ${props => props.padding || '0.5em 1em'};
+    border: ${props => props.border || `1px solid ${colors.primaryDark}`};
+    border-radius: ${props => props.borderRadius || '1em'};
+    display: inline-block;
+    font-size: ${props => props.fontSize || '.6em'};
+    font-weight: ${props => props.fontWeight || '400'};
+`

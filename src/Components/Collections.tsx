@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import Collection from './Collection';
 import {Flex} from "../styles";
-import {H1, Text, Box} from './styles';
+import {H1, Text} from './styles';
 import { getCollections } from "../utils";
 import { useCurrentUser } from "../Providers/Auth"
 import { colors } from '../constants';
@@ -29,11 +29,11 @@ const Collections = () => {
       }, [currentUser])
 
       const goToAllNFTs = () => {
-        navigate('/account/nfts')
+        navigate('/collectibles')
       }
 
       const renderEmpty = () => {        
-        return <Text fontWeight="400" fontSize=".8">You haven't created any Collections yet. <Text fontSize=".8" cursor="pointer" color={colors.brightGreen} onClick={goToAllNFTs}>Click here</Text> to create your first Collection.</Text>
+        return <Text fontWeight="400" fontSize=".8" margin="0 1em 0 0">You haven't created any Collections yet. <Text fontSize=".8" cursor="pointer" color={colors.brightGreen} fontWeight="400" onClick={goToAllNFTs}>{<br/>}Click here</Text> to create your first Collection.</Text>
       }
     
     return (
@@ -41,12 +41,11 @@ const Collections = () => {
    
             {!loading && <><Flex>
               <H1 fontSize="1.5rem">Your Collections</H1>
-              <Text cursor="pointer" fontSize=".8em" onClick={goToAllNFTs}>View All Collectibles</Text>
             </Flex>
  
             <Flex justifyContent="flex-start" alignItems="left">
               {collections?.length ? collections?.map((collection: any) => (
-                <Collection collection={collection}/>
+                <Collection key={collection.sk} collection={collection}/>
               )) : renderEmpty()
             }
             </Flex></>}

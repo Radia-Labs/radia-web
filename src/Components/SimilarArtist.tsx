@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom'
 import {
     LetterCollectibleImage,
     SimilarArtistCard, 
@@ -13,11 +12,9 @@ type Props = {
 }
 
 const SimilarArtist = ({ collectibleId, collectibleImage, collectibleName}: Props) => {
-    const navigate = useNavigate()
     
     const goToCollectible = (sk:string) => {
-        navigate(`/collectible/${sk}`)
-        navigate(0) // hack to get it to refresh (?)
+        window.location.href = `/collectible/${sk}`
     }    
 
     return (

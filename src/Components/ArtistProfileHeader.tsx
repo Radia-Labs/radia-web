@@ -20,10 +20,10 @@ type Props = {
 function ArtistProfileHeader({artist, collectors, collectibles}: Props) {
     return (
        artist ? <ProfileHeader>
-            {artist.images[0]?.url ? <ProfileImage image={artist.images[0]?.url}/> : <LetterProfileImage artistName={artist.name} />}
+            {artist.images[0]?.url ? <ProfileImage src={artist.images[0]?.url}/> : <LetterProfileImage name={artist.name} />}
             <ArtistPorifileWrapper >
                 
-                <Flex margin="0 0 0 2em" flexDirection="column" justifyContent="flex-start" alignItems="flex-start">
+                <Flex width="100%" margin="0 0 0 2em" flexDirection="column" justifyContent="flex-start" alignItems="flex-start">
                     <H1 fontSize="1em" fontWeight="400" color={colors.secondaryLight}>
                         Artist Profile
                     </H1>
@@ -32,14 +32,14 @@ function ArtistProfileHeader({artist, collectors, collectibles}: Props) {
                     </ProfileUserName>
                 </Flex>
 
-                <Flex margin="0 2em 0 2em" flexDirection="row" flexGrow=".5"  justifyContent="space-between" alignItems="center">
+                <Flex width="100%" margin="0 2em 0 2em" flexDirection="row" flexGrow=".5"  justifyContent="space-between" alignItems="center">
 
                     <Flex margin="0 0 0 2em" flexDirection="column" justifyContent="center" alignItems="center">
                         <H1 fontSize="1em" fontWeight="400" color={colors.secondaryLight}>
                             Collectors
                         </H1>
                         <H1 fontSize="1.2em" fontWeight="700">
-                            {collectors}
+                            {collectors ? collectors : collectors === 0 ? 0 : '-'}
                         </H1>                        
                     </Flex>
 
@@ -48,14 +48,14 @@ function ArtistProfileHeader({artist, collectors, collectibles}: Props) {
                             Collectibles
                         </H1>
                         <H1 fontSize="1.2em" fontWeight="700">
-                            {collectibles as number + 4}
+                            {collectibles ? collectibles as number + 4 : '-'}
                         </H1>                        
                     </Flex>
      
                 </Flex>
 
             </ArtistPorifileWrapper>
-        </ProfileHeader> : null 
+        </ProfileHeader> : <></> 
     )
 }
 

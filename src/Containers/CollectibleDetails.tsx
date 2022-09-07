@@ -21,10 +21,15 @@ function CollectibleDetails() {
   useEffect(() => {
     const init = async () => {
       const _collectible = await getCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string, params.sk as string);
+      console.log(_collectible)
       const spotify = await getSpotifyUser(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string);
-      // TODO: if Artist ID is passed in, handle correctly
       if (_collectible.Count === 0) { 
-        const artist = await getSpotifyArtist(currentUser?.idToken as string, currentUser?.appPubKey as string, params.sk as string, spotify.Items[0].refresh_token );
+        let artistId = params.sk;
+        if (params.sk?.includes("Collectible|")) {
+          artistId = params.sk.split("|")[3];
+        }
+        const artist = await getSpotifyArtist(currentUser?.idToken as string, currentUser?.appPubKey as string, artistId as string, spotify.Items[0].refresh_token );
+        console.log("artist", artist)
         const collectible = {
           artist,
           user: undefined,
@@ -48,12 +53,16 @@ function CollectibleDetails() {
     if (!collectible && currentUser)
       init()
 
-  }, [currentUser]);
+  }, [collectible, currentUser]);
 
+  const claimCollectible = async () => {
+    console.log("claimCollectible")
+
+  }
 
   return (
     <>
-      {collectible ? <Details collectible={collectible as any} /> : null}
+      {collectible ? <Details collectible={collectible as any} claimCollectible={claimCollectible}/> : null}
       {similarArtists ? <SimilarArtists similarArtists={similarArtists as any} /> : null}
     </>
   );

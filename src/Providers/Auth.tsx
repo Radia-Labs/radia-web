@@ -27,9 +27,9 @@ const defaultState = {
 const AuthContext = React.createContext<IAuthContext>(defaultState);
 
 export const AuthProvider = ({children}: {children: React.ReactNode}) => {
-  const { provider, login, logout, getAccounts, web3Auth } = useWeb3Auth();
+  const { provider, login, web3Auth } = useWeb3Auth();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [isSpotifyModalOpen, setSpotifyModalIsOpen] = useState(false) 
+  const [isSpotifyModalOpen, setSpotifyModalIsOpen] = useState(false)
   const [isSpotifyLoadingModalOpen, setSpotifyLoadingModalIsOpen] = useState(false)  
   
   useEffect(() => {
@@ -140,9 +140,9 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
             }
             await createUser(user?.idToken as string, appPubKey, updatedUser as object, addresses as object)
           }
-          setSpotifyModalIsOpen(false)
           params.delete('code')
           window.history.pushState({}, document.title, "/");
+          setSpotifyModalIsOpen(false)
           setSpotifyLoadingModalIsOpen(true)
         } else {
           alert("Could not veryify Spotify authorization. Please try again.")

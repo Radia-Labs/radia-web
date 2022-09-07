@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import {
     LetterCollectibleImage,
+    LetterAvatarSm,
     ProgressCard, 
     CollectibleImage, 
     CollectibleName,
@@ -30,7 +31,7 @@ const Collectible = ({ collectibleId, collectibleImage, collectibleName, collect
 
     const goToMyProfile = (event:any) => {
         event.stopPropagation()
-        navigate("/account")
+        navigate("/")
     }
     
     const goToCollectible = (sk:string) => {
@@ -39,10 +40,10 @@ const Collectible = ({ collectibleId, collectibleImage, collectibleName, collect
 
     return (
     <ProgressCard onClick={() => goToCollectible(collectibleId as string)}>
-        {collectibleImage ? <CollectibleImage image={collectibleImage} filter="saturate(0%)"/> : <LetterCollectibleImage artistName={collectibleName} filter="saturate(0%)"/>}
+        {collectibleImage ? <CollectibleImage image={collectibleImage} filter="saturate(0%)"/> : <LetterCollectibleImage name={collectibleName} filter="saturate(0%)"/>}
         <CollectibleName title={collectibleName} >{collectibleName}</CollectibleName>
             <Flex margin="0 0 1em 0" justifyContent="flex-start">
-                <CollectorImage referrerPolicy="no-referrer" src={collectorImage} onClick={goToMyProfile}/>
+                {collectorImage ? <CollectorImage referrerPolicy="no-referrer" src={collectorImage} onClick={goToMyProfile}/> : <LetterAvatarSm name={'0x'} />}
                 <CollectorWrapper>
                     <CollectorLabel>Collector</CollectorLabel>
                     <CollectorName onClick={goToMyProfile}>{collectorName}</CollectorName>

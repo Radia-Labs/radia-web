@@ -6,6 +6,7 @@ import {
 import {User} from '../Models/User';  
 import { toast } from 'react-toastify';
 import UserProfileHeader from '../Components/UserProfileHeader';
+import ReadyToClaim from '../Components/ReadyToClaim';
 import InProgress from '../Components/InProgress';
 import TopArtists from '../Components/TopArtists';
 import RecentlyEarned from '../Components/RecentlyEarned';
@@ -15,7 +16,7 @@ import { useCurrentUser } from "../Providers/Auth"
 
 function UserProfile() {
 
-    const { provider, logout, web3Auth } = useWeb3Auth();
+    const { provider, logout } = useWeb3Auth();
     const [user, setUser] = useState<User| undefined>();
     const [walletAddress, setWalletAddress] = useState<String| undefined>();
     const [createdAt, setCreatedAt] = useState<string| undefined>();
@@ -36,7 +37,6 @@ function UserProfile() {
             allCollectibles.Items.map((collectible:{artist: object}) => {
                 if ("transaction" in collectible) {
                     completed.push(collectible)
-                    console.log(collectible.artist)
                     if (collectible.artist && !supported.includes(collectible.artist)) {
                         supported.push(collectible.artist)
                     }
@@ -58,10 +58,7 @@ function UserProfile() {
         const privateKey = await provider?.getPrivateKey()
         alert(privateKey)
     }    
-    
-    const _logout = async () => {
-        logout()
-    }
+
 
     return (
         <>
@@ -74,7 +71,7 @@ function UserProfile() {
         artistsSupported={artistsSupported as number}        
         totalCollectibles={completedCollectibles as number}
         />
-        <button onClick={_logout}>logout</button>
+        <ReadyToClaim/>
         <InProgress/>
         <TopArtists/>
         <Collections/>

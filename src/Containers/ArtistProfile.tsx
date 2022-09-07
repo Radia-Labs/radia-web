@@ -119,7 +119,6 @@ function ArtistProfile() {
             <Text fontSize="1em" fontWeight="400">This artist does not have any Top Fans yet. Be the first - <Text cursor="pointer" fontSize="1em" fontWeight="400" color={colors.brightGreen} onClick={goToSpotify}>click here</Text> to start earning!</Text>
         </Box>
         )
-        
     }
 
     return (

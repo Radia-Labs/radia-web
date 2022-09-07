@@ -5,7 +5,7 @@ import {
     LetterAvatar
 } from "./styles";
 
-import {Flex} from '../styles'
+import {Box} from './styles'
 
 type Props = {
     artistImage: string,
@@ -14,10 +14,10 @@ type Props = {
 }
 const Artist = ({ artistImage, artistName, onClick }: Props) => (
     <ArtistWrapper onClick={onClick}>
-        <Flex flexDirection="column">
-            {artistImage ? <ArtistImage image={artistImage}/> : <LetterAvatar artistName={artistName}/>}
+        <Box textAlign="center">
+            {artistImage ? <ArtistImage image={artistImage}/> : <LetterAvatar name={artistName}/>}
             <ArtistName title={artistName}>{artistName}</ArtistName>
-        </Flex>
+        </Box>
     </ArtistWrapper>
 )
 

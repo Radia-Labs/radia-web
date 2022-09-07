@@ -19,6 +19,7 @@ type Props = {
             owner_address: string;
         }>;
     };
+    isSelected: boolean;
     collectorImage: string | undefined,
     setSelectedNFTs: (item:object) => void,
     selectedNFTs: string[]
@@ -26,21 +27,12 @@ type Props = {
 
 
 
-const NFT = ({ nft, collectorImage, setSelectedNFTs, selectedNFTs }: Props) => {
+const NFT = ({ nft, isSelected, collectorImage, setSelectedNFTs, selectedNFTs }: Props) => {
 
-    function containsObject(obj:object, list:object[]) {
-        var i;
-        for (i = 0; i < list.length; i++) {
-            if (list[i] === obj) {
-                return true;
-            }
-        }
-    
-        return false;
-    }
+
 
     return (
-        <CollectibleCard onClick={() => setSelectedNFTs(nft)} isSelected={containsObject(nft, selectedNFTs as [])}>
+        <CollectibleCard onClick={() => setSelectedNFTs(nft)} isSelected={isSelected}>
             <CollectibleImage image={nft.image_url}/>
             <CollectibleName title={nft.name} >{nft.name}</CollectibleName>
             <Flex justifyContent="flex-start">

@@ -3,6 +3,7 @@ import {
     CollectibleDetailsImage,
     CollectibleTextWrapper,
     CollectibleTitle,
+    LetterAvatarSm,
     FanWrapper,
     FanCard,
     FanImage,
@@ -36,13 +37,18 @@ type Props = {
         created: string,
         transaction: {
             transaction: {
-                receipt: {contractAddress: string | undefined}}
+                receipt: {contractAddress: string | undefined}
             }
-        
-    }
+        },
+        status: string,   
+    };
+
+    claimCollectible: () => void;
 }
 
 function getCollectibleType(collectible:any) {
+    // TODO: this should also support other achievements like "streamedTrackInFirst24Hours"
+    
     let acheivement 
     if (collectible.achievement === 'streamedMilliseconds')
         acheivement = getCurrentAcheivement(collectible)
@@ -99,9 +105,13 @@ if (collectible.streamedMilliseconds >= 3600000 * 25) {
 
 }
 
-const Details = ({collectible}: Props) => (
+function goToArtist(collectible:any) {
+    window.location.href = `/artist/${collectible.artist.id}`
+}
+
+const Details = ({collectible, claimCollectible}: Props) => (
     <CollectibleDetailsWrapper>
-        <CollectibleDetailsImage src={collectible.artist.images[0].url}/>
+        <CollectibleDetailsImage image={collectible.artist.images[0].url}/>
         
         <CollectibleTextWrapper >
             <CollectibleTitle>{getCollectibleType(collectible)}</CollectibleTitle>
@@ -109,7 +119,7 @@ const Details = ({collectible}: Props) => (
             <FanWrapper>
 
                 {collectible.user && <FanCard width="45%" margin="0 1em 0 0">
-                    {collectible.user && <FanImage referrerPolicy="no-referrer" src={collectible.user.profileImage}/>}
+                    {collectible.user.profileImage ? <FanImage referrerPolicy="no-referrer" src={collectible.user.profileImage}/> : <LetterAvatarSm margin="0 1em 0 0" name={'0x'} />}
                     <FanNameWrapper>
                         <FanName color={colors.lightGrey} fontSize=".5em">
                         {collectible.transaction ? "Owned By" : "Earning By"}
@@ -119,7 +129,7 @@ const Details = ({collectible}: Props) => (
                     </FanNameWrapper>
                 </FanCard> }
 
-                <FanCard width={collectible.user ? "45%" : "100%"}>
+                <FanCard width={collectible.user ? "45%" : "100%"} onClick={() => goToArtist(collectible)}>
                     <FanImage referrerPolicy="no-referrer" src={collectible.artist.images[0].url}/>
                     <FanNameWrapper>
                         <FanName color={colors.lightGrey} fontSize=".5em">Artist</FanName>
@@ -157,14 +167,29 @@ const Details = ({collectible}: Props) => (
                 
             </NFTDetailsWrapper> : null}    
 
-            {!collectible.transaction ? 
+            {!collectible.transaction && !collectible.status ? 
             <Button 
             background="transparent" 
-            border={`1px solid ${colors.primaryLight}`} 
+            border={`2px solid ${colors.primaryLight}`} 
             width="100%" 
             padding="1em 5em"
             onClick={() => window.open(collectible.artist.external_urls.spotify, '_blank')}
             >Earn Collectible</Button> : null}
+
+            
+            {collectible.status === 'readyToMint' ? 
+
+            <Button 
+            background="transparent" 
+            color={colors.seaGreen}
+            border={`2px solid ${colors.seaGreen}`}
+            fontWeight="700"
+            width="100%" 
+            padding="1em 5em"
+            onClick={claimCollectible}
+            >Claim Collectible</Button>             
+            
+            : null}
         
         </CollectibleTextWrapper>
       

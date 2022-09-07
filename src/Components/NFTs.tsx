@@ -34,7 +34,6 @@ const NFTs = ({
     return (
 
       <Flex margin="0 0 2em 0" flexDirection="column" alignItems="left" justifyContent="flex-start">
-
       
       <Flex>
         <H1 fontSize="1.5rem">Your Collectibles</H1>
@@ -45,8 +44,9 @@ const NFTs = ({
           {nfts.length ? nfts.map((nft: any) => {
             return (
             <NFT
-              key={nft.sk}
+              key={nft.nft_id}
               nft={nft}
+              isSelected={selectedNFTs.includes(nft)}
               collectorImage={currentUser?.profileImage}
               setSelectedNFTs={setSelected}
               selectedNFTs={selectedNFTs as any}

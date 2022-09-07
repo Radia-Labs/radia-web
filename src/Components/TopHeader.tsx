@@ -15,8 +15,8 @@ const TopHeader = () => {
                 </LogoWrapper>
                 <Flex responsive="hidden" justifyContent="flex-end">
                     <Text onClick={() => navigate('/new-music')} cursor="pointer" fontSize=".8em" margin="0 3em 0 0">New Music</Text>
-                    <Text onClick={() => navigate('/account/collectibles')} cursor="pointer" fontSize=".8em" margin="0 3em 0 0">My Collectibles</Text>
-                    <Button onClick={() => navigate('/account')}>My Collection</Button>
+                    <Text onClick={() => navigate('/collectibles')} cursor="pointer" fontSize=".8em" margin="0 3em 0 0">My Collectibles</Text>
+                    <Button onClick={() => navigate('/')}>My Collection</Button>
                 </Flex>
             </Flex>
             <HamburgerMenu />

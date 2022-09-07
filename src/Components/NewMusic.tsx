@@ -21,7 +21,7 @@ const NewMusic = ({newMusic} : Props) =>  {
         {newMusic?.length ? newMusic.map((album:any) => {
             const artists = album.artists.map((artist:any) => artist.name).join(', ')
             const collectibleImage = album.images[0].url;
-            return (<SimilarArtistCard onClick={() => goToArtistCollectible(album)}>
+            return (<SimilarArtistCard key={album.id} onClick={() => goToArtistCollectible(album)}>
                 {collectibleImage ? <CollectibleImage image={collectibleImage} /> : <LetterCollectibleImage artistName={artists} />}
                 <Flex flexDirection="column" alignItems="flex-start" justifyContent="flex-start">
                     <Text fontSize=".5em" color={colors.lightGrey} title={artists} >{artists}</Text>

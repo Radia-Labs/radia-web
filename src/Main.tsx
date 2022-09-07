@@ -14,8 +14,11 @@ import Index from "./Containers/Index";
 import ArtistProfile from "./Containers/ArtistProfile";
 import UserProfile from "./Containers/UserProfile";
 import CollectibleDetails from "./Containers/CollectibleDetails";
+import SimpleHashCollectibleDetails from "./Containers/SimpleHashCollectibleDetails";
 import AllCollectibles from "./Containers/AllCollectibles";
 import NewMusicReleases from "./Containers/NewMusicReleases";
+import CollectionDetails from "./Containers/CollectionDetails";
+import Settings from "./Containers/Settings";
 
 
 const Main = () => {
@@ -29,12 +32,14 @@ const Main = () => {
                     <TopHeader/>
                     <Layout>
                         <Routes>
-                            <Route path="/" element={<Index/>} />
-                            <Route path="/account" element={<UserProfile/>} />
-                            <Route path="/account/collectibles" element={<AllCollectibles/>} />
+                            <Route path="/" element={<UserProfile/>} />
+                            <Route path="/collectibles" element={<AllCollectibles/>} />
                             <Route path="/artist/:id" element={<ArtistProfile/>} />
                             <Route path="/collectible/:sk" element={<CollectibleDetails/>} />
+                            <Route path="/:chain/:contractAddress/:tokenId" element={<SimpleHashCollectibleDetails/>} />
+                            <Route path="/collection/:sk" element={<CollectionDetails/>} />
                             <Route path="/new-music" element={<NewMusicReleases/>} />
+                            <Route path="/settings" element={<Settings/>} />
                         </Routes>
                     </Layout>    
                 </AuthProvider>

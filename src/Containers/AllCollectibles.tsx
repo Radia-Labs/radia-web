@@ -11,7 +11,6 @@ import { Text, Button, FixedFooter, Box } from '../Components/styles';
 import { useCurrentUser } from "../Providers/Auth"
 import { toast } from 'react-toastify';
 import { ToastContainer } from 'react-toastify';
-import { setUncaughtExceptionCaptureCallback } from 'process';
 import { colors } from '../constants';
 
 function AllCollectibles() {
@@ -29,9 +28,10 @@ function AllCollectibles() {
     useEffect(() => {
       const init = async () => {
       if (currentUser) {
-        _getNfts()
+        await _getNfts()
         const _collections = await getCollections(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.verifierId as string);
         setCollections(_collections.Items)
+        setSelectedNFTs([]) // hack to ensure that the selectedNFTs state is reset when currentUser changes.
       }
     }
 
@@ -49,16 +49,13 @@ function AllCollectibles() {
 
     const _getNfts = async () => {
       const data = await getNFTs(currentUser?.idToken as string, currentUser?.appPubKey as string, 'polygon', currentUser?.addresses.polygon as string, nextUrl as string);
-      console.log(data.nfts)
       setNFTs(data.nfts)
       setNextUrl(data.next)
     }    
 
     const loadMore = async () => {
       const data = await getNFTs(currentUser?.idToken as string, currentUser?.appPubKey as string, 'polygon', currentUser?.addresses.polygon as string, nextUrl as string);
-      console.log(data)
       const _nfts = nfts?.concat(data.nfts)
-      console.log(_nfts)
       setNFTs(_nfts)
       setNextUrl(data.next)      
     }
@@ -68,23 +65,28 @@ function AllCollectibles() {
         const collection = await createCollection(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.verifierId as string, name, selectedNFTs)
         setLoading(false)
         toast(`Successfully created ${name} collection.`);
+        setSelectedNFTs([])
+        const _collections = await getCollections(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.verifierId as string);
+        setCollections(_collections.Items)   
     }
  
     const handleUpdateCollection = async (name: string, selectedNFTs: object[]) => {
         setLoading(true)
-        const collection = await getCollection(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.verifierId as string, name)
+        const collection = await getCollection(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.verifierId as string, `Collection|${name}`)
         const intersection = collection.Items[0].nfts.filter((a:{nft_id:string}) => selectedNFTs.some((b:any) => a.nft_id === b.nft_id));  
         const newNFTs = selectedNFTs.filter((a:any) => !intersection.some((b:{nft_id:string}) => a.nft_id === b.nft_id));
-        console.log(newNFTs)
         const newArray = collection.Items[0].nfts.concat(newNFTs)
         const updatedCollection = await createCollection(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.verifierId as string, name, newArray)
         setLoading(false)
         toast(`Successfully updated ${name} collection.`);
+        setSelectedNFTs([])
+        const _collections = await getCollections(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.verifierId as string);
+        setCollections(_collections.Items)        
     }
   
     const setSelected = (item: any) => {
       if (selectedNFTs.includes(item)) {
-        var array = [...selectedNFTs]; // make a separate copy of the array
+        var array = [...selectedNFTs];
         var index = array.indexOf(item)
         if (index !== -1) {
           array.splice(index, 1);
@@ -111,7 +113,6 @@ function AllCollectibles() {
   
     const handleCollectionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setSelectedCollection(e.target.value)
-      
     }
   
     const submitCollection = () => {

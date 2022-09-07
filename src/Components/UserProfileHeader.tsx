@@ -1,10 +1,12 @@
 
 import {CopyToClipboard} from 'react-copy-to-clipboard';
+import { useWeb3Auth } from "../Services/web3auth";
 
 import {Flex} from '../styles';
 import {
     H1,
     Text,
+    LetterProfileImage,
     ProfileUserWrapper,
     ProfileHeaderWrapper,
     ProfileHeader, 
@@ -32,10 +34,11 @@ type Props = {
 }
 
 function UserProfileHeader({user, walletAddress, exportPrivateKey, handleCopy, createdAt, artistsSupported, totalCollectibles} : Props) {
+    const { provider, logout } = useWeb3Auth();
     return (
         user && walletAddress ? <>
         <ProfileHeader>
-            <ProfileImage image={user?.profileImage}/>
+            {user?.profileImage ? <ProfileImage referrerPolicy="no-referrer" src={user?.profileImage}/> : <LetterProfileImage name={'0x'} />}
             <ProfileHeaderWrapper>
                 <ProfileUserWrapper>
                     <ProfileUserName>
@@ -51,6 +54,8 @@ function UserProfileHeader({user, walletAddress, exportPrivateKey, handleCopy, c
                             </ProfileWalletAddress>                
                         </CopyToClipboard>
                         <Text margin="0 0 0 1em" onClick={exportPrivateKey} fontSize=".8em" color={colors.lightGrey} cursor="pointer">Export Private Key</Text>
+                        <br/>
+                        <Text  color={colors.lightGrey} cursor="pointer" margin="0 0 0 1em" fontSize=".8em" onClick={logout}>Logout</Text>
                     </ProfileWalletWrapper> 
                 </ProfileUserWrapper>
 
@@ -70,7 +75,7 @@ function UserProfileHeader({user, walletAddress, exportPrivateKey, handleCopy, c
                             Total Collectibles
                         </H1>
                         <H1 fontSize="1.2em" fontWeight="700">
-                            {totalCollectibles}
+                            {totalCollectibles ? totalCollectibles : '-'}
                         </H1>                        
                     </Flex>
 
@@ -79,7 +84,7 @@ function UserProfileHeader({user, walletAddress, exportPrivateKey, handleCopy, c
                             Artists Supported
                         </H1>
                         <H1 fontSize="1.2em" fontWeight="700">
-                            {artistsSupported}
+                            {artistsSupported ? artistsSupported : '-'}
                         </H1>                        
                     </Flex>
      
@@ -87,11 +92,12 @@ function UserProfileHeader({user, walletAddress, exportPrivateKey, handleCopy, c
 
             </ProfileHeaderWrapper>
         </ProfileHeader>
-                    <ToastContainer 
-                    position="bottom-right"
-                    theme="dark"
-                    hideProgressBar={true}
-                    />
+        
+        <ToastContainer 
+        position="bottom-right"
+        theme="dark"
+        hideProgressBar={true}
+        />
         </>
         : null 
     )

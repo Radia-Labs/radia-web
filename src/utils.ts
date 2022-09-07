@@ -185,7 +185,6 @@ export const getNewMusic = async (idToken:string, appPubKey:string, refreshToken
     let url = `${SERVER_URL}/account/artists/new-music?refreshToken=${refreshToken}&appPubKey=${appPubKey}`;
     if (nextUrl)
         url += `&nextUrl=${encodeURIComponent(nextUrl)}`;
-    console.log(url)
     const response = await fetch(url, {
         headers: {
         Authorization: `Bearer ${idToken}`,
@@ -199,7 +198,16 @@ export const getNFTs = async (idToken:string, appPubKey:string, chains:string, a
     if (nextUrl)
         url += `&nextUrl=${encodeURIComponent(nextUrl)}`; 
     
-    console.log(url)
+    const response = await fetch(url, {
+        headers: {
+        Authorization: `Bearer ${idToken}`,
+        },
+    });
+    return await response.json();
+}
+
+export const getNFTByTokenId = async (idToken:string, appPubKey:string, chain:string, contractAddress:string, tokenId:string) => {
+    let url = `${SERVER_URL}/account/nft?chain=${chain}&contractAddress=${contractAddress}&tokenId=${tokenId}&appPubKey=${appPubKey}`;
     const response = await fetch(url, {
         headers: {
         Authorization: `Bearer ${idToken}`,
@@ -219,7 +227,7 @@ export const getCollections = async (idToken:string, appPubKey:string, pk:string
 }
 
 export const getCollection = async (idToken:string, appPubKey:string, pk:string, sk:string) => {
-    let url = `${SERVER_URL}/account/collections?pk=${pk}&sk=${sk}&appPubKey=${appPubKey}`;
+    let url = `${SERVER_URL}/account/collection?pk=${pk}&sk=${sk}&appPubKey=${appPubKey}`;
     const response = await fetch(url, {
         headers: {
         Authorization: `Bearer ${idToken}`,
@@ -236,6 +244,18 @@ export const createCollection = async (idToken:string, appPubKey:string, pk:stri
         "Content-Type": "application/json"
         },
         body: JSON.stringify({name, nfts})  
+    });
+    return await response.json();    
+}
+
+export const deleteCollection = async (idToken:string, appPubKey:string, pk:string, sk:string) => {
+    const response = await fetch(`${SERVER_URL}/account/collections/${pk}?appPubKey=${appPubKey}&sk=${sk}`, {
+        method: 'DELETE',
+        headers: {
+        Authorization: `Bearer ${idToken}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({sk})  
     });
     return await response.json();    
 }
