@@ -26,6 +26,7 @@ export const colors = {
     lightGrey: '#8A8AA0',
     seaGreen: '#28cf8d',
     primaryRed: '#e55555',
+    primaryOrange: '#ffb072'
 } as const;
 
 export const size = {

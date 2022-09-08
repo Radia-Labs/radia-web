@@ -1,5 +1,4 @@
 import {useState, useEffect} from 'react';
-import { useWeb3Auth } from "../Services/web3auth";
 import {
     getCollectibles,
   } from "../utils";
@@ -12,16 +11,18 @@ import TopArtists from '../Components/TopArtists';
 import RecentlyEarned from '../Components/RecentlyEarned';
 import Collections from '../Components/Collections';
 import { useCurrentUser } from "../Providers/Auth"
-
+import { ModalProvider } from 'styled-react-modal'
+import {StyledModal} from '../styles';
+import PrivateKeyModalBody from '../Components/PrivateKeyModalBody';
 
 function UserProfile() {
 
-    const { provider, logout } = useWeb3Auth();
     const [user, setUser] = useState<User| undefined>();
     const [walletAddress, setWalletAddress] = useState<String| undefined>();
     const [createdAt, setCreatedAt] = useState<string| undefined>();
     const [completedCollectibles, setCompletedCollectibles] = useState<number| undefined>();
     const [artistsSupported, setArtistsSupported] = useState<number| undefined>();
+    const [isPrivateKeyModalOpen, setIsPrivateKeyModalOpen] = useState(false);
     const { currentUser } = useCurrentUser()
 
 
@@ -54,9 +55,9 @@ function UserProfile() {
         toast("Address copied to clipboard");
     }
 
-    const exportPrivateKey = async () => {
-        const privateKey = await provider?.getPrivateKey()
-        alert(privateKey)
+    const exportPrivateKey = () => {
+        setIsPrivateKeyModalOpen(true)
+        console.log("here?")
     }    
 
 
@@ -76,6 +77,14 @@ function UserProfile() {
         <TopArtists/>
         <Collections/>
         <RecentlyEarned/>
+        <ModalProvider>
+            <StyledModal
+                isOpen={isPrivateKeyModalOpen}
+                onBackgroundClick={() => setIsPrivateKeyModalOpen(false)}
+                onEscapeKeydown={() => setIsPrivateKeyModalOpen(false)}>
+                <PrivateKeyModalBody setIsPrivateKeyModalOpen={setIsPrivateKeyModalOpen}/>
+            </StyledModal> 
+        </ModalProvider>        
         </>
 
     )

@@ -21,3 +21,11 @@ body {
   color: #fff;
   border: 1px #6b6fe0 solid;
 }
+
+.Toastify__toast--success svg {
+  fill: #28cf8d;
+}
+
+.Toastify__toast--success {
+  border: 1px #28cf8d solid;
+}

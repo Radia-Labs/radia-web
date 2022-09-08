@@ -40,10 +40,11 @@ export const Logo = styled.div`
 `
 export const Paragraph = styled.div`
     font-size: ${props => props.fontSize || '.8rem'};
-    color: ${colors.primaryLight};
+    color: ${props => props.color || colors.primaryLight};
     text-align: ${props => props.textAlign || 'left'};
     padding: ${props => props.padding || '0'};
     padding-bottom: ${props => props.paddingBottom || '1rem'};
+    overflow-wrap: anywhere;
 `
 
 export const H1 = styled.h1`
@@ -303,7 +304,6 @@ export const CollectorImage = styled.img`
     image-rendering: -webkit-optimize-contrast;
     cursor: pointer;
     transition: all .2s ease-in-out;
-    &:hover { opacity:.9; };
 `
 
 export const CollectorLabel = styled.div`
@@ -314,7 +314,6 @@ export const CollectorLabel = styled.div`
 export const CollectorName = styled.div`
     color: ${colors.secondaryLight};
     font-size: .8em;
-    &:hover { opacity:.9; };  
     cursor: pointer;       
     text-overflow: ellipsis;
     overflow: hidden;
@@ -1059,4 +1058,32 @@ export const Chip = styled.div`
     border-radius: ${props => props.borderRadius || '1em'};
     font-size: ${props => props.fontSize || '.6em'};
     font-weight: ${props => props.fontWeight || '400'};
+`
+
+export const LogoutIcon = styled.div`
+    display: inline-block;
+    margin-right: .5em;
+    height: 1em;
+    width: 1em;
+    background: url('${MEDIA_CDN_HOST}/logout-white-icon.svg');
+    background-size: contain;  
+    background-repeat: no-repeat;    
+    background-position: center;
+    opacity:.5;
+    position: relative;
+    top:2px
+`
+
+export const PrivateKeyIcon = styled.div`
+    display: inline-block;
+    margin-right: .5em;
+    height: 1em;
+    width: 1em;
+    background: url('${MEDIA_CDN_HOST}/private-key-white-icon.svg');
+    background-size: contain;  
+    background-repeat: no-repeat;    
+    background-position: center;
+    opacity:.5;
+    position: relative;
+    top:2px    
 `

@@ -97,7 +97,7 @@ const ReadyToClaim = () => {
                 collectibleImage={collectible.artist.images[0]?.url}
                 collectibleName={collectibleType as string}
                 collectorImage={user?.profileImage}
-                collectorName={user?.name}
+                collectorName={user?.name ? user?.name : user?.pk}
                 showChip={true}
                 />
             })}

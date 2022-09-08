@@ -15,7 +15,9 @@ import {
     ProfileWalletWrapper,
     ProfileWalletAddress,
     ProfileDetailsWrapper,
-    CopyIcon
+    CopyIcon,
+    LogoutIcon,
+    PrivateKeyIcon
 } from './styles';
 
 import { colors } from '../constants';
@@ -45,7 +47,6 @@ function UserProfileHeader({user, walletAddress, exportPrivateKey, handleCopy, c
                         {user?.email}
                     </ProfileUserName>
 
-                   
                     <ProfileWalletWrapper  >
                         <CopyToClipboard text={walletAddress as string} >
                             <ProfileWalletAddress onClick={handleCopy}>
@@ -53,9 +54,11 @@ function UserProfileHeader({user, walletAddress, exportPrivateKey, handleCopy, c
                                 <CopyIcon/>
                             </ProfileWalletAddress>                
                         </CopyToClipboard>
-                        <Text margin="0 0 0 1em" onClick={exportPrivateKey} fontSize=".8em" color={colors.lightGrey} cursor="pointer">Export Private Key</Text>
-                        <br/>
-                        <Text  color={colors.lightGrey} cursor="pointer" margin="0 0 0 1em" fontSize=".8em" onClick={logout}>Logout</Text>
+                        <Flex alignItems="flex-start" justifyContent="flex-start" flexDirection="column">
+                            <Text margin="0 0 1em 1em" onClick={exportPrivateKey} fontSize=".8em" color={colors.lightGrey} cursor="pointer"><PrivateKeyIcon/> Export Private Key</Text>    
+                            <Text  color={colors.lightGrey} cursor="pointer" margin="0 0 0 1em" fontSize=".8em" onClick={logout}><LogoutIcon/> Logout</Text>
+                        </Flex>
+                        
                     </ProfileWalletWrapper> 
                 </ProfileUserWrapper>
 

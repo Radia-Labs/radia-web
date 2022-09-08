@@ -48,7 +48,6 @@ type Props = {
 
 function getCollectibleType(collectible:any) {
     // TODO: this should also support other achievements like "streamedTrackInFirst24Hours"
-    
     let acheivement 
     if (collectible.achievement === 'streamedMilliseconds')
         acheivement = getCurrentAcheivement(collectible)

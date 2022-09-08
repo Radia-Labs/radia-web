@@ -7,6 +7,7 @@ import {
     CollectorLabel,
     CollectorName,
     CollectorWrapper,
+    LetterAvatarSm,
     Chip
 } from "./styles";
 
@@ -28,10 +29,10 @@ const goToCollectible = (id:string) => {
 
 const Achievement = ({ collectibleId, collectibleImage, collectibleName, collectorImage, collectorName, showChip }: Props) => (
     <CollectibleCard onClick={() => goToCollectible(collectibleId as string)}>
-        {collectibleImage ? <CollectibleImage image={collectibleImage}/> : <LetterCollectibleImage artistName={collectibleName}/>}
+        {collectibleImage ? <CollectibleImage image={collectibleImage}/> : <LetterCollectibleImage name={collectibleName}/>}
         <CollectibleName title={collectibleName} >{collectibleName}</CollectibleName>
         <Flex justifyContent="flex-start" >
-            <CollectorImage referrerPolicy="no-referrer" src={collectorImage}/>
+        {collectorImage ? <CollectorImage referrerPolicy="no-referrer" src={collectorImage}/> : <LetterAvatarSm name={'0x'} />}
             <CollectorWrapper>
                 <CollectorLabel>Collector</CollectorLabel>
                 <CollectorName>{collectorName}</CollectorName>

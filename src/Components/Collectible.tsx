@@ -28,11 +28,6 @@ type Props = {
 
 const Collectible = ({ collectibleId, collectibleImage, collectibleName, collectorImage, collectorName, progress }: Props) => {
     const navigate = useNavigate()
-
-    const goToMyProfile = (event:any) => {
-        event.stopPropagation()
-        navigate("/")
-    }
     
     const goToCollectible = (sk:string) => {
         navigate(`/collectible/${sk}`)
@@ -43,10 +38,10 @@ const Collectible = ({ collectibleId, collectibleImage, collectibleName, collect
         {collectibleImage ? <CollectibleImage image={collectibleImage} filter="saturate(0%)"/> : <LetterCollectibleImage name={collectibleName} filter="saturate(0%)"/>}
         <CollectibleName title={collectibleName} >{collectibleName}</CollectibleName>
             <Flex margin="0 0 1em 0" justifyContent="flex-start">
-                {collectorImage ? <CollectorImage referrerPolicy="no-referrer" src={collectorImage} onClick={goToMyProfile}/> : <LetterAvatarSm name={'0x'} />}
+                {collectorImage ? <CollectorImage referrerPolicy="no-referrer" src={collectorImage} /> : <LetterAvatarSm name={'0x'} />}
                 <CollectorWrapper>
                     <CollectorLabel>Collector</CollectorLabel>
-                    <CollectorName onClick={goToMyProfile}>{collectorName}</CollectorName>
+                    <CollectorName >{collectorName}</CollectorName>
                 </CollectorWrapper>
             </Flex>       
             <Flex flexWrap="nowrap">
