@@ -11,6 +11,7 @@ import {
     FanNameWrapper,
     NFTDetailsWrapper,
     Button,
+    Spinner,
     Text
 } from "./styles";
 
@@ -36,14 +37,13 @@ type Props = {
         achievement: string,
         created: string,
         transaction: {
-            transaction: {
-                receipt: {contractAddress: string | undefined}
-            }
+            receipt: {contractAddress: string | undefined}
         },
         status: string,   
     };
 
     claimCollectible: () => void;
+    isMinting: boolean;
 }
 
 function getCollectibleType(collectible:any) {
@@ -109,7 +109,7 @@ function goToArtist(collectible:any) {
     window.location.href = `/artist/${collectible.artist.id}`
 }
 
-const Details = ({collectible, claimCollectible}: Props) => (
+const Details = ({collectible, claimCollectible, isMinting}: Props) => (
     <CollectibleDetailsWrapper>
         <CollectibleDetailsImage image={collectible.artist.images[0].url}/>
         
@@ -155,13 +155,13 @@ const Details = ({collectible, claimCollectible}: Props) => (
                     <Text fontSize=".8em"  fontWeight="400">Radia NFT</Text>
                 </Flex>
             
-                {collectible.transaction.transaction.receipt.contractAddress ? <Flex>
+                {collectible.transaction.receipt.contractAddress ? <Flex>
                     <Text color={colors.lightGrey} fontSize=".8em"  fontWeight="400" margin="0 .5em 0">Contract Address</Text>
                     <Text fontSize=".8em"  fontWeight="400">
-                        {`${collectible.transaction.transaction.receipt.contractAddress?.slice(0, 6)}
+                        {`${collectible.transaction.receipt.contractAddress?.slice(0, 6)}
                         ...
-                        ${collectible.transaction.transaction.receipt.contractAddress?.slice(collectible.transaction.transaction.receipt.contractAddress?.length-6, 
-                        collectible.transaction.transaction.receipt.contractAddress?.length)}`}
+                        ${collectible.transaction.receipt.contractAddress?.slice(collectible.transaction.receipt.contractAddress?.length-6, 
+                        collectible.transaction.receipt.contractAddress?.length)}`}
                         </Text> 
                 </Flex> : null}
                 
@@ -187,7 +187,8 @@ const Details = ({collectible, claimCollectible}: Props) => (
             width="100%" 
             padding="1em 5em"
             onClick={claimCollectible}
-            >Claim Collectible</Button>             
+            disabled={isMinting}
+            >{!isMinting ? "Claim Collectible" : <Spinner/>}</Button>             
             
             : null}
         

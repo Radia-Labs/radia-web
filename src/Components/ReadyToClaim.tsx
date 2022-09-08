@@ -23,7 +23,7 @@ const ReadyToClaim = () => {
           if (currentUser) {
             let lastEvaluatedKey;
             const collectibles = await getCollectibles(currentUser?.idToken as string, currentUser.appPubKey as string, currentUser.verifierId as string, limit, lastEvaluatedKey)
-            const filteredCollectibles = collectibles.Items.filter((collectible: {transaction: object}) => ("status" in collectible))
+            const filteredCollectibles = collectibles.Items.filter((collectible: {transaction: object, status: string}) => (collectible.status === 'readyToMint'))
             const sorted = filteredCollectibles.sort((a:{streamedMilliseconds: number},b:{streamedMilliseconds: number}) => b.streamedMilliseconds - a.streamedMilliseconds);
             setAllCollectibles(sorted)
             setCollectibles(sorted.slice(0, 4))

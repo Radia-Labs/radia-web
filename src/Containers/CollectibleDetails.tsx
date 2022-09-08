@@ -7,13 +7,19 @@ import {
   getCollectible,
   getSimilarArtists,
   getSpotifyArtist,
-  getSpotifyUser
+  getSpotifyUser,
+  claimArtistCollectible,
+  getArtistCollector,
+  createArtistCollector,
+  createArtistCollectible,
+  createCollectible
 } from '../utils';
 import { useCurrentUser } from "../Providers/Auth"
 
 
 function CollectibleDetails() {
-  const [collectible, setCollectible] = useState<object>();
+  const [isMinting, setIsMinting] = useState(false)
+  const [collectible, setCollectible] = useState<{artist:{id:string}, achievement:string, streamedMilliseconds:number}>();
   const [similarArtists, setSimilarArtists] = useState<object[]>();
   const params = useParams();
   const { currentUser } = useCurrentUser()
@@ -29,7 +35,6 @@ function CollectibleDetails() {
           artistId = params.sk.split("|")[3];
         }
         const artist = await getSpotifyArtist(currentUser?.idToken as string, currentUser?.appPubKey as string, artistId as string, spotify.Items[0].refresh_token );
-        console.log("artist", artist)
         const collectible = {
           artist,
           user: undefined,
@@ -56,13 +61,30 @@ function CollectibleDetails() {
   }, [collectible, currentUser]);
 
   const claimCollectible = async () => {
-    console.log("claimCollectible")
+    
+    console.log("claimCollectible", collectible, currentUser)
+    if (collectible && "streamedMilliseconds" in collectible) {
+      setIsMinting(true)
+      const transaction = await claimArtistCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.addresses.polygon as string, collectible.artist, collectible.streamedMilliseconds)
+      const status = 'minted';
+      await createCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string, collectible.artist as object, collectible.achievement as string, collectible.streamedMilliseconds as number, currentUser as object, status, transaction);
+      
+      const artistCollector = await getArtistCollector(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string, collectible.artist.id as string);
+      let collectibleCount = 1
+      if (artistCollector.Count > 0)
+        collectibleCount = artistCollector.Items[0].collectibleCount+ 1;
+      await createArtistCollector(currentUser?.idToken as string, currentUser?.appPubKey as string, collectible.artist.id as string, currentUser as any, collectibleCount);
+      
+      await createArtistCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, collectible.artist as object, collectible.achievement as string);
+
+      setIsMinting(false)
+    }
 
   }
 
   return (
     <>
-      {collectible ? <Details collectible={collectible as any} claimCollectible={claimCollectible}/> : null}
+      {collectible ? <Details collectible={collectible as any} claimCollectible={claimCollectible} isMinting={isMinting}/> : null}
       {similarArtists ? <SimilarArtists similarArtists={similarArtists as any} /> : null}
     </>
   );

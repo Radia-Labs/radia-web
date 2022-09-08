@@ -65,11 +65,10 @@ export const Text = styled.span`
 `
 
 export const Button = styled.button`
-    border: none;
     border-radius: 30px;
     padding: ${props => props.padding || '0.5rem 3rem'};
     background:  ${props => props.background || `linear-gradient(216.56deg, ${colors.darkMagenta}, ${colors.darkPurple})`}; 
-    border:  ${props => props.border || 'none'}; 
+    border:  ${props => props.border && props.disabled ? `2px solid ${colors.darkGrey}` : props.border || 'none'}; 
     width: ${props => props.width || 'auto'};
     font-size: .8rem;
     font-weight: 700;
@@ -340,7 +339,7 @@ const rotate360 = keyframes`
 `;
 
 export const Spinner = styled.div`
-  display: inherit;
+  display: inline-block;
   animation: ${rotate360} 1s linear infinite;
   transform: translateZ(0);
   border-top: 1px solid ${colors.lightGrey};
@@ -349,8 +348,8 @@ export const Spinner = styled.div`
   border-left: 2px solid ${colors.lightGrey};
   margin: ${props => props.margin ? props.margin : '0'};
   background: transparent;
-  width: .8em;
-  height: .8em;
+  width: ${props => props.width ? props.width : '.8em'};
+  height: ${props => props.height ? props.height : '.8em'};
   border-radius: 50%;
 `
 
@@ -1058,7 +1057,6 @@ export const Chip = styled.div`
     padding: ${props => props.padding || '0.5em 1em'};
     border: ${props => props.border || `1px solid ${colors.primaryDark}`};
     border-radius: ${props => props.borderRadius || '1em'};
-    display: inline-block;
     font-size: ${props => props.fontSize || '.6em'};
     font-weight: ${props => props.fontWeight || '400'};
 `

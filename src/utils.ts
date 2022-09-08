@@ -14,8 +14,8 @@ export const createUser = async (idToken:string, appPubKey:string, user:object, 
     const response = await fetch(`${SERVER_URL}/account/user`, {
         method: 'POST',
         headers: {
-        Authorization: `Bearer ${idToken}`,
-        "Content-Type": "application/json"
+            Authorization: `Bearer ${idToken}`,
+            "Content-Type": "application/json"
         },
         body: JSON.stringify({...user, addresses, appPubKey})  
     });
@@ -26,8 +26,8 @@ export const updateUser = async (idToken:string, appPubKey:string, pk:string, da
     const response = await fetch(`${SERVER_URL}/account/user`, {
         method: 'PUT',
         headers: {
-        Authorization: `Bearer ${idToken}`,
-        "Content-Type": "application/json"
+            Authorization: `Bearer ${idToken}`,
+            "Content-Type": "application/json"
         },
         body: JSON.stringify({...data, verifierId:pk, appPubKey})  
     });
@@ -37,8 +37,8 @@ export const updateUser = async (idToken:string, appPubKey:string, pk:string, da
 export const getSpotifyAuth = async (idToken:string, appPubKey:string, code:string) => {
     const response = await fetch(`${SERVER_URL}/integration/spotify/auth?code=${code}&appPubKey=${appPubKey}`, {
         headers: {
-        Authorization: `Bearer ${idToken}`,
-        "Content-Type": "application/json"
+            Authorization: `Bearer ${idToken}`,
+            "Content-Type": "application/json"
         },
     })
     return await response.json();
@@ -47,7 +47,7 @@ export const getSpotifyAuth = async (idToken:string, appPubKey:string, code:stri
 export const getSpotifyUser = async (idToken:string, appPubKey:string, pk:string) => {
     const response = await fetch(`${SERVER_URL}/account/integration?type=spotify&pk=${pk}&appPubKey=${appPubKey}`, {
         headers: {
-        Authorization: `Bearer ${idToken}`,
+            Authorization: `Bearer ${idToken}`,
         },
     });
     return await response.json();
@@ -56,7 +56,7 @@ export const getSpotifyUser = async (idToken:string, appPubKey:string, pk:string
 export const getSpotifyProfile= async (idToken:string, appPubKey:string, refreshToken:string) => {
     const response = await fetch(`${SERVER_URL}/account/spotify/me?refreshToken=${refreshToken}&appPubKey=${appPubKey}`, {
         headers: {
-        Authorization: `Bearer ${idToken}`,
+            Authorization: `Bearer ${idToken}`,
         },
     });
     return await response.json();
@@ -66,7 +66,7 @@ export const getSpotifyArtist = async (idToken:string, appPubKey:string, id:stri
     let url = `${SERVER_URL}/integration/spotify/artist?id=${id}&refreshToken=${refreshToken}&appPubKey=${appPubKey}`;
     const response = await fetch(url, {
         headers: {
-        Authorization: `Bearer ${idToken}`,
+            Authorization: `Bearer ${idToken}`,
         },
     });
     return await response.json();
@@ -103,7 +103,7 @@ export const getCollectible = async (idToken:string, appPubKey:string, pk:string
     let url = `${SERVER_URL}/account/collectible?pk=${pk}&sk=${sk}&appPubKey=${appPubKey}`;  
     const response = await fetch(url, {
         headers: {
-        Authorization: `Bearer ${idToken}`,
+            Authorization: `Bearer ${idToken}`,
         },
     });
     return await response.json();
@@ -115,7 +115,7 @@ export const getArtists = async (idToken:string, appPubKey:string, pk:string, li
         url += `&lastEvaluatedKey=${JSON.stringify(lastEvaluatedKey)}`;
     const response = await fetch(url, {
         headers: {
-        Authorization: `Bearer ${idToken}`,
+            Authorization: `Bearer ${idToken}`,
         },
     });
     return await response.json();
@@ -125,7 +125,7 @@ export const getArtist = async (idToken:string, appPubKey:string, id:string) => 
     let url = `${SERVER_URL}/artist/${id}?appPubKey=${appPubKey}`;
     const response = await fetch(url, {
         headers: {
-        Authorization: `Bearer ${idToken}`,
+            Authorization: `Bearer ${idToken}`,
         },
     });
     return await response.json();
@@ -135,7 +135,7 @@ export const getArtistCollectibles = async (idToken:string, appPubKey:string, id
     let url = `${SERVER_URL}/artist/collectibles/${id}?appPubKey=${appPubKey}`;
     const response = await fetch(url, {
         headers: {
-        Authorization: `Bearer ${idToken}`,
+            Authorization: `Bearer ${idToken}`,
         },
     });
     return await response.json();
@@ -145,7 +145,7 @@ export const getArtistCollectiblesBySk = async (idToken:string, appPubKey:string
     let url = `${SERVER_URL}/artist/collectibles/sk?sk=${sk}&appPubKey=${appPubKey}`;
     const response = await fetch(url, {
         headers: {
-        Authorization: `Bearer ${idToken}`,
+            Authorization: `Bearer ${idToken}`,
         },
     });
     return await response.json();
@@ -155,7 +155,7 @@ export const getArtistCollectors = async (idToken:string, appPubKey:string, id:s
     let url = `${SERVER_URL}/artist/collectors/${id}?appPubKey=${appPubKey}`;
     const response = await fetch(url, {
         headers: {
-        Authorization: `Bearer ${idToken}`,
+            Authorization: `Bearer ${idToken}`,
         },
     });
     return await response.json();
@@ -165,7 +165,7 @@ export const getTopArtists = async (idToken:string, appPubKey:string, refreshTok
     let url = `${SERVER_URL}/account/artists/top?refreshToken=${refreshToken}&appPubKey=${appPubKey}`;
     const response = await fetch(url, {
         headers: {
-        Authorization: `Bearer ${idToken}`,
+            Authorization: `Bearer ${idToken}`,
         },
     });
     return await response.json();
@@ -175,7 +175,7 @@ export const getSimilarArtists = async (idToken:string, appPubKey:string, id:str
     let url = `${SERVER_URL}/account/artists/similar?id=${id}&refreshToken=${refreshToken}&appPubKey=${appPubKey}`;
     const response = await fetch(url, {
         headers: {
-        Authorization: `Bearer ${idToken}`,
+            Authorization: `Bearer ${idToken}`,
         },
     });
     return await response.json();
@@ -187,7 +187,7 @@ export const getNewMusic = async (idToken:string, appPubKey:string, refreshToken
         url += `&nextUrl=${encodeURIComponent(nextUrl)}`;
     const response = await fetch(url, {
         headers: {
-        Authorization: `Bearer ${idToken}`,
+            Authorization: `Bearer ${idToken}`,
         },
     });
     return await response.json();
@@ -200,7 +200,7 @@ export const getNFTs = async (idToken:string, appPubKey:string, chains:string, a
     
     const response = await fetch(url, {
         headers: {
-        Authorization: `Bearer ${idToken}`,
+            Authorization: `Bearer ${idToken}`,
         },
     });
     return await response.json();
@@ -210,7 +210,7 @@ export const getNFTByTokenId = async (idToken:string, appPubKey:string, chain:st
     let url = `${SERVER_URL}/account/nft?chain=${chain}&contractAddress=${contractAddress}&tokenId=${tokenId}&appPubKey=${appPubKey}`;
     const response = await fetch(url, {
         headers: {
-        Authorization: `Bearer ${idToken}`,
+            Authorization: `Bearer ${idToken}`,
         },
     });
     return await response.json();
@@ -220,7 +220,7 @@ export const getCollections = async (idToken:string, appPubKey:string, pk:string
     let url = `${SERVER_URL}/account/collections?pk=${pk}&appPubKey=${appPubKey}`;
     const response = await fetch(url, {
         headers: {
-        Authorization: `Bearer ${idToken}`,
+            Authorization: `Bearer ${idToken}`,
         },
     });
     return await response.json();
@@ -230,7 +230,7 @@ export const getCollection = async (idToken:string, appPubKey:string, pk:string,
     let url = `${SERVER_URL}/account/collection?pk=${pk}&sk=${sk}&appPubKey=${appPubKey}`;
     const response = await fetch(url, {
         headers: {
-        Authorization: `Bearer ${idToken}`,
+            Authorization: `Bearer ${idToken}`,
         },
     });
     return await response.json();
@@ -240,8 +240,8 @@ export const createCollection = async (idToken:string, appPubKey:string, pk:stri
     const response = await fetch(`${SERVER_URL}/account/collections/${pk}?appPubKey=${appPubKey}`, {
         method: 'POST',
         headers: {
-        Authorization: `Bearer ${idToken}`,
-        "Content-Type": "application/json"
+            Authorization: `Bearer ${idToken}`,
+            "Content-Type": "application/json"
         },
         body: JSON.stringify({name, nfts})  
     });
@@ -252,10 +252,80 @@ export const deleteCollection = async (idToken:string, appPubKey:string, pk:stri
     const response = await fetch(`${SERVER_URL}/account/collections/${pk}?appPubKey=${appPubKey}&sk=${sk}`, {
         method: 'DELETE',
         headers: {
-        Authorization: `Bearer ${idToken}`,
+            Authorization: `Bearer ${idToken}`,
             "Content-Type": "application/json"
         },
         body: JSON.stringify({sk})  
     });
     return await response.json();    
+}
+
+export const claimArtistCollectible = async (idToken:string, appPubKey:string, walletAddress:string, artist:object, streamedMilliseconds:number) => {
+    const response = await fetch(`${SERVER_URL}/nft/mint/spotify/artist?appPubKey=${appPubKey}`, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${idToken}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({walletAddress, artist, streamedMilliseconds})  
+    });
+    return await response.json();   
+}
+
+export const claimTrackCollectible = async (idToken:string, appPubKey:string, walletAddress:string, track:object,) => {
+    const response = await fetch(`${SERVER_URL}/nft/mint/spotify/track?appPubKey=${appPubKey}`, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${idToken}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({walletAddress, track})  
+    });
+    return await response.json(); 
+}
+
+export const getArtistCollector = async (idToken:string, appPubKey:string, pk:string, artistId:string) => {
+    let url = `${SERVER_URL}/artist/collector/${artistId}?pk=${pk}&appPubKey=${appPubKey}`;
+    const response = await fetch(url, {
+        headers: {
+            Authorization: `Bearer ${idToken}`,
+        },
+    });
+    return await response.json();
+}
+
+export const createArtistCollector = async (idToken:string, appPubKey:string, artistId:string, user:{pk:string}, collectibleCount:number) => {
+    const response = await fetch(`${SERVER_URL}/artist/collector/${artistId}/${user.pk}?appPubKey=${appPubKey}`, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${idToken}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({user, collectibleCount})  
+    });
+    return await response.json(); 
+}
+
+export const createArtistCollectible = async (idToken:string, appPubKey:string, artist:object, achievement:string) => {
+    const response = await fetch(`${SERVER_URL}/artist/collectible?appPubKey=${appPubKey}`, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${idToken}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({artist, achievement})  
+    });
+    return await response.json(); 
+}
+
+export const createCollectible = async (idToken:string, appPubKey:string, pk:string, artist:object, achievement:string, streamedMilliseconds:number, user:object, status:string, transaction:object) => {
+    const response = await fetch(`${SERVER_URL}/account/collectible/${pk}?appPubKey=${appPubKey}`, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${idToken}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({artist, achievement, streamedMilliseconds, user, status, transaction})  
+    });
+    return await response.json(); 
 }
