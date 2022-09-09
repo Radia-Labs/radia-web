@@ -1,5 +1,6 @@
 
 import {useEffect, useState} from 'react';
+import { useNavigate } from 'react-router-dom';
 import NFTs from '../Components/NFTs';
 import {
   getNFTs,
@@ -7,22 +8,27 @@ import {
   getCollection,
   createCollection
 } from '../utils';
-import { Text, Button, FixedFooter, Box } from '../Components/styles';
+import { Text, Button, FixedFooter, FooterActionsWrapper, Box } from '../Components/styles';
 import { useCurrentUser } from "../Providers/Auth"
 import { toast } from 'react-toastify';
 import { ToastContainer } from 'react-toastify';
+import AddToCollectionModalBody from '../Components/AddToCollectionModalBody';
+import ErrorModalBody from '../Components/ErrorModalBody';
 import { colors } from '../constants';
-
+import {StyledModal} from '../styles';
+import { ModalProvider } from 'styled-react-modal'
 function AllCollectibles() {
     const [nfts, setNFTs] = useState<Array<object>>();
+    const [showErrorModal, setShowErrorModal] = useState(false);
     const [nextUrl, setNextUrl] = useState<string|undefined>();
     const [loading, setLoading] = useState<boolean>(false);
     const [collections, setCollections] = useState<Array<object>>();
-    const [selectedNFTs, setSelectedNFTs] = useState<object[]>([])
+    const [selectedNFTs, setSelectedNFTs] = useState<{chain:string, contract_address:string, token_id:string}[]>([])
     const [collectionName, setCollectionName] = useState<string>('')
     const [collection, setSelectedCollection] = useState<string>('')
     const [showAddToCollectionModal, setShowAddToCollectionModal] = useState<boolean>(false)    
     const { currentUser } = useCurrentUser()
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -98,9 +104,10 @@ function AllCollectibles() {
     }
   
     const showAddToCollection = () => {
-      if (selectedNFTs.length > 0) {
+      if (selectedNFTs.length > 1) 
         setShowAddToCollectionModal(true)
-      }
+      else
+        setShowErrorModal(true)
     }
   
     const hideAddToCollection = () => {
@@ -121,29 +128,79 @@ function AllCollectibles() {
   
     const updateCollection = () => {
       handleUpdateCollection(collection, selectedNFTs)
-    }      
+    }     
+    
+    const goToCollectible = () => {
+      navigate(`/${selectedNFTs[0].chain}/${selectedNFTs[0].contract_address}/${selectedNFTs[0].token_id}`)
+  }
+
+  const hideErrorModal = () => {
+    setShowErrorModal(false)
+  }
 
   return (
     <Box margin="0 0 5em 0">
-      {nfts ? <NFTs loading={loading} nfts={nfts as object[]} collections={collections as object[]} selectedNFTs={selectedNFTs} 
-      showAddToCollection={showAddToCollection} setSelected={setSelected} showAddToCollectionModal={showAddToCollectionModal}
-      hideAddToCollection={hideAddToCollection} handleNameChange={handleNameChange} handleCollectionChange={handleCollectionChange}
-      collectionName={collectionName} submitCollection={submitCollection} updateCollection={updateCollection} collection={collection}
-      /> : null}
+      {nfts ? <NFTs nfts={nfts as object[]} selectedNFTs={selectedNFTs} setSelected={setSelected}/> : null}
       
       {nextUrl ? <Button margin="0 0 0 0" background="transparent" border={`1px solid ${colors.primaryLight}`} disabled={!nextUrl} onClick={loadMore}>Load More</Button>: null}
       
       <FixedFooter show={selectedNFTs.length}>
         <Text fontWeight="400">{selectedNFTs.length} {selectedNFTs.length > 1 ? 'collectibles' : 'collectible'} selected</Text>
-        <Button
-          margin="0 3em 0 0"
-          onClick={showAddToCollection}
-          background="transparent" 
-          border={`1px solid ${colors.primaryLight}`} 
-          disabled={selectedNFTs.length == 0}> 
-          {collections && collections.length ? "Add To Collection" : "Create Collection"}
-        </Button>
+
+
+        <FooterActionsWrapper justifyContent="flex-end" margin="0 5em">
+          <Text
+            fontWeight="400"
+            fontSize="1em"
+            cursor="pointer"
+            disabled={selectedNFTs.length > 1}
+            margin="0 3em 0 0"
+            onClick={goToCollectible}
+            border={`1px solid ${colors.primaryLight}`}> 
+            View Collectible
+          </Text>
+
+
+          <Button
+            margin="0 3em 0 0"
+            onClick={showAddToCollection}
+            background="transparent" 
+            border={`1px solid ${colors.primaryLight}`} 
+            disabled={selectedNFTs.length == 0}> 
+            {collections && collections.length ? "Add To Collection" : "Create Collection"}
+          </Button>
+        </FooterActionsWrapper>
+
       </FixedFooter>
+
+      <ModalProvider>
+            <StyledModal
+                isOpen={showErrorModal}
+                onBackgroundClick={hideErrorModal}
+                onEscapeKeydown={hideErrorModal}>
+                <ErrorModalBody 
+                title="Unable to Create Collection" 
+                text="You must select at least two collectibles." 
+                buttonText="Select More Collectibles"
+                hideErrorModal={hideErrorModal}/>
+            </StyledModal>  
+
+            <StyledModal
+                isOpen={showAddToCollectionModal}
+                onBackgroundClick={hideAddToCollection}
+                onEscapeKeydown={hideAddToCollection}>
+                <AddToCollectionModalBody 
+                loading={loading}
+                handleNameChange={handleNameChange}
+                handleCollectionChange={handleCollectionChange}
+                collectionName={collectionName}
+                collections={collections as object[]}
+                submitCollection={() => submitCollection()}
+                updateCollection={() => updateCollection()}
+                collection={collection}
+                />
+            </StyledModal>        
+          </ModalProvider>      
 
     <ToastContainer 
     position="bottom-right"

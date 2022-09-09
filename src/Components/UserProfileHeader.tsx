@@ -56,7 +56,7 @@ function UserProfileHeader({user, walletAddress, exportPrivateKey, handleCopy, c
                         </CopyToClipboard>
                         <Flex alignItems="flex-start" justifyContent="flex-start" flexDirection="column">
                             <Text margin="0 0 1em 1em" onClick={exportPrivateKey} fontSize=".8em" color={colors.lightGrey} cursor="pointer"><PrivateKeyIcon/> Export Private Key</Text>    
-                            <Text  color={colors.lightGrey} cursor="pointer" margin="0 0 0 1em" fontSize=".8em" onClick={logout}><LogoutIcon/> Logout</Text>
+                            <Text  color={colors.lightGrey} cursor="pointer" margin="0 0 0 1em" fontSize=".8em" onClick={logout}><LogoutIcon/> Log Out</Text>
                         </Flex>
                         
                     </ProfileWalletWrapper> 

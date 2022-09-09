@@ -29,8 +29,6 @@ type Props = {
 
 const NFT = ({ nft, isSelected, collectorImage, setSelectedNFTs, selectedNFTs }: Props) => {
 
-
-
     return (
         <CollectibleCard onClick={() => setSelectedNFTs(nft)} isSelected={isSelected}>
             <CollectibleImage image={nft.image_url}/>

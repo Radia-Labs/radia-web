@@ -58,7 +58,9 @@ function CollectibleDetails() {
     }
 
     const goToCollectible = () => {
-        navigate(`/${selectedNFTs[0].chain}/${selectedNFTs[0].contract_address}/${selectedNFTs[0].token_id}`)
+        if (selectedNFTs.length == 1) {
+            navigate(`/${selectedNFTs[0].chain}/${selectedNFTs[0].contract_address}/${selectedNFTs[0].token_id}`)
+        }
     }
 
     const handleRemove = async () => {

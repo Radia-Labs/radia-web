@@ -32,7 +32,7 @@ const PrivateKeyModalBody = ({setIsPrivateKeyModalOpen}: Props) => {
        {!showPrivateKey && <Button background="transparent" color={colors.primaryOrange} border={`2px solid ${colors.primaryOrange}`} margin="0 0 1.5em 0" onClick={_showPrivateKey}>Reveal Private Key</Button>}
        {privateKey && showPrivateKey && <Paragraph color={colors.primaryOrange} fontSize=".8em" padding="0 6em" textAlign="center">{privateKey}</Paragraph>}
        <Text margin="0 0 2.5em 0" cursor="pointer" fontSize=".8em" fontWeight="400" onClick={() => setIsPrivateKeyModalOpen(false)}>Close Dialog</Text>
-       <Paragraph fontSize=".4em" padding="0 6em" textAlign="center">*Never share this key. Anyone with your private key has full access to your account .</Paragraph>
+       <Paragraph fontSize=".5em" padding="0 6em" textAlign="center">Warning: never share this key. <br/>Anyone with your private key has full access to your account.</Paragraph>
     </Flex>)
 }
 

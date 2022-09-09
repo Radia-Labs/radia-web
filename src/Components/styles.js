@@ -59,10 +59,9 @@ export const Text = styled.span`
     color:  ${props => props.color || colors.primaryLight}; 
     cursor: ${props => props.cursor || "inherit"}; 
     margin: ${props => props.margin || 'none'}; 
+    opacity: ${props => props.disabled ? '.5' : '1'};
     transition: all .2s ease-in-out;
-    &:hover {
-        opacity: ${props => props.cursor ? '.7' : '1'};
-    }
+    &:hover { opacity: ${props => props.disabled ? '.5' : '.9'}; };
 `
 
 export const Button = styled.button`
@@ -756,6 +755,7 @@ export const FanWrapper = styled.div`
     align-items: flex-start; 
     justify-content: flex-start;
     margin: 0 0 1em 0;
+    width: 100%;
 
     @media (max-width: ${size.mobileL}) { 
         display: block;  
@@ -915,19 +915,39 @@ export const CollectionWrapper = styled.div`
     background-color: ${colors.secondaryDark};
     padding: 1em;
     margin: 0 1em 1em 0;
-    width: 20em;
-    max-height: 20em;
+    width: 17.5em;
+    max-height: 17.5em;
     cursor: pointer;
     transition: all .2s ease-in-out;
     &:hover {
         opacity: .7;
-    }    
-
+    } 
+    
     @media (max-width: ${size.mobileL}) { 
         margin: 0;
         width: 100%;
+        max-height:17.5em;
         margin-bottom:1em;
-    }       
+        flex-basis: 100%;
+        margin-right: 0;        
+    }   
+  
+    @media ${device.laptop} { 
+        width: 16.2em;
+        max-height: 16.2em;
+    }
+
+    @media ${device.laptopL} { 
+        width: 17.5em;
+        max-height: 17.5em;
+    }    
+    
+    @media ${device.desktop} {
+        width: 20em;
+        max-height: 20em;
+    }    
+
+    
 `
 export const CollectionItem = styled.div`
     width: 6em;

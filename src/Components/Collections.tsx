@@ -46,8 +46,7 @@ const Collections = () => {
             <Flex justifyContent="flex-start" alignItems="left">
               {collections?.length ? collections?.map((collection: any) => (
                 <Collection key={collection.sk} collection={collection}/>
-              )) : renderEmpty()
-            }
+              )) : renderEmpty()}
             </Flex></>}
         </Flex> 
     )

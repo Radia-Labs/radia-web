@@ -14,6 +14,11 @@ import {
     Spinner,
     Text
 } from "./styles";
+import {
+    getCollectibleType,
+    goToArtist,
+    generateCollectibleImage
+} from "../utils";
 
 import {Flex} from '../styles'
 import { colors } from "../constants";
@@ -46,71 +51,9 @@ type Props = {
     isMinting: boolean;
 }
 
-function getCollectibleType(collectible:any) {
-    // TODO: this should also support other achievements like "streamedTrackInFirst24Hours"
-    let acheivement 
-    if (collectible.achievement === 'streamedMilliseconds')
-        acheivement = getCurrentAcheivement(collectible)
-    else
-        acheivement = getEarnedAcheivement(collectible)
-    return `${collectible.artist.name} - ${acheivement}`    
-  }
-
-function getCurrentAcheivement(collectible:any) {
-        
-if (collectible.streamedMilliseconds <= 3600000 ) {
-    return '1 Hour Streamed'
-}
-
-if (collectible.streamedMilliseconds >= 3600000 && collectible.streamedMilliseconds <= 3600000 * 5) {
-    return '5 Hours Streamed'
-}  
-
-if (collectible.streamedMilliseconds >= 3600000 * 5 && collectible.streamedMilliseconds <= 3600000 * 10) {
-    return '10 Hours Streamed'
-}       
-
-if (collectible.streamedMilliseconds >= 3600000 * 10 && collectible.streamedMilliseconds <= 3600000 * 15) {
-    return '15 Hours Streamed'
-}        
-
-if (collectible.streamedMilliseconds >= 3600000 * 15 && collectible.streamedMilliseconds <= 3600000 * 25) {
-    return '25 Hours Streamed'
-}     
-
-}  
-
-function getEarnedAcheivement(collectible:any) {
-
-if (collectible.streamedMilliseconds >= 3600000 && collectible.streamedMilliseconds <= 3600000 * 5) {
-    return '1 Hour Streamed'
-}  
-
-if (collectible.streamedMilliseconds >= 3600000 * 5 && collectible.streamedMilliseconds <= 3600000 * 10) {
-    return '5 Hours Streamed'
-}       
-
-if (collectible.streamedMilliseconds >= 3600000 * 10 && collectible.streamedMilliseconds <= 3600000 * 15) {
-    return '10 Hours Streamed'
-}        
-
-if (collectible.streamedMilliseconds >= 3600000 * 15 && collectible.streamedMilliseconds <=3600000 * 25) {
-    return '15 Hours Streamed'
-}     
-
-if (collectible.streamedMilliseconds >= 3600000 * 25) {
-    return '25 Hours Streamed'
-}             
-
-}
-
-function goToArtist(collectible:any) {
-    window.location.href = `/artist/${collectible.artist.id}`
-}
-
 const Details = ({collectible, claimCollectible, isMinting}: Props) => (
     <CollectibleDetailsWrapper>
-        <CollectibleDetailsImage image={collectible.artist.images[0].url}/>
+        <CollectibleDetailsImage image={generateCollectibleImage(collectible)}/>
         
         <CollectibleTextWrapper >
             <CollectibleTitle>{getCollectibleType(collectible)}</CollectibleTitle>

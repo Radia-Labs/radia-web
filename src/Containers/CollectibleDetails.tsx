@@ -12,7 +12,9 @@ import {
   getArtistCollector,
   createArtistCollector,
   createArtistCollectible,
-  createCollectible
+  claimTrackCollectible,
+  createUserArtistCollectible,
+  createUserTrackCollectible
 } from '../utils';
 import { useCurrentUser } from "../Providers/Auth"
 import { toast } from 'react-toastify';
@@ -20,7 +22,7 @@ import { ToastContainer } from 'react-toastify';
 
 function CollectibleDetails() {
   const [isMinting, setIsMinting] = useState(false)
-  const [collectible, setCollectible] = useState<{artist:{id:string}, achievement:string, streamedMilliseconds:number}>();
+  const [collectible, setCollectible] = useState<{artist:{id:string}, track:object, achievement:string, streamedMilliseconds:number}>();
   const [similarArtists, setSimilarArtists] = useState<object[]>();
   const params = useParams();
   const { currentUser } = useCurrentUser()
@@ -43,7 +45,7 @@ function CollectibleDetails() {
           created: undefined,
           transaction: undefined
       }     
-      setCollectible(collectible)   
+      setCollectible(collectible as any)   
       const _similarArtists = await getSimilarArtists(currentUser?.idToken as string, currentUser?.appPubKey as string, artist.id, spotify.Items[0].refresh_token);
       setSimilarArtists(_similarArtists.artists.slice(0, 4))      
 
@@ -61,25 +63,33 @@ function CollectibleDetails() {
   }, [collectible, currentUser]);
 
   const claimCollectible = async () => {
-    if (collectible && "streamedMilliseconds" in collectible) {
-      setIsMinting(true)
-      const toastId = toast.loading("Claiming collectible...")
-      const transaction = await claimArtistCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.addresses.polygon as string, collectible.artist, collectible.streamedMilliseconds)
-      const status = 'minted';
-      await createCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string, collectible.artist as object, collectible.achievement as string, collectible.streamedMilliseconds as number, currentUser as object, status, transaction);
-      
-      const artistCollector = await getArtistCollector(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string, collectible.artist.id as string);
-      let collectibleCount = 1
-      if (artistCollector.Count > 0)
-        collectibleCount = artistCollector.Items[0].collectibleCount+ 1;
-      await createArtistCollector(currentUser?.idToken as string, currentUser?.appPubKey as string, collectible.artist.id as string, currentUser as any, collectibleCount);
-      await createArtistCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, collectible.artist as object, collectible.achievement as string);
+    
+    setIsMinting(true)
+    const toastId = toast.loading("Claiming collectible...")
+    const status = 'minted';
 
-      setIsMinting(false)
-      toast.update(toastId, { render: "Collectible claimed!", type: "success", isLoading: false, autoClose: 5000, hideProgressBar: true });
-      const _collectible = await getCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string, params.sk as string);
-      setCollectible(_collectible.Items[0])
+    let transaction;
+    if (collectible?.achievement === 'streamedTrackInFirst24Hours') {
+      transaction = await claimTrackCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.addresses.polygon as string, collectible?.track as object)
+      await createUserTrackCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string, collectible?.artist as object, collectible?.track as object, collectible?.achievement as string, currentUser as object, status, transaction);
     }
+
+    if (collectible?.achievement === 'streamedMilliseconds') {
+      transaction = await claimArtistCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.addresses.polygon as string, collectible?.artist as object, collectible?.streamedMilliseconds as number)
+      await createUserArtistCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string, collectible?.artist as object, collectible?.achievement as string, collectible?.streamedMilliseconds as number, currentUser as object, status, transaction);
+    }
+    
+    const artistCollector = await getArtistCollector(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string, collectible?.artist.id as string);
+    let collectibleCount = 1
+    if (artistCollector.Count > 0)
+      collectibleCount = artistCollector.Items[0].collectibleCount+ 1;
+    await createArtistCollector(currentUser?.idToken as string, currentUser?.appPubKey as string, collectible?.artist.id as string, currentUser as any, collectibleCount);
+    await createArtistCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, collectible?.artist as object, collectible?.achievement as string);
+
+    setIsMinting(false)
+    toast.update(toastId, { render: "Collectible claimed!", type: "success", isLoading: false, autoClose: 5000, hideProgressBar: true });
+    const _collectible = await getCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string, params.sk as string);
+    setCollectible(_collectible.Items[0])
 
   }
 

@@ -1,9 +1,8 @@
 import {useState, useEffect} from 'react';
-import { useNavigate } from 'react-router-dom'
 import {Flex} from "../styles";
 import {H1} from './styles';
 import Pagination from './Pagination';
-import { getArtists, getUser } from "../utils";
+import { getArtists, goToArtist } from "../utils";
 import Artist from '../Components/Artist';
 import { useCurrentUser } from "../Providers/Auth"
 
@@ -13,7 +12,6 @@ const TrendingArtists = () => {
     const [artists, setArtists] = useState<Array<object>>();
     const [allArtists, setAllArtists] = useState<Array<object>>([]);
     const [index, setIndex] = useState(9);
-    const navigate = useNavigate() 
     const { currentUser } = useCurrentUser()
     const limit = undefined;
 
@@ -44,30 +42,26 @@ const TrendingArtists = () => {
       setNextLoading(false)     
 
   }    
-         
-      function goToArtistProfile(artist:any) {
-        navigate(`/artist/${artist.id}`)
-      }
+        
 
+  return (
+    artists?.length ? <Flex margin="0 0 5em 0" flexDirection="column" alignItems="left" justifyContent="flex-start">
+      <Flex>
+        <H1 fontSize="1.5rem">Trending Artists</H1>
+        <Pagination loadingNext={loadingNext} loadingBack={loadingBack} onBack={getPreviousArtists} onNext={getNextArtists} disabledBack={index == 9} disabledNext={index >= allArtists.length}/>
+      </Flex>
 
-    return (
-      artists?.length ? <Flex margin="0 0 5em 0" flexDirection="column" alignItems="left" justifyContent="flex-start">
-        <Flex>
-          <H1 fontSize="1.5rem">Trending Artists</H1>
-          <Pagination loadingNext={loadingNext} loadingBack={loadingBack} onBack={getPreviousArtists} onNext={getNextArtists} disabledBack={index == 9} disabledNext={index >= allArtists.length}/>
-        </Flex>
-
-        <Flex justifyContent="flex-start" alignItems="center">
-            {artists?.map((artist:any) => {
-            return <Artist 
-            key={artist.id}
-            artistImage={artist.images?.[0]?.url} 
-            artistName={artist.name} 
-            onClick={() => goToArtistProfile(artist)}/>
-            })}
-        </Flex>
-      </Flex> : null
-    );
+      <Flex justifyContent="flex-start" alignItems="center">
+          {artists?.map((artist:any) => {
+          return <Artist 
+          key={artist.id}
+          artistImage={artist.images?.[0]?.url} 
+          artistName={artist.name} 
+          onClick={() => goToArtist(artist)}/>
+          })}
+      </Flex>
+    </Flex> : null
+  );
  
 
 }

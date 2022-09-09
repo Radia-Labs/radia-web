@@ -6,6 +6,9 @@ import { getCollectibles } from "../utils";
 import Collectible from '../Components/Collectible';
 import {User} from '../Models/User'
 import { useCurrentUser } from "../Providers/Auth"
+import { 
+  getCollectibleType
+} from "../utils";
 
 const InProgress = () => {
     const [loading, setLoading] = useState(true)
@@ -51,56 +54,6 @@ const InProgress = () => {
         setNextLoading(false)     
     }
 
-    // function getCollectibleSk(collectible:any) {
-    //   if (collectible.streamedMilliseconds <= 3600000 ) {
-    //     return `Collectible|01HourStreamed|${collectible.artist.id}`
-    //   }
-  
-    //   if (collectible.streamedMilliseconds >= 3600000 && collectible.streamedMilliseconds <= 3600000 * 5) {
-    //     return `Collectible|05HoursStreamed|${collectible.artist.id}`
-    //   }  
-      
-    //   if (collectible.streamedMilliseconds >= 3600000 * 5 && collectible.streamedMilliseconds <= 3600000 * 10) {
-    //     return `Collectible|10HoursStreamed|${collectible.artist.id}`
-    //   }       
-  
-    //   if (collectible.streamedMilliseconds >= 3600000 * 10 && collectible.streamedMilliseconds <= 3600000 * 15) {
-    //     return `Collectible|15HoursStreamed|${collectible.artist.id}`
-    //   }        
-    
-    //   if (collectible.streamedMilliseconds >= 3600000 * 15 && collectible.streamedMilliseconds <= 3600000 * 25) {
-    //     return `Collectible|25HoursStreamed|${collectible.artist.id}`
-    //   }         
-    // }
-    
-    function getCollectibleType(collectible:any) {
-      const currentAchievement = getCurrentAcheivement(collectible)
-      return `${collectible.artist.name} - ${currentAchievement}`    
-    }
-  
-    function getCurrentAcheivement(collectible:any) {
-          
-      if (collectible.streamedMilliseconds <= 3600000 ) {
-        return '1 Hour Streamed'
-      }
-  
-      if (collectible.streamedMilliseconds >= 3600000 && collectible.streamedMilliseconds <= 3600000 * 5) {
-        return '5 Hours Streamed'
-      }  
-      
-      if (collectible.streamedMilliseconds >= 3600000 * 5 && collectible.streamedMilliseconds <= 3600000 * 10) {
-        return '10 Hours Streamed'
-      }       
-  
-      if (collectible.streamedMilliseconds >= 3600000 * 10 && collectible.streamedMilliseconds <= 3600000 * 15) {
-        return '15 Hours Streamed'
-      }        
-    
-      if (collectible.streamedMilliseconds >= 3600000 * 15 && collectible.streamedMilliseconds <= 3600000 * 25) {
-        return '25 Hours Streamed'
-      }     
-  
-    }
 
     const calculateProgress = (collectible:{streamedMilliseconds: number}) => {
       if (collectible.streamedMilliseconds <= 3600000 ) {

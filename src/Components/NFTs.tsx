@@ -1,33 +1,15 @@
 import {Flex} from "../styles";
-import {H1, Button, FixedFooter} from '../Components/styles';
+import {H1} from '../Components/styles';
 import { useCurrentUser } from "../Providers/Auth"
-import AddToCollectionModalBody from './AddToCollectionModalBody';
 import NFT from '../Components/NFT';
-import {colors} from '../constants';
-import {StyledModal} from '../styles';
-import { ModalProvider } from 'styled-react-modal'
+
 type Props = {
-  loading: boolean;
   nfts: Array<object>;
-  collections: Array<object>;
   selectedNFTs: Array<object>;
-  showAddToCollection: () => void;
   setSelected: (nft: object) => void;
-  showAddToCollectionModal: boolean;
-  hideAddToCollection: () => void;
-  handleNameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleCollectionChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  collectionName: string;
-  submitCollection: () => void;
-  updateCollection: () => void;
-  collection: string;
 };
 
-const NFTs = ({
-  loading, nfts, collections, selectedNFTs, 
-  showAddToCollection, setSelected, showAddToCollectionModal, 
-  hideAddToCollection, handleNameChange, handleCollectionChange, 
-  collectionName, submitCollection, updateCollection, collection}: Props) => {    
+const NFTs = ({nfts, selectedNFTs, setSelected}: Props) => {    
 
   const { currentUser } = useCurrentUser()
 
@@ -55,24 +37,6 @@ const NFTs = ({
           }): null}
 
         </Flex>
-            
-          <ModalProvider>
-            <StyledModal
-                isOpen={showAddToCollectionModal}
-                onBackgroundClick={hideAddToCollection}
-                onEscapeKeydown={hideAddToCollection}>
-                <AddToCollectionModalBody 
-                loading={loading}
-                handleNameChange={handleNameChange}
-                handleCollectionChange={handleCollectionChange}
-                collectionName={collectionName}
-                collections={collections as object[]}
-                submitCollection={() => submitCollection()}
-                updateCollection={() => updateCollection()}
-                collection={collection}
-                />
-            </StyledModal>        
-          </ModalProvider>
 
         </Flex> 
         

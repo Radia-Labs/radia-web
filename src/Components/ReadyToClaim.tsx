@@ -2,10 +2,13 @@ import {useState, useEffect} from 'react';
 import {Flex} from "../styles";
 import {H1} from './styles';
 import Pagination from './Pagination';
-import { getCollectibles } from "../utils";
+import { getCollectibles, generateCollectibleImage } from "../utils";
 import {User} from '../Models/User'
 import Achievement from './Achievement';
 import { useCurrentUser } from "../Providers/Auth"
+import { 
+  getCollectibleType
+} from "../utils";
 
 const ReadyToClaim = () => {
     const [loadingNext, setNextLoading] = useState(false);
@@ -49,38 +52,8 @@ const ReadyToClaim = () => {
         setIndex(index+4)
         setCollectibles(allCollectibles?.slice(index, index+4)) 
         setNextLoading(false)     
+    }
 
-    }
-    
-    function getCollectibleType(collectible:any) {
-      const currentAchievement = getEarnedAcheivement(collectible)
-      return `${collectible.artist.name} - ${currentAchievement}`    
-    }
-  
-    function getEarnedAcheivement(collectible:any) {
-  
-      if (collectible.streamedMilliseconds >= 3600000 && collectible.streamedMilliseconds <= 3600000 * 5) {
-        return '1 Hour Streamed'
-      }  
-      
-      if (collectible.streamedMilliseconds >= 3600000 * 5 && collectible.streamedMilliseconds <= 3600000 * 10) {
-        return '5 Hours Streamed'
-      }       
-  
-      if (collectible.streamedMilliseconds >= 3600000 * 10 && collectible.streamedMilliseconds <= 3600000 * 15) {
-        return '10 Hours Streamed'
-      }        
-    
-      if (collectible.streamedMilliseconds >= 3600000 * 15 && collectible.streamedMilliseconds <=3600000 * 25) {
-        return '15 Hours Streamed'
-      }     
-
-      if (collectible.streamedMilliseconds >= 3600000 * 25) {
-          return '25 Hours Streamed'
-      }             
-  
-    }
-    
     return (
       collectibles?.length ? <Flex margin="0 0 5em 0" flexDirection="column" alignItems="left" justifyContent="flex-start">
             <Flex>
@@ -94,7 +67,7 @@ const ReadyToClaim = () => {
                 return <Achievement
                 key={collectible.sk}
                 collectibleId={collectible.sk}
-                collectibleImage={collectible.artist.images[0]?.url}
+                collectibleImage={generateCollectibleImage(collectible)}
                 collectibleName={collectibleType as string}
                 collectorImage={user?.profileImage}
                 collectorName={user?.name ? user?.name : user?.pk}

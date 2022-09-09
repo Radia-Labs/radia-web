@@ -1,23 +1,20 @@
 import {useState, useEffect} from 'react';
 import { useWeb3Auth } from "../Services/web3auth";
-import { useNavigate } from 'react-router-dom'
 import {Flex} from "../styles";
 import {H1} from './styles';
 import Pagination from './Pagination';
-import { getArtists } from "../utils";
+import { getArtists, goToArtist } from "../utils";
 import Artist from '../Components/Artist';
-import {User} from '../Models/User'
 import { useCurrentUser } from "../Providers/Auth"
 
 const TrendingArtists = () => {
 
-    const { provider, login, logout, getAccounts, web3Auth } = useWeb3Auth();
+    const { provider, web3Auth } = useWeb3Auth();
     const [loadingNext, setNextLoading] = useState(false);
     const [loadingBack, setBackLoading] = useState(false);
     const [artists, setArtists] = useState<Array<object>>();
     const [allArtists, setAllArtists] = useState<Array<object>>([]);
     const [index, setIndex] = useState(9);
-    const navigate = useNavigate() 
     const { currentUser } = useCurrentUser()
     const limit = undefined;
 
@@ -48,11 +45,6 @@ const TrendingArtists = () => {
       setNextLoading(false)     
 
   }    
-      
-  function goToArtistProfile(artist:any) {
-    navigate(`/artist/${artist.id}`)
-  }
-
 
     return (
       artists?.length ? <Flex margin="0 0 5em 0" flexDirection="column" alignItems="left" justifyContent="flex-start">
@@ -67,7 +59,7 @@ const TrendingArtists = () => {
             key={artist.id}
             artistImage={artist.images[0]?.url} 
             artistName={artist.name} 
-            onClick={() => goToArtistProfile(artist)}/>
+            onClick={() => goToArtist(artist)}/>
             })}
         </Flex>
       </Flex> : null
