@@ -345,7 +345,6 @@ export const createUserTrackCollectible = async (idToken:string, appPubKey:strin
 export const getCollectibleType = (collectible:any) => {
     let acheivement 
     
-    console.log(collectible)
     if (collectible.achievement === 'streamedMilliseconds')
         acheivement = getCurrentAcheivement(collectible)
 

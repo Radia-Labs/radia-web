@@ -33,7 +33,7 @@ const Collections = () => {
       }
 
       const renderEmpty = () => {        
-        return <Text fontWeight="400" fontSize=".8" margin="0 1em 0 0"><Text fontSize=".8" cursor="pointer" color={colors.brightGreen} fontWeight="400" onClick={goToAllNFTs}>{<br/>}Click here</Text> to create your first Collection.</Text>
+        return <Text fontWeight="400" fontSize=".8" margin="0 1em 0 0"><Text fontSize=".8" cursor="pointer" color={colors.seaGreen} fontWeight="400" onClick={goToAllNFTs}>{<br/>}Click here</Text> to create your first Collection.</Text>
       }
     
     return (
