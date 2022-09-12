@@ -25,7 +25,7 @@ const SpotifyLoadingModalBody = ({setSpotifyLoadingModalIsOpen}: Props) => {
               window.location.reload();
               return 100;
             } else {
-              return prev + 5;
+              return prev + 2;
             }
           });
         }, 1000);

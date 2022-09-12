@@ -10,9 +10,11 @@ import {StyledModal} from '../styles';
 import { ModalProvider } from 'styled-react-modal'
 import ConfirmDeleteModalBody from '../Components/ConfirmDeleteModalBody';
 import ConfirmRemoveModalBody from '../Components/ConfirmRemoveModalBody';
+import { Overlay, Spinner } from '../Components/styles';
 
 function CollectibleDetails() {
     const { currentUser } = useCurrentUser()
+    const [loadingData, setLoadingData] = useState(false);
     const [collection, setCollection] = useState<{
         name: string,
         nfts: any[]
@@ -26,9 +28,11 @@ function CollectibleDetails() {
 
     useEffect(() => {
         const init = async () => {
+            setLoadingData(true)
             const _collection = await getCollection(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.verifierId as string, params.sk as string)
             setCollection(_collection.Items[0])
             setSelectedNFTs([]) // hack to ensure that the selectedNFTs state is reset when currentUser changes.
+            setLoadingData(false)
         }
 
         if (currentUser)
@@ -160,7 +164,7 @@ function CollectibleDetails() {
 
           
         
-        </> : null
+        </> : <Overlay>Loading...&nbsp;<Spinner/></Overlay>
     );
 }
 

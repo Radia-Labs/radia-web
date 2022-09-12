@@ -1,5 +1,4 @@
-// const SERVER_URL = 'https://qk8wia3761.execute-api.us-east-1.amazonaws.com/prod'
-const SERVER_URL = 'http://localhost:8000'
+import {SERVER_URL, MEDIA_CDN_HOST} from './constants';
 
 export const getUser = async (idToken:string, appPubKey:string, pk:string, ) => {
     const response = await fetch(`${SERVER_URL}/account/user?&pk=${pk}&appPubKey=${appPubKey}`, {
@@ -141,8 +140,8 @@ export const getArtistCollectibles = async (idToken:string, appPubKey:string, id
     return await response.json();
 }
 
-export const getArtistCollectiblesBySk = async (idToken:string, appPubKey:string, sk:string) => {
-    let url = `${SERVER_URL}/artist/collectibles/sk?sk=${sk}&appPubKey=${appPubKey}`;
+export const getCollectiblesBySk = async (idToken:string, appPubKey:string, sk:string) => {
+    let url = `${SERVER_URL}/collectibles/sk?sk=${sk}&appPubKey=${appPubKey}`;
     const response = await fetch(url, {
         headers: {
             Authorization: `Bearer ${idToken}`,
@@ -412,11 +411,13 @@ function getEarnedAcheivement(collectible:any) {
 }
 
 
-export const goToArtist = (collectible:any) => {
-    window.location.href = `/artist/${collectible.artist.id}`
-}
-
 export const generateCollectibleImage = (collectible:any) => {
+    if (collectible.status === 'readyToMint')
+        return `${MEDIA_CDN_HOST}/ready-to-claim.png`
+
+    if (collectible.status === 'minted' && collectible.transaction)
+        return collectible.transaction.nft.metadata.image
+
     if (collectible.achievement === 'streamedTrackInFirst24Hours')
       return collectible?.track.album.images[0]?.url
     else

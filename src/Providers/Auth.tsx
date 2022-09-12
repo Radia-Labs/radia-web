@@ -27,7 +27,7 @@ const defaultState = {
 const AuthContext = React.createContext<IAuthContext>(defaultState);
 
 export const AuthProvider = ({children}: {children: React.ReactNode}) => {
-  const { provider, login, web3Auth } = useWeb3Auth();
+  const { provider, login, isLoading, web3Auth } = useWeb3Auth();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isSpotifyModalOpen, setSpotifyModalIsOpen] = useState(false)
   const [isSpotifyLoadingModalOpen, setSpotifyLoadingModalIsOpen] = useState(false)  
@@ -158,10 +158,10 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     const init = async () => {
       login()
     }
-    if (web3Auth && !provider) 
+    if (web3Auth && !provider && !isLoading) 
       init()
 
-  }, [web3Auth, provider])  
+  }, [web3Auth, provider, isLoading])  
 
   const authSpotify = () => {
     const authEndpoint = "https://accounts.spotify.com/authorize";

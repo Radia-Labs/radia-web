@@ -1,5 +1,5 @@
 import {Flex} from '../styles'
-import {H1, Text, SimilarArtistCard, CollectibleImage, LetterCollectibleImage} from './styles';
+import {Text, SimilarArtistCard, CollectibleImage, LetterCollectibleImage} from './styles';
 import { useNavigate } from 'react-router-dom'
 import { colors } from '../constants';
 type Props = {
@@ -16,7 +16,6 @@ const NewMusic = ({newMusic} : Props) =>  {
 
     return (
     <Flex flexDirection="column" alignItems="flex-start" justifyContent="flex-start">
-        <H1 fontSize="1.5rem">New Music Releases</H1>
         <Flex alignItems="flex-start" justifyContent="flex-start">
         {newMusic?.length ? newMusic.map((album:any) => {
             const artists = album.artists.map((artist:any) => artist.name).join(', ')

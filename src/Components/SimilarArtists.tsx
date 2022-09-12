@@ -1,13 +1,19 @@
 import {Flex} from "../styles";
 import {SimilarArtistTitle, SimilarArtistWrapper} from './styles';
 import SimilarArtist from '../Components/SimilarArtist';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
     similarArtists: Array<{ name: string, images: Array<{url:string}>, external_urls: {spotify: string} }>
 }
 
 const SimilarArtists = ({similarArtists}: Props) => {
+    const navigate = useNavigate();
   
+    const goToCollectible = (sk:string) => {
+        navigate(`/collectible/${sk}`, { replace: true })
+    }      
+
     return (
         similarArtists?.length ? <SimilarArtistWrapper>
             <SimilarArtistTitle fontSize="1.5rem" >You Might Be Interested In</SimilarArtistTitle>
@@ -19,6 +25,7 @@ const SimilarArtists = ({similarArtists}: Props) => {
                 collectibleId={artist.id}
                 collectibleImage={artist.images[0]?.url}
                 collectibleName={`${artist.name} - 1 Hour Streamed`}
+                goToCollectible={goToCollectible}
                 />
             })}
             </Flex>

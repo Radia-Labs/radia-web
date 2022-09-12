@@ -17,11 +17,12 @@ const ArtistTopAchievements = ({topAchievements}: Props) => {
             <Flex justifyContent="flex-start" alignItems="left">
 
             {topAchievements?.map((collectible:any) => {
+                console.log(collectible)
                 const collectibleType = getCollectibleType(collectible);
                 return <Achievement
                 key={collectible.sk}
                 collectibleId={collectible.sk}
-                collectibleImage={collectible.artist.images[0]?.url}
+                collectibleImage={collectible.transaction.nft.metadata.image}
                 collectibleName={collectibleType as string}
                 collectorImage={collectible.user?.profileImage}
                 collectorName={collectible.user?.addresses.polygon}

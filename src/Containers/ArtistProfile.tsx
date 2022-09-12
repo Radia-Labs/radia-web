@@ -1,11 +1,11 @@
 
 import {useEffect, useState} from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { 
     getArtist,
     getArtistCollectibles,
     getArtistCollectors,
-    getArtistCollectiblesBySk
+    getCollectibles
   } from "../utils";
 import {Flex} from '../styles';
 import {H1, Box, Text} from '../Components/styles';
@@ -17,6 +17,7 @@ import ArtistTopAchievements from '../Components/ArtistTopAchievements';
 import ArtistRecentlyEarned from '../Components/ArtistRecentlyEarned';
 import {Artist} from '../Models/Artist';
 import { useCurrentUser } from "../Providers/Auth"
+import { MEDIA_CDN_HOST } from '../constants';
 
 function ArtistProfile() {
     const [loading, setLoading] = useState<boolean>(true);
@@ -28,34 +29,40 @@ function ArtistProfile() {
     const [topFans, setTopFans] = useState<object[]| undefined>();
     const params = useParams();
     const { currentUser } = useCurrentUser()
+    const navigate = useNavigate();
 
     useEffect(() => {
         const init = async () => {
             setLoading(true)
-
             const _artist = await getArtist(currentUser?.idToken as string, currentUser?.appPubKey as string, params.id as string);
             setArtist(_artist.Items[0] as Artist)
 
-            const _collectibles = await getArtistCollectibles(currentUser?.idToken as string, currentUser?.appPubKey as string, params.id as string);
-            setCollectibles(_collectibles)
+            getArtistCollectibles(currentUser?.idToken as string, currentUser?.appPubKey as string, params.id as string)
+            .then(_collectibles => setCollectibles(_collectibles))
             
             // This might not scale well as we grow. Move this process to a scheduled lambda eventually.
-            const _collectors = await getArtistCollectors(currentUser?.idToken as string, currentUser?.appPubKey as string, params.id as string);
-            setCollectors(_collectors.Count)
+            getArtistCollectors(currentUser?.idToken as string, currentUser?.appPubKey as string, params.id as string)
+            .then(_collectors => {
+                setCollectors(_collectors.Count)
+                const topFans = _collectors.Items.sort((a:{collectibleCount: number},b:{collectibleCount:number}) => a.collectibleCount - b.collectibleCount);
+                setTopFans(topFans.slice(0,12))                
+            })
 
-            const topFans = _collectors.Items.sort((a:{collectibleCount: number},b:{collectibleCount:number}) => a.collectibleCount - b.collectibleCount);
-            setTopFans(topFans.slice(0,12))
+            getCollectibles(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.verifierId as string)
+            .then(allCollectibles => {
+                const filteredCollectibles = allCollectibles.Items.filter((collectible:{artist:{id:string},sk:string}) => collectible.artist.id === params.id && !collectible.sk.includes('streamedMilliseconds') && "transaction" in collectible);
+                const sortedTopAchievements = filteredCollectibles.sort((a:{streamedMilliseconds:number}, b:{streamedMilliseconds:number}) => (a.streamedMilliseconds > b.streamedMilliseconds) ? 1 : -1)
+                setTopAchievements(sortedTopAchievements.slice(0, 4))
+                const sortedRecentlyEarned = filteredCollectibles.sort((a:{created:number}, b:{created:number}) => (a.created > b.created) ? 1 : -1)
+                setRecentlyEarned(sortedRecentlyEarned)
+                setLoading(false)
+            })
+            .catch(err => {
+                console.log(err)
+                setLoading(false)
+            })            
 
-            const allCollectibles = await getArtistCollectiblesBySk(currentUser?.idToken as string, currentUser?.appPubKey as string, `Collectible|spotify|streamedMilliseconds|${params.id}` as string);
-            const filteredCollectibles = allCollectibles.Items.filter((collectible:{streamedMilliseconds:number}) => collectible.streamedMilliseconds > 3600000);
-            const sortedTopAchievements = filteredCollectibles.sort((a:{streamedMilliseconds:number}, b:{streamedMilliseconds:number}) => (a.streamedMilliseconds > b.streamedMilliseconds) ? 1 : -1)
-            setTopAchievements(sortedTopAchievements.slice(0, 4))
-
-            const sortedRecentlyEarned = filteredCollectibles.sort((a:{created:number}, b:{created:number}) => (a.created > b.created) ? 1 : -1)
-            setRecentlyEarned(sortedRecentlyEarned)
             
-            setLoading(false)
-
         }
 
         if (!artist && currentUser)
@@ -63,9 +70,12 @@ function ArtistProfile() {
     }, [currentUser])
 
     const goToSpotify = () => {
-        console.log(artist)
         window.open(artist?.external_urls.spotify, '_blank');
     }
+
+    const goToCollectible = (sk:string) => {
+        navigate(`/collectible/${sk}`, { replace: true })
+    }          
 
     const renderEmptyAchievements = () => {
         return (
@@ -75,35 +85,40 @@ function ArtistProfile() {
                 <SimilarArtist
                 key={1}
                 collectibleId={collectibles?.Items[0].sk}
-                collectibleImage={artist?.images[0]?.url}
+                collectibleImage={`${MEDIA_CDN_HOST}/ready-to-claim.png`}
                 collectibleName={`${artist?.name} - 1 Hour Streamed`}
+                goToCollectible={goToCollectible}
                 /> 
                 <SimilarArtist
                 key={2}
                 collectibleId={collectibles?.Items[0].sk}
-                collectibleImage={artist?.images[0]?.url}
+                collectibleImage={`${MEDIA_CDN_HOST}/ready-to-claim.png`}
                 collectibleName={`${artist?.name} - 5 Hours Streamed`}
+                goToCollectible={goToCollectible}
                 />     
 
                 <SimilarArtist
                 key={3}
                 collectibleId={collectibles?.Items[0].sk}
-                collectibleImage={artist?.images[0]?.url}
+                collectibleImage={`${MEDIA_CDN_HOST}/ready-to-claim.png`}
                 collectibleName={`${artist?.name} - 10 Hours Streamed`}
+                goToCollectible={goToCollectible}
                 />     
 
                 <SimilarArtist
                 key={4}
                 collectibleId={collectibles?.Items[0].sk}
-                collectibleImage={artist?.images[0]?.url}
+                collectibleImage={`${MEDIA_CDN_HOST}/ready-to-claim.png`}
                 collectibleName={`${artist?.name} - 15 Hours Streamed`}
+                goToCollectible={goToCollectible}
                 />                                              
                 
                 <SimilarArtist
                 key={5}
                 collectibleId={collectibles?.Items[0].sk}
-                collectibleImage={artist?.images[0]?.url}
+                collectibleImage={`${MEDIA_CDN_HOST}/ready-to-claim.png`}
                 collectibleName={`${artist?.name} - 25 Hours Streamed`}
+                goToCollectible={goToCollectible}
                 />                   
             
             </Flex>
@@ -116,7 +131,7 @@ function ArtistProfile() {
         return (
         <Box margin="0 0 5em 0">
             <H1 fontsize="1.5em">Top Fans</H1>
-            <Text fontSize="1em" fontWeight="400">This artist does not have any Top Fans yet. Be the first - <Text cursor="pointer" fontSize="1em" fontWeight="400" color={colors.brightGreen} onClick={goToSpotify}>click here</Text> to start earning!</Text>
+            <Text fontSize="1em" fontWeight="400">This artist does not have any Top Fans yet. Be the first! <br/><Text cursor="pointer" fontSize="1em" fontWeight="400" color={colors.seaGreen} onClick={goToSpotify}>Click here</Text> to start earning.</Text>
         </Box>
         )
     }

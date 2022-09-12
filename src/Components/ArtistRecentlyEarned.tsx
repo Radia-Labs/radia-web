@@ -27,7 +27,7 @@ const RecentlyEarned = ({recentlyEarned}: Props) => {
                 return <Achievement
                 key={collectible.sk}
                 collectibleId={collectible.sk}
-                collectibleImage={collectible.artist.images[0]?.url}
+                collectibleImage={collectible.transaction.nft.metadata.image}
                 collectibleName={collectibleType as string}
                 collectorImage={collectible.user?.profileImage}
                 collectorName={collectible.user?.addresses.polygon}

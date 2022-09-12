@@ -6,9 +6,8 @@ import { getCollectibles, generateCollectibleImage } from "../utils";
 import {User} from '../Models/User'
 import Achievement from './Achievement';
 import { useCurrentUser } from "../Providers/Auth"
-import { 
-  getCollectibleType
-} from "../utils";
+import { getCollectibleType } from "../utils";
+import {MEDIA_CDN_HOST} from '../constants';
 
 const ReadyToClaim = () => {
     const [loadingNext, setNextLoading] = useState(false);
@@ -67,7 +66,7 @@ const ReadyToClaim = () => {
                 return <Achievement
                 key={collectible.sk}
                 collectibleId={collectible.sk}
-                collectibleImage={generateCollectibleImage(collectible)}
+                collectibleImage={`${MEDIA_CDN_HOST}/ready-to-claim.png`}
                 collectibleName={collectibleType as string}
                 collectorImage={user?.profileImage}
                 collectorName={user?.name ? user?.name : user?.pk}

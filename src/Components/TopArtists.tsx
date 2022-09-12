@@ -3,11 +3,12 @@ import { useWeb3Auth } from "../Services/web3auth";
 import {Flex} from "../styles";
 import {H1} from './styles';
 import Pagination from './Pagination';
-import { getArtists, goToArtist } from "../utils";
+import { getArtists } from "../utils";
 import Artist from '../Components/Artist';
 import { useCurrentUser } from "../Providers/Auth"
+import { useNavigate } from "react-router-dom";
 
-const TrendingArtists = () => {
+const TopArtists = () => {
 
     const { provider, web3Auth } = useWeb3Auth();
     const [loadingNext, setNextLoading] = useState(false);
@@ -16,6 +17,7 @@ const TrendingArtists = () => {
     const [allArtists, setAllArtists] = useState<Array<object>>([]);
     const [index, setIndex] = useState(9);
     const { currentUser } = useCurrentUser()
+    const navigate = useNavigate();
     const limit = undefined;
 
     useEffect(() => {
@@ -28,7 +30,7 @@ const TrendingArtists = () => {
           }
         }
         init()
-      }, [web3Auth, provider])        
+      }, [currentUser])        
 
 
     const getPreviousArtists = async () => {
@@ -43,8 +45,11 @@ const TrendingArtists = () => {
       setIndex(index+9)
       setArtists(allArtists?.slice(index, index+9)) 
       setNextLoading(false)     
-
   }    
+
+  const goToArtist = async (artist: {id:string}) => {
+    navigate(`/artist/${artist.id}`)
+  }
 
     return (
       artists?.length ? <Flex margin="0 0 5em 0" flexDirection="column" alignItems="left" justifyContent="flex-start">
@@ -69,5 +74,5 @@ const TrendingArtists = () => {
 }
 
 
-export default TrendingArtists;
+export default TopArtists;
 

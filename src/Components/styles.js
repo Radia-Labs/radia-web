@@ -262,6 +262,7 @@ export const CollectibleImage = styled.div`
     background-image: url('${props => props.image}');
     margin-bottom: 1em;
     background-size: cover;
+    background-position: center;
     background-repeat: no-repeat;
     image-rendering: auto;
     image-rendering: crisp-edges;
@@ -1106,4 +1107,19 @@ export const PrivateKeyIcon = styled.div`
     opacity:.5;
     position: relative;
     top:2px    
+`
+
+export const Overlay = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: ${colors.primaryLight};
+    font-size: 1em;
 `

@@ -18,8 +18,6 @@ import SimpleHashCollectibleDetails from "./Containers/SimpleHashCollectibleDeta
 import AllCollectibles from "./Containers/AllCollectibles";
 import NewMusicReleases from "./Containers/NewMusicReleases";
 import CollectionDetails from "./Containers/CollectionDetails";
-import Settings from "./Containers/Settings";
-
 
 const Main = () => {
     const [web3AuthNetwork, setWeb3AuthNetwork] = useState<WEB3AUTH_NETWORK_TYPE>("mainnet");
@@ -39,7 +37,6 @@ const Main = () => {
                             <Route path="/:chain/:contractAddress/:tokenId" element={<SimpleHashCollectibleDetails/>} />
                             <Route path="/collection/:sk" element={<CollectionDetails/>} />
                             <Route path="/new-music" element={<NewMusicReleases/>} />
-                            <Route path="/settings" element={<Settings/>} />
                         </Routes>
                     </Layout>    
                 </AuthProvider>

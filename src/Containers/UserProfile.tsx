@@ -14,9 +14,10 @@ import { useCurrentUser } from "../Providers/Auth"
 import { ModalProvider } from 'styled-react-modal'
 import {StyledModal} from '../styles';
 import PrivateKeyModalBody from '../Components/PrivateKeyModalBody';
+import { Overlay, Spinner } from '../Components/styles';
 
 function UserProfile() {
-
+    const [loading, setLoading] = useState(false);
     const [user, setUser] = useState<User| undefined>();
     const [walletAddress, setWalletAddress] = useState<String| undefined>();
     const [createdAt, setCreatedAt] = useState<string| undefined>();
@@ -28,6 +29,7 @@ function UserProfile() {
 
     useEffect(() => {
         const init = async () => {
+            setLoading(true)
             setCreatedAt(currentUser?.created as any)
             setUser(currentUser as User)
             setWalletAddress(currentUser?.addresses.polygon)
@@ -45,6 +47,7 @@ function UserProfile() {
             })
             setCompletedCollectibles(completed.length)
             setArtistsSupported(supported.length)
+            setLoading(false)
         }
 
         if (currentUser)
@@ -63,6 +66,7 @@ function UserProfile() {
 
     return (
         <>
+        {/* {loading && <Overlay>Loading...&nbsp;<Spinner/></Overlay>} */}
         <UserProfileHeader 
         user={user as User} 
         walletAddress={walletAddress as string} 

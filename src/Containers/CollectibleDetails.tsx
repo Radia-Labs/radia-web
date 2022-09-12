@@ -1,6 +1,6 @@
 
 import {useEffect, useState} from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Details from '../Components/Details';
 import SimilarArtists from '../Components/SimilarArtists';
 import {
@@ -19,16 +19,20 @@ import {
 import { useCurrentUser } from "../Providers/Auth"
 import { toast } from 'react-toastify';
 import { ToastContainer } from 'react-toastify';
+import { Overlay, Spinner } from '../Components/styles';
 
 function CollectibleDetails() {
+  const [loading, setLoading] = useState(false);
   const [isMinting, setIsMinting] = useState(false)
   const [collectible, setCollectible] = useState<{artist:{id:string}, track:object, achievement:string, streamedMilliseconds:number}>();
   const [similarArtists, setSimilarArtists] = useState<object[]>();
   const params = useParams();
   const { currentUser } = useCurrentUser()
+  const navigate = useNavigate();
 
   useEffect(() => {
     const init = async () => {
+      setLoading(true)
       const _collectible = await getCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string, params.sk as string);
       const spotify = await getSpotifyUser(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string);
       if (_collectible.Count === 0) { 
@@ -54,13 +58,13 @@ function CollectibleDetails() {
         const _similarArtists = await getSimilarArtists(currentUser?.idToken as string, currentUser?.appPubKey as string, _collectible.Items[0].artist.id, spotify.Items[0].refresh_token);
         setSimilarArtists(_similarArtists.artists.slice(0, 4))        
       }
-      
+      setLoading(false)
     }
 
-    if (!collectible && currentUser)
+    if (currentUser)
       init()
 
-  }, [collectible, currentUser]);
+  }, [currentUser, params]);
 
   const claimCollectible = async () => {
     
@@ -72,9 +76,7 @@ function CollectibleDetails() {
     if (collectible?.achievement === 'streamedTrackInFirst24Hours') {
       transaction = await claimTrackCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.addresses.polygon as string, collectible?.track as object)
       await createUserTrackCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string, collectible?.artist as object, collectible?.track as object, collectible?.achievement as string, currentUser as object, status, transaction);
-    }
-
-    if (collectible?.achievement === 'streamedMilliseconds') {
+    } else {
       transaction = await claimArtistCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.addresses.polygon as string, collectible?.artist as object, collectible?.streamedMilliseconds as number)
       await createUserArtistCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string, collectible?.artist as object, collectible?.achievement as string, collectible?.streamedMilliseconds as number, currentUser as object, status, transaction);
     }
@@ -93,9 +95,14 @@ function CollectibleDetails() {
 
   }
 
+  const goToArtist = (collectible:any) => {
+    navigate(`/artist/${collectible.artist.id}`)
+  }
+
   return (
     <>
-      {collectible ? <Details collectible={collectible as any} claimCollectible={claimCollectible} isMinting={isMinting}/> : null}
+      {loading && <Overlay>Loading...&nbsp;<Spinner/></Overlay>}
+      {collectible ? <Details collectible={collectible as any} claimCollectible={claimCollectible} goToArtist={goToArtist} isMinting={isMinting}/> : null}
       {similarArtists ? <SimilarArtists similarArtists={similarArtists as any} /> : null}
       <ToastContainer 
       position="bottom-right"

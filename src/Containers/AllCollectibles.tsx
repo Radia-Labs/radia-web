@@ -17,7 +17,10 @@ import ErrorModalBody from '../Components/ErrorModalBody';
 import { colors } from '../constants';
 import {StyledModal} from '../styles';
 import { ModalProvider } from 'styled-react-modal'
+import { Overlay, Spinner } from '../Components/styles';
+
 function AllCollectibles() {
+    const [loadingData, setLoadingData] = useState(false);
     const [nfts, setNFTs] = useState<Array<object>>();
     const [showErrorModal, setShowErrorModal] = useState(false);
     const [nextUrl, setNextUrl] = useState<string|undefined>();
@@ -34,10 +37,12 @@ function AllCollectibles() {
     useEffect(() => {
       const init = async () => {
       if (currentUser) {
+        setLoadingData(true)
         await _getNfts()
         const _collections = await getCollections(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.verifierId as string);
         setCollections(_collections.Items)
         setSelectedNFTs([]) // hack to ensure that the selectedNFTs state is reset when currentUser changes.
+        setLoadingData(false)
       }
     }
 
@@ -140,6 +145,7 @@ function AllCollectibles() {
 
   return (
     <Box margin="0 0 5em 0">
+      {loadingData && <Overlay>Loading...&nbsp;<Spinner/></Overlay>}
       {nfts ? <NFTs nfts={nfts as object[]} selectedNFTs={selectedNFTs} setSelected={setSelected}/> : null}
       
       {nextUrl ? <Button margin="0 0 0 0" background="transparent" border={`1px solid ${colors.primaryLight}`} disabled={!nextUrl} onClick={loadMore}>Load More</Button>: null}

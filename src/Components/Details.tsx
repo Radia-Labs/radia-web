@@ -16,7 +16,6 @@ import {
 } from "./styles";
 import {
     getCollectibleType,
-    goToArtist,
     generateCollectibleImage
 } from "../utils";
 
@@ -48,10 +47,13 @@ type Props = {
     };
 
     claimCollectible: () => void;
+    goToArtist: (collectible:object) => void;
     isMinting: boolean;
 }
 
-const Details = ({collectible, claimCollectible, isMinting}: Props) => (
+
+
+const Details = ({collectible, claimCollectible, goToArtist, isMinting}: Props) => (
     <CollectibleDetailsWrapper>
         <CollectibleDetailsImage image={generateCollectibleImage(collectible)}/>
         
