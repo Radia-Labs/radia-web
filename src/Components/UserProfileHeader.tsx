@@ -33,14 +33,21 @@ type Props = {
     createdAt: string;
     artistsSupported: number;
     totalCollectibles: number;
+    onImageChange: (event: React.FormEvent<HTMLInputElement>) => void;
 }
 
-function UserProfileHeader({user, walletAddress, exportPrivateKey, handleCopy, createdAt, artistsSupported, totalCollectibles} : Props) {
+function UserProfileHeader({user, walletAddress, exportPrivateKey, handleCopy, createdAt, artistsSupported, totalCollectibles, onImageChange} : Props) {
     const { provider, logout } = useWeb3Auth();
     return (
         user && walletAddress ? <>
         <ProfileHeader>
-            {user?.profileImage ? <ProfileImage referrerPolicy="no-referrer" src={user?.profileImage}/> : <LetterProfileImage name={'0x'} />}
+            {user?.profileImage ? 
+            <>
+            <input style={{ display: 'none' }} type="file" id="file-input" name="image-file" onChange={onImageChange} />
+            <label htmlFor="file-input">
+            <ProfileImage referrerPolicy="no-referrer" src={user?.profileImage}/>
+            </label>
+            </> : <LetterProfileImage text={'0x'} type="file" id="file-input" name="image-file"/>}
             <ProfileHeaderWrapper>
                 <ProfileUserWrapper>
                     <ProfileUserName>

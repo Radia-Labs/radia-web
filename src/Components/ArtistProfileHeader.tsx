@@ -20,7 +20,7 @@ type Props = {
 function ArtistProfileHeader({artist, collectors, collectibles}: Props) {
     return (
        artist ? <ProfileHeader>
-            {artist.images[0]?.url ? <ProfileImage src={artist.images[0]?.url}/> : <LetterProfileImage name={artist.name} />}
+            {artist.images[0]?.url ? <ProfileImage src={artist.images[0]?.url}/> : <LetterProfileImage text={artist.name} />}
             <ArtistPorifileWrapper >
                 
                 <Flex width="100%" margin="0 0 0 2em" flexDirection="column" justifyContent="flex-start" alignItems="flex-start">

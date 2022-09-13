@@ -341,6 +341,17 @@ export const createUserTrackCollectible = async (idToken:string, appPubKey:strin
     return await response.json(); 
 }
 
+export const postImage = async (idToken:string, appPubKey:string, pk:string, formData:object) => {
+    const response = await fetch(`${SERVER_URL}/account/user/${pk}/image/upload?appPubKey=${appPubKey}`, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${idToken}`,
+        },
+        body: formData as any 
+    });
+    return await response.json(); 
+}
+
 export const getCollectibleType = (collectible:any) => {
     let acheivement 
     
@@ -357,7 +368,6 @@ export const getCollectibleType = (collectible:any) => {
   }
 
 function getCurrentAcheivement(collectible:any) {
-        
     if (collectible.streamedMilliseconds <= 3600000 ) {
         return `Streamed 1 Hour of ${collectible.artist.name}`
     }
@@ -377,7 +387,6 @@ function getCurrentAcheivement(collectible:any) {
     if (collectible.streamedMilliseconds >= 3600000 * 15 && collectible.streamedMilliseconds <= 3600000 * 25) {
         return `Streamed 25 Hours of ${collectible.artist.name}`
     }     
-
 }  
 
 function getEarnedAcheivementFirst24(collectible:any) {
@@ -387,7 +396,6 @@ function getEarnedAcheivementFirst24(collectible:any) {
 }
 
 function getEarnedAcheivement(collectible:any) {
-
     if (collectible.streamedMilliseconds >= 3600000 && collectible.streamedMilliseconds <= 3600000 * 5) {
         return `Streamed 1 Hour of ${collectible.artist.name}`
     }  
@@ -407,7 +415,6 @@ function getEarnedAcheivement(collectible:any) {
     if (collectible.streamedMilliseconds >= 3600000 * 25) {
         return `Streamed 25 Hours of ${collectible.artist.name}`
     }             
-
 }
 
 

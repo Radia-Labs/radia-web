@@ -589,6 +589,7 @@ export const ProfileImage = styled.img`
     image-rendering: crisp-edges;
     image-rendering: pixelated;
     image-rendering: -webkit-optimize-contrast;
+    cursor: pointer;
 
     @media (max-width: ${size.mobileL}) { 
         margin:0 auto;
@@ -647,7 +648,7 @@ export const LetterProfileImage = styled.div`
     color:white;
     opacity:.5;
     &:after{
-        content:"${props => props.name === '0x' ? '0x' : props.name.slice(0, 1)}";
+        content:"${props => props.text === '0x' ? '0x' : props.text.slice(0, 1)}";
         font-size:1.5em;
     }  
     

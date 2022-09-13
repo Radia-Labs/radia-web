@@ -1,6 +1,8 @@
 // export const SERVER_URL = 'https://qk8wia3761.execute-api.us-east-1.amazonaws.com/prod'
 export const SERVER_URL = 'http://localhost:8000'
-export const MEDIA_CDN_HOST = "https://d2sad41dyn6p9s.cloudfront.net/images"  as const;
+export const MEDIA_CDN_HOST = "https://d2sad41dyn6p9s.cloudfront.net/images";
+export const USER_MEDIA_CDN_HOST = "https://dmwjt3rkp0nih.cloudfront.net/images"
+
 
 export const WEB3AUTH_NETWORK = {
   mainnet: {
