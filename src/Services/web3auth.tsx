@@ -170,7 +170,7 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
       }          
         );
       } catch (error) {
-        console.error(error, 99);
+        console.error(error);
       } finally {
         setIsLoading(false);
       }

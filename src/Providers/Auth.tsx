@@ -67,7 +67,6 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
         if (radiaUser.Items.length) {
           // Update user with current idToken
           if (radiaUser.Items[0].idToken !== user.idToken) {
-            console.log("updating user with...", user)
             await updateUser(user.idToken as string, appPubKey, user.verifierId as string, user)
           }
           // Set the current user
@@ -80,22 +79,17 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
           const addresses = {"polygon": walletAddress[0]}
           const _user = {...user, profileImage: `${MEDIA_CDN_HOST}/radia-profile-${randomNum}.png`}
           const radiaUser = await createUser(user?.idToken as string, appPubKey, _user as object, addresses as object)
-          console.log("created user", radiaUser)
           if (radiaUser) {
             setCurrentUser(radiaUser as User)          
             // Run query to get user's spotify integration, show integration modal if not exists
             const spotifyUser = await getSpotifyUser(user?.idToken as string, appPubKey, user.verifierId as string)
-            console.log(spotifyUser, "spotifyUser")
             if (spotifyUser.Count === 0) {
               // If user not found, then create user in radia
               // Trigger spotify login flow, get accessTokens and add to radia database 
               setSpotifyModalIsOpen(true)
-            }
-                         
+            }          
           }
         } 
-
-       
     }
 
     if (web3Auth && provider)
@@ -161,6 +155,21 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     if (web3Auth && provider)
       init()
   }, [web3Auth, provider])  
+
+  useEffect(() => {
+    const init = async () => {
+      const spotifyUser = await getSpotifyUser(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.verifierId as string)
+      if (spotifyUser.Count === 0) {
+        // If user not found, then create user in radia
+        // Trigger spotify login flow, get accessTokens and add to radia database 
+        setSpotifyModalIsOpen(true)
+      }    
+    }
+
+    if (currentUser)
+      init()
+      
+  }, [currentUser])
 
   useEffect(() => {
     const init = async () => {

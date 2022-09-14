@@ -44,7 +44,7 @@ type Props = {
 }
 
 function UserProfileHeader({loading, user, walletAddress, exportPrivateKey, handleCopy, createdAt, artistsSupported, totalCollectibles, onImageChange, setIsUpdateUserNameModalOpen} : Props) {
-    const { provider, logout } = useWeb3Auth();
+    const { logout } = useWeb3Auth();
     const sliceWalletAddress = () => {
         return `${walletAddress?.slice(0, 6)}...${walletAddress?.slice(walletAddress.length-6, walletAddress.length)}`
     }
