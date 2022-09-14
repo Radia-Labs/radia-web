@@ -37,11 +37,11 @@ function AllCollectibles() {
     useEffect(() => {
       const init = async () => {
       if (currentUser) {
+        setSelectedNFTs([]) // hack to ensure that the selectedNFTs state is reset when currentUser changes.
         setLoadingData(true)
         await _getNfts()
         const _collections = await getCollections(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.verifierId as string);
         setCollections(_collections.Items)
-        setSelectedNFTs([]) // hack to ensure that the selectedNFTs state is reset when currentUser changes.
         setLoadingData(false)
       }
     }
@@ -109,10 +109,7 @@ function AllCollectibles() {
     }
   
     const showAddToCollection = () => {
-      if (selectedNFTs.length > 1) 
-        setShowAddToCollectionModal(true)
-      else
-        setShowErrorModal(true)
+      setShowAddToCollectionModal(true)
     }
   
     const hideAddToCollection = () => {
@@ -143,17 +140,20 @@ function AllCollectibles() {
     setShowErrorModal(false)
   }
 
+  const renderEmpty = () => {
+    return <Text fontSize="1em" fontWeight="400">It looks like you don't have any Collectibles.<br/>
+    <Text cursor="pointer" color={colors.seaGreen} fontSize="1em" fontWeight="400" onClick={() => navigate('/new-music')}>Click here</Text> to find new music and start earning!
+    </Text>
+  }
+
   return (
     <Box margin="0 0 5em 0">
       {loadingData && <Overlay>Loading...&nbsp;<Spinner/></Overlay>}
       {nfts ? <NFTs nfts={nfts as object[]} selectedNFTs={selectedNFTs} setSelected={setSelected}/> : null}
-      
-      {nextUrl ? <Button margin="0 0 0 0" background="transparent" border={`1px solid ${colors.primaryLight}`} disabled={!nextUrl} onClick={loadMore}>Load More</Button>: null}
+      {nextUrl ? <Button margin="0 0 0 0" background="transparent" border={`1px solid ${colors.primaryLight}`} disabled={!nextUrl} onClick={loadMore}>Load More</Button> : !loadingData ? renderEmpty() : null}
       
       <FixedFooter show={selectedNFTs.length}>
         <Text fontWeight="400">{selectedNFTs.length} {selectedNFTs.length > 1 ? 'collectibles' : 'collectible'} selected</Text>
-
-
         <FooterActionsWrapper justifyContent="flex-end" margin="0 5em">
           <Text
             fontWeight="400"

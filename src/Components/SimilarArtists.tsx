@@ -11,12 +11,12 @@ const SimilarArtists = ({similarArtists}: Props) => {
     const navigate = useNavigate();
   
     const goToCollectible = (sk:string) => {
-        navigate(`/collectible/${sk}`, { replace: true })
+        navigate(`/collectible/${sk}`)
     }      
 
     return (
         similarArtists?.length ? <SimilarArtistWrapper>
-            <SimilarArtistTitle fontSize="1.5rem" >You Might Be Interested In</SimilarArtistTitle>
+            <SimilarArtistTitle>You Might Be Interested In</SimilarArtistTitle>
             <Flex justifyContent="flex-start" alignItems="left">
 
             {similarArtists?.map((artist:any) => {

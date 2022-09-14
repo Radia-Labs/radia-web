@@ -16,6 +16,7 @@
     "@web3auth/openlogin-adapter": "^1.2.4",
     "@web3auth/web3auth": "^1.2.4",
     "react": "^18.1.0",
+    "react-confetti": "^6.1.0",
     "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^18.1.0",
     "react-router-dom": "^6.3.0",

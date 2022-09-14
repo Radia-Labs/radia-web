@@ -26,7 +26,7 @@ type Props = {
     progress: string | undefined
 }
 
-const Collectible = ({ collectibleId, collectibleImage, collectibleName, collectorImage, collectorName, progress }: Props) => {
+const CollectibleItem = ({ collectibleId, collectibleImage, collectibleName, collectorImage, collectorName, progress }: Props) => {
     const navigate = useNavigate()
     
     const goToCollectible = (sk:string) => {
@@ -56,4 +56,4 @@ const Collectible = ({ collectibleId, collectibleImage, collectibleName, collect
 }
 
 
-export default Collectible;
+export default CollectibleItem;

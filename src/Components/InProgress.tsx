@@ -3,7 +3,7 @@ import {Flex} from "../styles";
 import {H1} from './styles';
 import Pagination from './Pagination';
 import { getCollectibles } from "../utils";
-import Collectible from '../Components/Collectible';
+import CollectibleItem from './CollectibleItem';
 import {User} from '../Models/User'
 import { useCurrentUser } from "../Providers/Auth"
 import { 
@@ -14,7 +14,6 @@ const InProgress = () => {
     const [loading, setLoading] = useState(true)
     const [loadingNext, setNextLoading] = useState(false);
     const [loadingBack, setBackLoading] = useState(false);
-    const [user, setUser] = useState<User | null>(null);
     const [index, setIndex] = useState(4);
     const [allCollectibles, setAllCollectibles] = useState<Array<object>>([]);
     const [collectibles, setCollectibles] = useState<Array<object>>();
@@ -28,7 +27,6 @@ const InProgress = () => {
             const collectibles = await getCollectibles(currentUser?.idToken as string, currentUser.appPubKey as string, currentUser.verifierId as string, limit, lastEvaluatedKey)
             const filteredCollectibles = collectibles.Items.filter((collectible: {transaction: object}) => !("status" in collectible))
             const sorted = filteredCollectibles.sort((a:{streamedMilliseconds: number},b:{streamedMilliseconds: number}) => b.streamedMilliseconds - a.streamedMilliseconds);
-            setUser(currentUser)
             setAllCollectibles(sorted)
             setCollectibles(sorted.slice(0, 4))
             setLoading(false)
@@ -63,20 +61,20 @@ const InProgress = () => {
           return (collectible.streamedMilliseconds / 3600000).toFixed(1)
       }
   
-      if (collectible.streamedMilliseconds >= 3600000 && collectible.streamedMilliseconds <= 3600000 * 5) {
-        return (collectible.streamedMilliseconds / 3600000 * 5).toFixed(0)
+      if (collectible.streamedMilliseconds >= 3600000 && collectible.streamedMilliseconds < 3600000 * 5) {
+        return ((collectible.streamedMilliseconds / (3600000 * 5)) * 100).toFixed(0)
       }  
       
-      if (collectible.streamedMilliseconds >= 3600000 * 5 && collectible.streamedMilliseconds <= 3600000 * 10) {
-        return (collectible.streamedMilliseconds / 3600000 * 10).toFixed(0)
+      if (collectible.streamedMilliseconds >= 3600000 * 5 && collectible.streamedMilliseconds < 3600000 * 10) {
+        return ((collectible.streamedMilliseconds / (3600000 * 10)) * 100).toFixed(0)
       }       
   
-      if (collectible.streamedMilliseconds >= 3600000 * 10 && collectible.streamedMilliseconds <= 3600000 * 15) {
-        return (collectible.streamedMilliseconds / 3600000 * 15).toFixed(0)
+      if (collectible.streamedMilliseconds >= 3600000 * 10 && collectible.streamedMilliseconds < 3600000 * 15) {
+        return ((collectible.streamedMilliseconds / (3600000 * 15)) * 100).toFixed(0)
       }        
     
-      if (collectible.streamedMilliseconds >= 3600000 * 15 && collectible.streamedMilliseconds <= 3600000 * 25) {
-        return (collectible.streamedMilliseconds / 3600000 * 25).toFixed(0)
+      if (collectible.streamedMilliseconds >= 3600000 * 15 && collectible.streamedMilliseconds < 3600000 * 25) {
+        return ((collectible.streamedMilliseconds / (3600000 * 25)) * 100).toFixed(0)
       }  
     }
     
@@ -91,13 +89,13 @@ const InProgress = () => {
             {collectibles?.map((collectible:any) => {
                 const collectibleType = getCollectibleType(collectible);
                 const progress = calculateProgress(collectible)
-                return <Collectible
+                return <CollectibleItem
                 key={collectible.sk}
                 collectibleId={collectible.sk}
                 collectibleImage={collectible.artist.images[0]?.url}
                 collectibleName={collectibleType as string}
-                collectorImage={user?.profileImage}
-                collectorName={user?.name ? user?.name : user?.pk}
+                collectorImage={currentUser?.profileImage}
+                collectorName={currentUser?.userName || currentUser?.name || currentUser?.email || currentUser?.pk}
                 progress={progress as string}
                 />
             })}

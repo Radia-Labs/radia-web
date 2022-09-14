@@ -1,7 +1,7 @@
 
 import {useEffect, useState} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import Details from '../Components/Details';
+import CollectibleDetails from '../Components/CollectibleDetails';
 import SimilarArtists from '../Components/SimilarArtists';
 import {
   getCollectible,
@@ -21,17 +21,20 @@ import { toast } from 'react-toastify';
 import { ToastContainer } from 'react-toastify';
 import { Overlay, Spinner } from '../Components/styles';
 
-function CollectibleDetails() {
+function Collectible() {
   const [loading, setLoading] = useState(false);
   const [isMinting, setIsMinting] = useState(false)
   const [collectible, setCollectible] = useState<{artist:{id:string}, track:object, achievement:string, streamedMilliseconds:number}>();
   const [similarArtists, setSimilarArtists] = useState<object[]>();
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [stopConfetti, setStopConfetti] = useState(false);
   const params = useParams();
   const { currentUser } = useCurrentUser()
   const navigate = useNavigate();
 
   useEffect(() => {
     const init = async () => {
+      window.scrollTo(0, 0)
       setLoading(true)
       const _collectible = await getCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string, params.sk as string);
       const spotify = await getSpotifyUser(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string);
@@ -92,6 +95,10 @@ function CollectibleDetails() {
     toast.update(toastId, { render: "Collectible claimed!", type: "success", isLoading: false, autoClose: 5000, hideProgressBar: true });
     const _collectible = await getCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string, params.sk as string);
     setCollectible(_collectible.Items[0])
+    setShowConfetti(true)
+    setTimeout(() => {
+      setStopConfetti(true)
+    }, 3000)
 
   }
 
@@ -102,7 +109,7 @@ function CollectibleDetails() {
   return (
     <>
       {loading && <Overlay>Loading...&nbsp;<Spinner/></Overlay>}
-      {collectible ? <Details collectible={collectible as any} claimCollectible={claimCollectible} goToArtist={goToArtist} isMinting={isMinting}/> : null}
+      {collectible ? <CollectibleDetails collectible={collectible as any} claimCollectible={claimCollectible} goToArtist={goToArtist} isMinting={isMinting} showConfetti={showConfetti} stopConfetti={stopConfetti}/> : null}
       {similarArtists ? <SimilarArtists similarArtists={similarArtists as any} /> : null}
       <ToastContainer 
       position="bottom-right"
@@ -113,4 +120,4 @@ function CollectibleDetails() {
   );
 }
 
-export default CollectibleDetails;
+export default Collectible;

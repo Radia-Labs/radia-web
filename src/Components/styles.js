@@ -121,10 +121,6 @@ export const SpotifyModalImage = styled.div`
     width: 120px;  
     background-size: contain;
     background-repeat: no-repeat;
-    image-rendering: auto;
-    image-rendering: crisp-edges;
-    image-rendering: pixelated;
-    image-rendering: -webkit-optimize-contrast;
 `
 
 export const ProgressCard = styled.div`
@@ -170,7 +166,7 @@ export const SimilarArtistWrapper = styled.div`
 
 export const SimilarArtistTitle = styled.div`
     color: ${colors.primaryLight};
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 700;
     margin-bottom: 1em;     
 `
@@ -220,6 +216,7 @@ export const CollectibleCard = styled.div`
     margin-bottom: 1em; 
     margin-right: 1em;
     cursor: pointer;
+    width: 90%;
     border: ${props => props.isSelected ? `2px solid ${colors.darkPurple}` : 'none'};
     transition: all .1s ease-in-out;
     &:hover { opacity:.9; };
@@ -264,10 +261,6 @@ export const CollectibleImage = styled.div`
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    image-rendering: auto;
-    image-rendering: crisp-edges;
-    image-rendering: pixelated;
-    image-rendering: -webkit-optimize-contrast; 
     filter: ${props => props.filter || 'none'};
      
 
@@ -298,10 +291,6 @@ export const CollectorImage = styled.img`
     background-image: url('${props => props.image}');
     background-size: contain;
     background-repeat: no-repeat;
-    image-rendering: auto;
-    image-rendering: crisp-edges;
-    image-rendering: pixelated;
-    image-rendering: -webkit-optimize-contrast;
     cursor: pointer;
     transition: all .2s ease-in-out;
 `
@@ -309,6 +298,7 @@ export const CollectorImage = styled.img`
 export const CollectorLabel = styled.div`
     color: ${colors.lightGrey};
     font-size: .8em;
+    margin-bottom: .1em;
 `
 
 export const CollectorName = styled.div`
@@ -422,8 +412,16 @@ export const PaginateBackBtn = styled.div`
 export const ArtistWrapper = styled.div`
     cursor: pointer;
     transition: all .2s ease-in-out;
+    text-align: center;
     &:active { transform: scale(1.05); };
     &:hover { opacity:.9; };  
+
+    margin: 0px 30px 20px 0px;
+
+
+    @media (max-width: ${size.mobileL}) { 
+        margin: 0px 10px 15px 0px;
+    }     
     
 `
 
@@ -434,17 +432,8 @@ export const ArtistImage = styled.div`
     background-image: url('${props => props.image}');
     background-size: cover;
     background-repeat: no-repeat;
-    image-rendering: auto;
-    image-rendering: crisp-edges;
-    image-rendering: pixelated;
-    image-rendering: -webkit-optimize-contrast;
     margin-bottom: 1em;
-    margin: 0px 30px 20px 0px;
-
-
-    @media (max-width: ${size.mobileL}) { 
-        margin: 0px 15px 20px 0px;
-    }     
+    
 
     @media ${device.laptop} { 
         width: 6em;
@@ -469,7 +458,12 @@ export const ArtistName = styled.div`
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    max-width: 7.1em;    
+    max-width: 6em;
+    margin: 0 auto;
+
+    @media (max-width: ${size.mobileL}) { 
+        margin-bottom: 1em;
+    }    
 `
 
 export const LetterCollectibleImage = styled.div`
@@ -483,10 +477,6 @@ export const LetterCollectibleImage = styled.div`
     margin-bottom: 1em;
     background-size: cover;
     background-repeat: no-repeat;
-    image-rendering: auto;
-    image-rendering: crisp-edges;
-    image-rendering: pixelated;
-    image-rendering: -webkit-optimize-contrast; 
     background:${props => props.filter ? colors.lightGrey : colors.primaryDark};
     vertical-align:middle;
     color:white;
@@ -513,6 +503,7 @@ export const LetterAvatar = styled.div`
     color:white;
     margin-bottom:1em;
     opacity:.5;
+    
     &:after{
         content:"${props => props.name === '0x' ? '0x' : props.name.slice(0, 1)}";
         font-size:1.5em;
@@ -556,6 +547,35 @@ export const LetterAvatarSm = styled.div`
    
 `
 
+export const LetterCollectibleImageBg = styled.div`
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    margin: ${props => props.margin || `0`};
+    padding: ${props => props.name === '0x' ? '.6em .9em' : `.6em`};
+    background:${colors.primaryDark};
+    width: 28em;
+    height: 28em;
+    text-align:center;
+    margin: ${props => props.margin || `0`};
+    padding: ${props => props.name === '0x' ? '.6em .9em' : `.6em`};
+    background:${colors.secondaryDark};
+    vertical-align:middle;
+    color:white;
+    opacity:.5;
+    &:after{
+        content:"${props => props.name === '0x' ? '0x' : props.name.slice(0, 1)}";
+        font-size:1.5em;
+    }    
+    border-radius: 8px;
+    margin-bottom: .5em;
+
+    @media (max-width: ${size.mobileL}) { 
+        width: auto;
+        height: 20em;
+    }   
+`
+
 export const ProfileHeader = styled.div`
     display: flex;
     align-items: center;
@@ -576,6 +596,26 @@ export const ProfileHeader = styled.div`
     }    
 `
 
+export const ProfileImageWrapper = styled.div`
+    position: relative;
+    &:hover:after {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        opacity:.9;
+        background: url(${MEDIA_CDN_HOST}/edit-icon-white.svg);
+        background-size: contain;
+        background-repeat: no-repeat;
+        width: 1.3em;
+        height: 1.3em;  
+        content: '';       
+    }
+`
+
+export const ProfileLabel = styled.label`
+    position: relative;
+`
+
 export const ProfileImage = styled.img`
     width: 8em;
     height: 8em;
@@ -585,15 +625,19 @@ export const ProfileImage = styled.img`
     background-image: url('${props => props.image}');
     background-size: contain;
     background-repeat: no-repeat;
-    image-rendering: auto;
-    image-rendering: crisp-edges;
-    image-rendering: pixelated;
-    image-rendering: -webkit-optimize-contrast;
-    cursor: pointer;
+    
+    transition: all .2s ease-in-out;
+
+    ${props => !props.disabled && `
+        &:hover { 
+            cursor: pointer;
+            opacity:.7;
+        };
+    `}
 
     @media (max-width: ${size.mobileL}) { 
         margin:0 auto;
-        margin-bottom: 1em;
+        margin-bottom: .5em;
         top: 1em;
         border-radius: 50%;
         border: 2px solid ${colors.primaryLight};
@@ -611,7 +655,7 @@ export const ProfileHeaderWrapper = styled.div`
     @media (max-width: ${size.mobileL}) { 
         display: block;
         text-align: center;
-        margin: 1.5em;
+        margin: 0 1.5em 0 1.5em;
     }
 `
 export const ProfileUserWrapper = styled.div`
@@ -639,10 +683,6 @@ export const LetterProfileImage = styled.div`
     margin-bottom: 1em;
     background-size: cover;
     background-repeat: no-repeat;
-    image-rendering: auto;
-    image-rendering: crisp-edges;
-    image-rendering: pixelated;
-    image-rendering: -webkit-optimize-contrast; 
     background:${colors.primaryDark};
     vertical-align:middle;
     color:white;
@@ -671,6 +711,15 @@ export const ArtistPorifileWrapper = styled.div`
     justifyContent: space-between;
     alignItems: center;
 
+    & > div {
+
+        & > div {
+                h1:nth-child(2) {
+                    margin-top: 0;
+            }
+        }
+    }    
+
     @media (max-width: ${size.mobileL}) {
         display: block;
         margin: 0 auto;
@@ -679,6 +728,13 @@ export const ArtistPorifileWrapper = styled.div`
         & > div {
             margin: 0;
             justify-content: space-around;
+
+            & > div {
+                    padding-bottom: .5em;
+                    h1:first-child {
+                        margin-bottom: 0;
+                }
+            }
         }
         & > :first-child {
             
@@ -693,6 +749,29 @@ export const ProfileUserName = styled.div`
     color: ${colors.primaryLight};
     font-weight: 700;
     margin-bottom: .5em;
+    position: relative;
+    
+
+    ${props => !props.disabled && `
+        &:hover {
+            cursor: pointer;
+            opacity: .9;
+        }
+        
+        &:hover:after {
+            opacity:.9;
+            position: absolute;
+            top: 2px;
+            right:0px;
+            background: url(${MEDIA_CDN_HOST}/edit-icon-white.svg);
+            background-size: contain;
+            background-repeat: no-repeat;
+            width: 1em;
+            height: 1em;  
+            content: ''; 
+        }  
+    `}
+
 `
 export const ProfileWalletWrapper = styled.div`
 
@@ -713,6 +792,22 @@ export const ProfileWalletAddress = styled.div`
     &:hover { opacity:.9; };
     &:active { transform: scale(1.05); };      
     cursor: pointer;    
+`
+
+export const WalletActionsWrapper = styled.div`
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: column;
+
+    @media (max-width: ${size.mobileL}) {
+        flex-direction: row;
+        justify-content: space-around;
+
+        & > span {
+            margin: 0 0 1em 0;
+        }
+     }
 `
 
 export const CopyIcon = styled.div`
@@ -788,17 +883,17 @@ export const FanImage = styled.img`
     background-image: url(${({ percent }) => percent}%;');
     background-size: contain;
     background-repeat: no-repeat;
-    image-rendering: auto;
-    image-rendering: crisp-edges;
-    image-rendering: pixelated;
-    image-rendering: -webkit-optimize-contrast;
     margin-right: 1em;
 `
 
 export const FanNameWrapper = styled.div`
     text-overflow: ellipsis;
     overflow: hidden;
-    white-space: nowrap;   
+    white-space: nowrap;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
 `
 
 export const FanName = styled.div`
@@ -806,7 +901,8 @@ export const FanName = styled.div`
     color: ${props => props.color || colors.lightGrey}; ;
     text-overflow: ellipsis;
     overflow: hidden;
-    white-space: nowrap;      
+    white-space: nowrap;    
+    margin-bottom: .1em;  
  
 `
 
@@ -856,7 +952,7 @@ export const CollectibleDetailsImage = styled.div`
     width: 28em;
     height: 28em;
     border-radius: 8px;
-    margin-bottom: .5em;
+    margin-bottom: 1.5em;
 
     @media (max-width: ${size.mobileL}) { 
         width: auto;
@@ -909,7 +1005,10 @@ export const NFTDetailsWrapper = styled.div`
     width: 40%;
     overflow: hidden;
     white-space: nowrap;
-  
+    
+    @media (max-width: ${size.mobileL}) { 
+        width: 90%;
+    }
 `
 
 export const CollectionWrapper = styled.div`
@@ -959,10 +1058,6 @@ export const CollectionItem = styled.div`
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
-    image-rendering: auto;
-    image-rendering: crisp-edges;
-    image-rendering: pixelated;
-    image-rendering: -webkit-optimize-contrast;
     margin: 0 .5em .5em 0;
     flex: 1 1 7em;
 `
@@ -1123,4 +1218,78 @@ export const Overlay = styled.div`
     justify-content: center;
     color: ${colors.primaryLight};
     font-size: 1em;
+`
+
+const skeletonKeyframes = keyframes`
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+`;
+
+// TODO: change this to dark theme
+// export const CardSkeleton = styled.div`
+//   width: 220px;
+//   height: 336px;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+//   align-items: center;
+//   position: relative;
+//   border: 1px solid #f5f5f5;
+// `;
+
+// const ProductSkeleton = styled.div`
+//   display: inline-block;
+//   height: ${props => props.height || "14px"};
+//   width: ${props => props.width || "80%"};
+//   animation: ${skeletonKeyframes} 1300ms ease-in-out infinite;
+//   background-color: ${colors.secondaryDark};
+//   background-image: linear-gradient(
+//     90deg,
+//     ${colors.primaryDark},
+//     ${colors.secondaryDark},
+//     ${colors.primaryDark}
+//   );
+//   background-size: 200px 100%;
+//   background-repeat: no-repeat;
+//   border-radius: 4px;
+//   margin-bottom: 8px;
+//   margin-top: ${props => props.marginTop || "0"}
+// `;
+
+// export const ProfileImageSkelton = styled(ProductSkeleton)`
+//   margin-left: 2em;
+//   width: 8em;
+//   height: 8em;
+//   border-radius: 8px;
+//   max-height: 8em;
+//   max-width: 8em;
+//   display: block;
+//   background-color: ${colors.primaryDark}
+// `;
+
+export const ProfileImageSkelton = styled.div`
+    margin-left: 2em;
+    width: 8em;
+    height: 8em;
+    border-radius: 8px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: ${colors.primaryLight};
+    font-size: 1em;
+    background: linear-gradient(rgba(20,20,32,.8), rgba(20,20,32,.8)), url('${props => props.image}');
+    background-size: cover;
+
+    @media (max-width: ${size.mobileL}) { 
+        margin:0 auto;
+        margin-bottom: .5em;
+        top: 1em;
+        border-radius: 50%;
+        border: 2px solid ${colors.lightGrey};        
+    }
 `

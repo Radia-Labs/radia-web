@@ -3,6 +3,7 @@ import {
     CollectibleDetailsImage,
     CollectibleTextWrapper,
     CollectibleTitle,
+    LetterCollectibleImageBg,
     LetterAvatarSm,
     FanWrapper,
     FanCard,
@@ -21,6 +22,8 @@ import {
 
 import {Flex} from '../styles'
 import { colors } from "../constants";
+import Confetti from 'react-confetti'
+
 
 type Props = {
     collectible: {
@@ -32,6 +35,7 @@ type Props = {
             }
         },
         user: {
+            userName: string,
             profileImage: string,
             addresses: {
                 polygon: string
@@ -49,13 +53,15 @@ type Props = {
     claimCollectible: () => void;
     goToArtist: (collectible:object) => void;
     isMinting: boolean;
+    showConfetti: boolean;
+    stopConfetti: boolean;
 }
 
 
 
-const Details = ({collectible, claimCollectible, goToArtist, isMinting}: Props) => (
+const CollectibleDetails = ({collectible, claimCollectible, goToArtist, isMinting, showConfetti, stopConfetti}: Props) => (
     <CollectibleDetailsWrapper>
-        <CollectibleDetailsImage image={generateCollectibleImage(collectible)}/>
+        { generateCollectibleImage(collectible) ? <CollectibleDetailsImage image={generateCollectibleImage(collectible)}/> : <LetterCollectibleImageBg name={collectible.artist.name} />}
         
         <CollectibleTextWrapper >
             <CollectibleTitle>{getCollectibleType(collectible)}</CollectibleTitle>
@@ -69,12 +75,12 @@ const Details = ({collectible, claimCollectible, goToArtist, isMinting}: Props) 
                         {collectible.transaction ? "Owned By" : "Earning By"}
                         
                         </FanName>
-                        <FanName title={collectible.user.addresses.polygon.length ? collectible.user.addresses.polygon : collectible.user.name} color={colors.primaryLight}>{collectible.user.addresses.polygon.length ? collectible.user.addresses.polygon : collectible.user.name}</FanName>
+                        <FanName title={collectible.user.addresses.polygon.length ? collectible.user.addresses.polygon : collectible.user.userName || collectible.user.name} color={colors.primaryLight}>{collectible.user.addresses.polygon.length ? collectible.user.addresses.polygon : collectible.user.userName || collectible.user.name}</FanName>
                     </FanNameWrapper>
                 </FanCard> }
 
                 <FanCard width={collectible.user ? "45%" : "100%"} onClick={() => goToArtist(collectible)}>
-                    <FanImage referrerPolicy="no-referrer" src={collectible.artist.images[0].url}/>
+                    {collectible.artist.images.length ? <FanImage referrerPolicy="no-referrer" src={collectible.artist.images[0].url}/> : collectible?.artist.name ? <LetterAvatarSm margin="0 1em 0 0" name={collectible?.artist.name} /> : null}
                     <FanNameWrapper>
                         <FanName color={colors.lightGrey} fontSize=".5em">Artist</FanName>
                         <FanName title={collectible.artist.name} color={colors.primaryLight}>{collectible.artist.name}</FanName>
@@ -135,6 +141,14 @@ const Details = ({collectible, claimCollectible, goToArtist, isMinting}: Props) 
             >{!isMinting ? "Claim Collectible" : <Spinner/>}</Button>             
             
             : null}
+
+            {showConfetti ? 
+            <Confetti 
+            width={window.innerWidth} 
+            height={window.innerHeight}
+            numberOfPieces={!stopConfetti ? 200 : 0}
+            /> 
+            : null}
         
         </CollectibleTextWrapper>
       
@@ -142,4 +156,4 @@ const Details = ({collectible, claimCollectible, goToArtist, isMinting}: Props) 
 )
 
 
-export default Details;
+export default CollectibleDetails;

@@ -1,6 +1,7 @@
 export type User = {
     pk: string;
     sk: string;
+    userName: string;
     email: string;
     appPubKey: string;
     verifierId: string;

@@ -16,26 +16,27 @@ import { useCurrentUser } from "../Providers/Auth"
 import { ModalProvider } from 'styled-react-modal'
 import {StyledModal} from '../styles';
 import PrivateKeyModalBody from '../Components/PrivateKeyModalBody';
+import UpdateUserNameModalBody from '../Components/UpdateUserNameModalBody'
 import { useNavigate } from 'react-router-dom';
 
 function UserProfile() {
     const [loading, setLoading] = useState(false);
-    const [user, setUser] = useState<User| undefined>();
-    const [fileSelected, setFileSelected] = useState<File>() // also tried <string | Blob>
+    const [userNameLoading, setUserNameLoading] = useState(false);
+    const [userName, setUserName] = useState<String| undefined>();
     const [walletAddress, setWalletAddress] = useState<String| undefined>();
     const [createdAt, setCreatedAt] = useState<string| undefined>();
     const [completedCollectibles, setCompletedCollectibles] = useState<number| undefined>();
     const [artistsSupported, setArtistsSupported] = useState<number| undefined>();
     const [isPrivateKeyModalOpen, setIsPrivateKeyModalOpen] = useState(false);
-    const { currentUser } = useCurrentUser()
+    const [isUpdateUserNameModalOpen, setIsUpdateUserNameModalOpen] = useState(false);
+    const { currentUser, setCurrentUser } = useCurrentUser()
     const navigate = useNavigate();
 
 
     useEffect(() => {
         const init = async () => {
-            setLoading(true)
             setCreatedAt(currentUser?.created as any)
-            setUser(currentUser as User)
+            setCurrentUser(currentUser as User)
             setWalletAddress(currentUser?.addresses.polygon)
 
             const allCollectibles = await getCollectibles(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.verifierId as string);
@@ -51,7 +52,6 @@ function UserProfile() {
             })
             setCompletedCollectibles(completed.length)
             setArtistsSupported(supported.length)
-            setLoading(false)
         }
 
         if (currentUser)
@@ -75,41 +75,50 @@ function UserProfile() {
         reader.readAsDataURL(file);
         })
     
-
-
       const onImageChange = function (e: any) {
+        setLoading(true)
         const fileList = e.target.files;
         if (!fileList) return;
         
-        setFileSelected(fileList[0]);
-
         fileToDataUri(fileList[0])
         .then(async (result:any) => {
-            console.log(result)
             const formData = new FormData()
             const blob = await (await fetch(result)).blob();
-            console.log(blob)
             formData.append("file", blob as Blob, fileList[0].name);
             formData.forEach(file => console.log("File: ", file));
-            console.log("posting...", formData)
             const posted = await postImage(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.verifierId as string, formData)
             if (posted.url) {
                 console.log(posted.url)
                 const data = {profileImage: posted.url}
                 await updateUser(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.verifierId as string, data)
-                navigate(0)
+                const obj = {...currentUser, profileImage: posted.url}
+                setCurrentUser(obj as User)
+                setLoading(false)
             }
-        })
+        }).catch(err => setLoading(false))
     }
-       
 
+    const updateUserName = async () => {
+        setUserNameLoading(true)
+        const data = {userName: userName}
+        await updateUser(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.verifierId as string, data)
+        const updatedUser = {...currentUser, userName: userName}
+        setCurrentUser(updatedUser as User)
+        setUserNameLoading(false)
+        setIsUpdateUserNameModalOpen(false)
+    }
 
+    const handleUserNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUserName(e.target.value)
+    }
 
     return (
         <>
         {/* {loading && <Overlay>Loading...&nbsp;<Spinner/></Overlay>} */}
         <UserProfileHeader 
-        user={user as User} 
+        loading={loading}
+        user={currentUser as User} 
+        setIsUpdateUserNameModalOpen={setIsUpdateUserNameModalOpen}
         walletAddress={walletAddress as string} 
         exportPrivateKey={exportPrivateKey} 
         handleCopy={handleCopy} 
@@ -124,6 +133,13 @@ function UserProfile() {
         <Collections/>
         <RecentlyEarned/>
         <ModalProvider>
+            <StyledModal
+                isOpen={isUpdateUserNameModalOpen}
+                onBackgroundClick={() => setIsUpdateUserNameModalOpen(false)}
+                onEscapeKeydown={() => setIsUpdateUserNameModalOpen(false)}>
+                <UpdateUserNameModalBody loading={userNameLoading} userName={currentUser?.name} updateUserName={updateUserName} handleUserNameChange={handleUserNameChange}/>
+            </StyledModal> 
+
             <StyledModal
                 isOpen={isPrivateKeyModalOpen}
                 onBackgroundClick={() => setIsPrivateKeyModalOpen(false)}

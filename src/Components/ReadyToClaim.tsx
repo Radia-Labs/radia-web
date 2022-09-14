@@ -12,7 +12,6 @@ import {MEDIA_CDN_HOST} from '../constants';
 const ReadyToClaim = () => {
     const [loadingNext, setNextLoading] = useState(false);
     const [loadingBack, setBackLoading] = useState(false);
-    const [user, setUser] = useState<User | null>(null);
     const [index, setIndex] = useState(4);
     const [allCollectibles, setAllCollectibles] = useState<Array<object>>([]);
     const [collectibles, setCollectibles] = useState<Array<object>>();
@@ -29,7 +28,6 @@ const ReadyToClaim = () => {
             const sorted = filteredCollectibles.sort((a:{streamedMilliseconds: number},b:{streamedMilliseconds: number}) => b.streamedMilliseconds - a.streamedMilliseconds);
             setAllCollectibles(sorted)
             setCollectibles(sorted.slice(0, 4))
-            setUser(currentUser)
           }
         }
     
@@ -62,14 +60,15 @@ const ReadyToClaim = () => {
             <Flex justifyContent="flex-start" alignItems="left">
 
             {collectibles?.map((collectible:any) => {
+                console.log(collectible)
                 const collectibleType = getCollectibleType(collectible);
                 return <Achievement
                 key={collectible.sk}
                 collectibleId={collectible.sk}
                 collectibleImage={`${MEDIA_CDN_HOST}/ready-to-claim.png`}
                 collectibleName={collectibleType as string}
-                collectorImage={user?.profileImage}
-                collectorName={user?.name ? user?.name : user?.pk}
+                collectorImage={currentUser?.profileImage}
+                collectorName={currentUser?.userName || currentUser?.name || currentUser?.email || currentUser?.pk}
                 showChip={true}
                 />
             })}

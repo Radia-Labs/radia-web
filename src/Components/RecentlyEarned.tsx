@@ -14,7 +14,6 @@ import {
 const RecentlyEarned = () => {
     const [loadingNext, setNextLoading] = useState(false);
     const [loadingBack, setBackLoading] = useState(false);
-    const [user, setUser] = useState<User | null>(null);
     const [index, setIndex] = useState(4);
     const [allCollectibles, setAllCollectibles] = useState<Array<object>>([]);
     const [collectibles, setCollectibles] = useState<Array<object>>();
@@ -31,7 +30,6 @@ const RecentlyEarned = () => {
             const sorted = filteredCollectibles.sort((a:{streamedMilliseconds: number},b:{streamedMilliseconds: number}) => b.streamedMilliseconds - a.streamedMilliseconds);
             setAllCollectibles(sorted)
             setCollectibles(sorted.slice(0, 4))
-            setUser(currentUser)
             
           }
         }
@@ -72,8 +70,8 @@ const RecentlyEarned = () => {
                 collectibleId={collectible.sk}
                 collectibleImage={generateCollectibleImage(collectible)}
                 collectibleName={collectibleType as string}
-                collectorImage={user?.profileImage}
-                collectorName={user?.name ? user?.name : user?.pk}
+                collectorImage={currentUser?.profileImage}
+                collectorName={currentUser?.userName || currentUser?.name || currentUser?.email || currentUser?.pk}
                 />
             })}
             </Flex>

@@ -43,6 +43,15 @@ export const getSpotifyAuth = async (idToken:string, appPubKey:string, code:stri
     return await response.json();
 };
 
+export const getSpotifyProfile= async (idToken:string, appPubKey:string, refreshToken:string) => {
+    const response = await fetch(`${SERVER_URL}/integration/spotify/me?refreshToken=${refreshToken}&appPubKey=${appPubKey}`, {
+        headers: {
+            Authorization: `Bearer ${idToken}`,
+        },
+    });
+    return await response.json();
+}
+
 export const getSpotifyUser = async (idToken:string, appPubKey:string, pk:string) => {
     const response = await fetch(`${SERVER_URL}/account/integration?type=spotify&pk=${pk}&appPubKey=${appPubKey}`, {
         headers: {
@@ -52,14 +61,6 @@ export const getSpotifyUser = async (idToken:string, appPubKey:string, pk:string
     return await response.json();
 }
 
-export const getSpotifyProfile= async (idToken:string, appPubKey:string, refreshToken:string) => {
-    const response = await fetch(`${SERVER_URL}/account/spotify/me?refreshToken=${refreshToken}&appPubKey=${appPubKey}`, {
-        headers: {
-            Authorization: `Bearer ${idToken}`,
-        },
-    });
-    return await response.json();
-}
 
 export const getSpotifyArtist = async (idToken:string, appPubKey:string, id:string, refreshToken:string) => {
     let url = `${SERVER_URL}/integration/spotify/artist?id=${id}&refreshToken=${refreshToken}&appPubKey=${appPubKey}`;
@@ -354,6 +355,9 @@ export const postImage = async (idToken:string, appPubKey:string, pk:string, for
 
 export const getCollectibleType = (collectible:any) => {
     let acheivement 
+    // console.log(collectible)
+    // if (collectible.status === 'readyToMint')
+    //     acheivement = getEarnedAcheivement(collectible)    
     
     if (collectible.achievement === 'streamedMilliseconds')
         acheivement = getCurrentAcheivement(collectible)
@@ -362,7 +366,7 @@ export const getCollectibleType = (collectible:any) => {
         acheivement = getEarnedAcheivementFirst24(collectible)        
     
     if (collectible.achievement !== 'streamedMilliseconds' && collectible.achievement !== 'streamedTrackInFirst24Hours')
-        acheivement = getEarnedAcheivement(collectible)
+        acheivement = getEarnedAcheivementByMap(collectible)
 
     return acheivement
   }
@@ -389,6 +393,20 @@ function getCurrentAcheivement(collectible:any) {
     }     
 }  
 
+function getEarnedAcheivementByMap(collectible:{achievement:string, artist:any, track:any}) {
+    console.log(collectible)
+    const map:any = {
+        'streamedTrackInFirst24Hours': `Streamed ${collectible.track?.name} in the first 24 hours`,
+        'streamed01Hour': `Streamed 1 Hour of ${collectible.artist.name}`,
+        'streamed05Hours': `Streamed 5 Hours of ${collectible.artist.name}`,
+        'streamed10Hours': `Streamed 10 Hours of ${collectible.artist.name}`,
+        'streamed15Hours': `Streamed 15 Hours of ${collectible.artist.name}`,
+        'streamed25Hours': `Streamed 25 Hours of ${collectible.artist.name}`
+    }
+
+    return map[collectible.achievement]
+};
+
 function getEarnedAcheivementFirst24(collectible:any) {
     let artists = collectible.track.artists.map((artist:any) => artist.name).join(", ");
     artists = artists.replace(/,\s*$/, "");
@@ -396,19 +414,19 @@ function getEarnedAcheivementFirst24(collectible:any) {
 }
 
 function getEarnedAcheivement(collectible:any) {
-    if (collectible.streamedMilliseconds >= 3600000 && collectible.streamedMilliseconds <= 3600000 * 5) {
+    if (collectible.streamedMilliseconds >= 3600000 && collectible.streamedMilliseconds < 3600000 * 5) {
         return `Streamed 1 Hour of ${collectible.artist.name}`
     }  
 
-    if (collectible.streamedMilliseconds >= 3600000 * 5 && collectible.streamedMilliseconds <= 3600000 * 10) {
+    if (collectible.streamedMilliseconds >= 3600000 * 5 && collectible.streamedMilliseconds < 3600000 * 10) {
         return `Streamed 5 Hours of ${collectible.artist.name}`
     }       
 
-    if (collectible.streamedMilliseconds >= 3600000 * 10 && collectible.streamedMilliseconds <= 3600000 * 15) {
+    if (collectible.streamedMilliseconds >= 3600000 * 10 && collectible.streamedMilliseconds < 3600000 * 15) {
         return `Streamed 10 Hours of ${collectible.artist.name}`
     }        
 
-    if (collectible.streamedMilliseconds >= 3600000 * 15 && collectible.streamedMilliseconds <=3600000 * 25) {
+    if (collectible.streamedMilliseconds >= 3600000 * 15 && collectible.streamedMilliseconds < 3600000 * 25) {
         return `Streamed 15 Hours of ${collectible.artist.name}`
     }     
 
@@ -429,4 +447,9 @@ export const generateCollectibleImage = (collectible:any) => {
       return collectible?.track.album.images[0]?.url
     else
       return collectible?.artist.images[0]?.url
+}
+
+export const getRandomNumber = (min:number, max:number) => {
+    const randomNum = Math.floor(Math.random() * (max - min) + min) ;
+    return randomNum
 }

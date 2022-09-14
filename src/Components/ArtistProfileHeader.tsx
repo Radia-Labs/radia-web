@@ -18,16 +18,17 @@ type Props = {
 }
 
 function ArtistProfileHeader({artist, collectors, collectibles}: Props) {
+    console.log(artist)
     return (
        artist ? <ProfileHeader>
-            {artist.images[0]?.url ? <ProfileImage src={artist.images[0]?.url}/> : <LetterProfileImage text={artist.name} />}
+            {artist && artist.images[0]?.url ? <ProfileImage disabled={true} src={artist.images[0]?.url}/> : artist && artist.name ?<LetterProfileImage text={artist.name} /> : null}
             <ArtistPorifileWrapper >
                 
                 <Flex width="100%" margin="0 0 0 2em" flexDirection="column" justifyContent="flex-start" alignItems="flex-start">
                     <H1 fontSize="1em" fontWeight="400" color={colors.secondaryLight}>
                         Artist Profile
                     </H1>
-                    <ProfileUserName>
+                    <ProfileUserName disabled={true}>
                         {artist?.name}
                     </ProfileUserName>
                 </Flex>

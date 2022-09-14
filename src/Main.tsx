@@ -13,7 +13,7 @@ import Layout from "./Components/Layout";
 import Index from "./Containers/Index";
 import ArtistProfile from "./Containers/ArtistProfile";
 import UserProfile from "./Containers/UserProfile";
-import CollectibleDetails from "./Containers/CollectibleDetails";
+import Collectible from "./Containers/Collectible";
 import SimpleHashCollectibleDetails from "./Containers/SimpleHashCollectibleDetails";
 import AllCollectibles from "./Containers/AllCollectibles";
 import NewMusicReleases from "./Containers/NewMusicReleases";
@@ -33,7 +33,7 @@ const Main = () => {
                             <Route path="/" element={<UserProfile/>} />
                             <Route path="/collectibles" element={<AllCollectibles/>} />
                             <Route path="/artist/:id" element={<ArtistProfile/>} />
-                            <Route path="/collectible/:sk" element={<CollectibleDetails/>} />
+                            <Route path="/collectible/:sk" element={<Collectible/>} />
                             <Route path="/:chain/:contractAddress/:tokenId" element={<SimpleHashCollectibleDetails/>} />
                             <Route path="/collection/:sk" element={<CollectionDetails/>} />
                             <Route path="/new-music" element={<NewMusicReleases/>} />

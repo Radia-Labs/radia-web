@@ -25,7 +25,7 @@ function CollectibleDetails() {
         setLoading(false)
     }
 
-    if (currentUser)
+    if (!collectible && currentUser)
       init()
 
   }, [collectible, currentUser]);

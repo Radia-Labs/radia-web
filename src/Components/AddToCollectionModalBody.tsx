@@ -1,6 +1,5 @@
 import {useState}  from 'react';
 import {Box, H1, Paragraph, Button, Input, Select, Text, Spinner} from "./styles";
-import {Flex} from "../styles";
 import {colors} from "../constants";
 
 type Props = {

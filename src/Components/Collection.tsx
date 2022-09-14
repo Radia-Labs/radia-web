@@ -33,7 +33,7 @@ const Collection = ({collection}: Props) => {
             <Flex alignItems="flex-start" justifyContent="flex-start" margin="0 0 1em 0">
                 <Flex flexDirection="column" alignItems="flex-start" justifyContent="flex-start">
                     <Text fontSize="1em" margin="0 0 .5em 0">{collection.name}</Text>
-                    <Text fontSize=".6em" color={colors.lightGrey}>Collected By <Text fontSize=".6em" >{currentUser?.name}</Text> </Text>
+                    <Text fontSize=".6em" color={colors.lightGrey}>Collected By <Text fontSize=".6em" >{currentUser?.userName || currentUser?.name || currentUser?.email || currentUser?.pk}</Text> </Text>
                 </Flex>
             </Flex>
 

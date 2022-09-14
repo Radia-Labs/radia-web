@@ -6,7 +6,8 @@ import {Flex} from '../styles';
 import {
     H1,
     Text,
-    LetterProfileImage,
+    // LetterProfileImage, TODO: remove these from all views
+    WalletActionsWrapper,
     ProfileUserWrapper,
     ProfileHeaderWrapper,
     ProfileHeader, 
@@ -17,7 +18,11 @@ import {
     ProfileDetailsWrapper,
     CopyIcon,
     LogoutIcon,
-    PrivateKeyIcon
+    PrivateKeyIcon,
+    ProfileLabel,
+    ProfileImageWrapper,
+    ProfileImageSkelton,
+    Spinner
 } from './styles';
 
 import { colors } from '../constants';
@@ -26,6 +31,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import {User} from '../Models/User'; 
 
 type Props = {
+    loading: boolean;
     user: User;
     walletAddress: string;
     exportPrivateKey: () => void;
@@ -34,37 +40,46 @@ type Props = {
     artistsSupported: number;
     totalCollectibles: number;
     onImageChange: (event: React.FormEvent<HTMLInputElement>) => void;
+    setIsUpdateUserNameModalOpen: (value: boolean) => void;
 }
 
-function UserProfileHeader({user, walletAddress, exportPrivateKey, handleCopy, createdAt, artistsSupported, totalCollectibles, onImageChange} : Props) {
+function UserProfileHeader({loading, user, walletAddress, exportPrivateKey, handleCopy, createdAt, artistsSupported, totalCollectibles, onImageChange, setIsUpdateUserNameModalOpen} : Props) {
     const { provider, logout } = useWeb3Auth();
+    const sliceWalletAddress = () => {
+        return `${walletAddress?.slice(0, 6)}...${walletAddress?.slice(walletAddress.length-6, walletAddress.length)}`
+    }
     return (
         user && walletAddress ? <>
         <ProfileHeader>
-            {user?.profileImage ? 
             <>
             <input style={{ display: 'none' }} type="file" id="file-input" name="image-file" onChange={onImageChange} />
-            <label htmlFor="file-input">
-            <ProfileImage referrerPolicy="no-referrer" src={user?.profileImage}/>
-            </label>
-            </> : <LetterProfileImage text={'0x'} type="file" id="file-input" name="image-file"/>}
+            <ProfileImageWrapper>
+                {loading ? 
+                <ProfileImageSkelton image={user?.profileImage}>
+                    <Spinner/>
+                </ProfileImageSkelton>
+                : <ProfileLabel htmlFor="file-input">
+                    <ProfileImage referrerPolicy="no-referrer" src={user?.profileImage}/>
+                </ProfileLabel> }
+            </ProfileImageWrapper>
+            </>
             <ProfileHeaderWrapper>
                 <ProfileUserWrapper>
-                    <ProfileUserName>
-                        {user?.email}
+                    <ProfileUserName onClick={() => setIsUpdateUserNameModalOpen(true)}>
+                        {user.userName || user?.name || user.email || sliceWalletAddress()}
                     </ProfileUserName>
 
                     <ProfileWalletWrapper  >
                         <CopyToClipboard text={walletAddress as string} >
                             <ProfileWalletAddress onClick={handleCopy}>
-                                {`${walletAddress?.slice(0, 6)}...${walletAddress?.slice(walletAddress.length-6, walletAddress.length)}`}
+                                {sliceWalletAddress()}
                                 <CopyIcon/>
                             </ProfileWalletAddress>                
                         </CopyToClipboard>
-                        <Flex alignItems="flex-start" justifyContent="flex-start" flexDirection="column">
+                        <WalletActionsWrapper >
                             <Text margin="0 0 1em 1em" onClick={exportPrivateKey} fontSize=".8em" color={colors.lightGrey} cursor="pointer"><PrivateKeyIcon/> Export Private Key</Text>    
                             <Text  color={colors.lightGrey} cursor="pointer" margin="0 0 0 1em" fontSize=".8em" onClick={logout}><LogoutIcon/> Log Out</Text>
-                        </Flex>
+                        </WalletActionsWrapper>
                         
                     </ProfileWalletWrapper> 
                 </ProfileUserWrapper>
@@ -85,7 +100,7 @@ function UserProfileHeader({user, walletAddress, exportPrivateKey, handleCopy, c
                             Total Collectibles
                         </H1>
                         <H1 fontSize="1.2em" fontWeight="700">
-                            {totalCollectibles ? totalCollectibles : '-'}
+                            {totalCollectibles ? totalCollectibles : totalCollectibles === 0 ? 0 : '-'}
                         </H1>                        
                     </Flex>
 
@@ -94,7 +109,7 @@ function UserProfileHeader({user, walletAddress, exportPrivateKey, handleCopy, c
                             Artists Supported
                         </H1>
                         <H1 fontSize="1.2em" fontWeight="700">
-                            {artistsSupported ? artistsSupported : '-'}
+                            {artistsSupported ? artistsSupported : artistsSupported === 0 ? 0 :  '-'}
                         </H1>                        
                     </Flex>
      

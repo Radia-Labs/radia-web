@@ -17,7 +17,7 @@ const SimilarArtist = ({ collectibleId, collectibleImage, collectibleName, goToC
 
     return (
     <SimilarArtistCard onClick={() => goToCollectible(collectibleId as string)}>
-        {collectibleImage ? <CollectibleImage image={collectibleImage} /> : <LetterCollectibleImage artistName={collectibleName} />}
+        {collectibleImage ? <CollectibleImage image={collectibleImage} /> : <LetterCollectibleImage name={collectibleName} />}
         <CollectibleName title={collectibleName} >{collectibleName}</CollectibleName>
     </SimilarArtistCard>
     )

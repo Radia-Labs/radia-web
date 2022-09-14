@@ -19,10 +19,9 @@ const NFTs = ({nfts, selectedNFTs, setSelected}: Props) => {
       
       <Flex>
         <H1 fontSize="1.5rem">Your Collectibles</H1>
-
       </Flex>    
 
-        <Flex justifyContent="flex-start" alignItems="left">
+        <Flex justifyContent="flex-start" alignItems="left" width="100%">
           {nfts.length ? nfts.map((nft: any) => {
             return (
             <NFT

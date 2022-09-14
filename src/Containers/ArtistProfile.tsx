@@ -5,12 +5,15 @@ import {
     getArtist,
     getArtistCollectibles,
     getArtistCollectors,
-    getCollectibles
+    getCollectibles,
+    getSpotifyUser,
+    getSimilarArtists
   } from "../utils";
 import {Flex} from '../styles';
 import {H1, Box, Text} from '../Components/styles';
 import {colors} from '../constants';
 import SimilarArtist from '../Components/SimilarArtist';
+import SimilarArtists from '../Components/SimilarArtists';
 import ArtistProfileHeader from '../Components/ArtistProfileHeader';
 import ArtistTopFans from '../Components/ArtistTopFans';
 import ArtistTopAchievements from '../Components/ArtistTopAchievements';
@@ -22,6 +25,7 @@ import { MEDIA_CDN_HOST } from '../constants';
 function ArtistProfile() {
     const [loading, setLoading] = useState<boolean>(true);
     const [artist, setArtist] = useState<Artist| undefined>();
+    const [similarArtists, setSimilarArtists] = useState<object[]>();
     const [collectibles, setCollectibles] = useState<{Items:any, Count:Number}| undefined>();
     const [collectors, setCollectors] = useState<Number| undefined>();
     const [topAchievements, setTopAchievements] = useState<object[]| undefined>();
@@ -35,7 +39,7 @@ function ArtistProfile() {
         const init = async () => {
             setLoading(true)
             const _artist = await getArtist(currentUser?.idToken as string, currentUser?.appPubKey as string, params.id as string);
-            setArtist(_artist.Items[0] as Artist)
+            setArtist(_artist.Items[0] as Artist)               
 
             getArtistCollectibles(currentUser?.idToken as string, currentUser?.appPubKey as string, params.id as string)
             .then(_collectibles => setCollectibles(_collectibles))
@@ -60,7 +64,12 @@ function ArtistProfile() {
             .catch(err => {
                 console.log(err)
                 setLoading(false)
-            })            
+            })
+            
+            
+            const spotify = await getSpotifyUser(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string);
+            const _similarArtists = await getSimilarArtists(currentUser?.idToken as string, currentUser?.appPubKey as string, params.id as string, spotify.Items[0].refresh_token);
+            setSimilarArtists(_similarArtists.artists.slice(0, 4))               
 
             
         }
@@ -74,26 +83,26 @@ function ArtistProfile() {
     }
 
     const goToCollectible = (sk:string) => {
-        navigate(`/collectible/${sk}`, { replace: true })
+        navigate(`/collectible/${sk}`)
     }          
 
     const renderEmptyAchievements = () => {
         return (
-            <Box>
+            <Box margin="0 0 5em 0">
             <H1 fontsize="1.5em">Top Achievements</H1>
             <Flex justifyContent="flex-start" alignItems="flex-start" >
                 <SimilarArtist
                 key={1}
                 collectibleId={collectibles?.Items[0].sk}
                 collectibleImage={`${MEDIA_CDN_HOST}/ready-to-claim.png`}
-                collectibleName={`${artist?.name} - 1 Hour Streamed`}
+                collectibleName={`1 Hour Streamed of ${artist?.name}`}
                 goToCollectible={goToCollectible}
                 /> 
                 <SimilarArtist
                 key={2}
                 collectibleId={collectibles?.Items[0].sk}
                 collectibleImage={`${MEDIA_CDN_HOST}/ready-to-claim.png`}
-                collectibleName={`${artist?.name} - 5 Hours Streamed`}
+                collectibleName={`5 Hours Streamed of ${artist?.name}`}
                 goToCollectible={goToCollectible}
                 />     
 
@@ -101,7 +110,7 @@ function ArtistProfile() {
                 key={3}
                 collectibleId={collectibles?.Items[0].sk}
                 collectibleImage={`${MEDIA_CDN_HOST}/ready-to-claim.png`}
-                collectibleName={`${artist?.name} - 10 Hours Streamed`}
+                collectibleName={`10 Hours Streamed of ${artist?.name}`}
                 goToCollectible={goToCollectible}
                 />     
 
@@ -109,17 +118,18 @@ function ArtistProfile() {
                 key={4}
                 collectibleId={collectibles?.Items[0].sk}
                 collectibleImage={`${MEDIA_CDN_HOST}/ready-to-claim.png`}
-                collectibleName={`${artist?.name} - 15 Hours Streamed`}
+                collectibleName={`15 Hours Streamed of ${artist?.name}`}
                 goToCollectible={goToCollectible}
                 />                                              
                 
-                <SimilarArtist
+                {/* <SimilarArtist
                 key={5}
                 collectibleId={collectibles?.Items[0].sk}
                 collectibleImage={`${MEDIA_CDN_HOST}/ready-to-claim.png`}
-                collectibleName={`${artist?.name} - 25 Hours Streamed`}
+                collectibleName={`25 Hours Streamed of ${artist?.name}`}
                 goToCollectible={goToCollectible}
-                />                   
+                />         */}
+                            
             
             </Flex>
             </Box>
@@ -131,7 +141,9 @@ function ArtistProfile() {
         return (
         <Box margin="0 0 5em 0">
             <H1 fontsize="1.5em">Top Fans</H1>
-            <Text fontSize="1em" fontWeight="400">This artist does not have any Top Fans yet. Be the first! <br/><Text cursor="pointer" fontSize="1em" fontWeight="400" color={colors.seaGreen} onClick={goToSpotify}>Click here</Text> to start earning.</Text>
+            <Text fontSize="1em" fontWeight="400">This artist does not have any Top Fans yet.
+            <br/>
+            <Text cursor="pointer" fontSize="1em" fontWeight="400" color={colors.seaGreen} onClick={goToSpotify}>Click here</Text> to stream and be the first!</Text>
         </Box>
         )
     }
@@ -142,6 +154,8 @@ function ArtistProfile() {
         {topFans?.length && !loading ? <ArtistTopFans topFans={topFans}/> : !loading && renderEmptyTopFans()}
         {topAchievements?.length && !loading ? <ArtistTopAchievements topAchievements={topAchievements as object[]}/> : !loading && renderEmptyAchievements()}
         <ArtistRecentlyEarned recentlyEarned={recentlyEarned as object[]}/>
+        {similarArtists ? <SimilarArtists similarArtists={similarArtists as any} /> : null}
+        
         </>
     )
 }
