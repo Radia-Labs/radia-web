@@ -100,7 +100,7 @@ export const getCollectibles = async (idToken:string, appPubKey:string, pk:strin
 
 
 export const getCollectible = async (idToken:string, appPubKey:string, pk:string, sk:string) => {
-    let url = `${SERVER_URL}/account/collectible?pk=${pk}&sk=${sk}&appPubKey=${appPubKey}`;  
+    let url = `${SERVER_URL}/account/collectible?pk=${pk}&sk=${encodeURIComponent(sk)}&appPubKey=${appPubKey}`;  
     const response = await fetch(url, {
         headers: {
             Authorization: `Bearer ${idToken}`,
@@ -142,7 +142,7 @@ export const getArtistCollectibles = async (idToken:string, appPubKey:string, id
 }
 
 export const getCollectiblesBySk = async (idToken:string, appPubKey:string, sk:string) => {
-    let url = `${SERVER_URL}/collectibles/sk?sk=${sk}&appPubKey=${appPubKey}`;
+    let url = `${SERVER_URL}/collectibles/sk?sk=${encodeURIComponent(sk)}&appPubKey=${appPubKey}`;
     const response = await fetch(url, {
         headers: {
             Authorization: `Bearer ${idToken}`,
@@ -227,7 +227,7 @@ export const getCollections = async (idToken:string, appPubKey:string, pk:string
 }
 
 export const getCollection = async (idToken:string, appPubKey:string, pk:string, sk:string) => {
-    let url = `${SERVER_URL}/account/collection?pk=${pk}&sk=${sk}&appPubKey=${appPubKey}`;
+    let url = `${SERVER_URL}/account/collection?pk=${pk}&sk=${encodeURIComponent(sk)}&appPubKey=${appPubKey}`;
     const response = await fetch(url, {
         headers: {
             Authorization: `Bearer ${idToken}`,
@@ -249,7 +249,7 @@ export const createCollection = async (idToken:string, appPubKey:string, pk:stri
 }
 
 export const deleteCollection = async (idToken:string, appPubKey:string, pk:string, sk:string) => {
-    const response = await fetch(`${SERVER_URL}/account/collections/${pk}?appPubKey=${appPubKey}&sk=${sk}`, {
+    const response = await fetch(`${SERVER_URL}/account/collections/${pk}?appPubKey=${appPubKey}&sk=${encodeURIComponent(sk)}`, {
         method: 'DELETE',
         headers: {
             Authorization: `Bearer ${idToken}`,

@@ -16,7 +16,7 @@ import {
   getRandomNumber,
 } from "../utils";
 import {User} from '../Models/User'
-import { MEDIA_CDN_HOST } from "../constants";
+import { APP_URL, MEDIA_CDN_HOST } from "../constants";
 
 interface IAuthContext {
   currentUser: User | null;
@@ -171,7 +171,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
   const authSpotify = () => {
     setSpotifyModalIsOpen(false)
     const authEndpoint = "https://accounts.spotify.com/authorize";
-    const redirectURL = "http://localhost:3000";
+    const redirectURL = APP_URL;
     const spotifyClientId = "78ec81265fb24a0baceeb9a702bcee1d";
     const scopes = [
       "user-read-email",
