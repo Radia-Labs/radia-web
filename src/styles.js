@@ -6,7 +6,6 @@ import Modal from 'styled-react-modal'
 export const GlobalStyle = createGlobalStyle`
   body {
     background-color: ${colors.primaryDark};
-    
   }
   body, input, textarea, button {
     font-family: 'Urbanist', sans-serif;

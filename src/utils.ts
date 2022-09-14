@@ -394,7 +394,6 @@ function getCurrentAcheivement(collectible:any) {
 }  
 
 function getEarnedAcheivementByMap(collectible:{achievement:string, artist:any, track:any}) {
-    console.log(collectible)
     const map:any = {
         'streamedTrackInFirst24Hours': `Streamed ${collectible.track?.name} in the first 24 hours`,
         'streamed01Hour': `Streamed 1 Hour of ${collectible.artist.name}`,

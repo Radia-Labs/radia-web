@@ -1014,12 +1014,13 @@ export const NFTDetailsWrapper = styled.div`
 export const CollectionWrapper = styled.div`
     border-radius: 1em;
     background-color: ${colors.secondaryDark};
-    padding: 1em;
     margin: 0 1em 1em 0;
     width: 17.5em;
     max-height: 17.5em;
+    overflow: ${props => props.overflow || 'hidden'};
     cursor: pointer;
     transition: all .2s ease-in-out;
+    border: ${props => props.border || `1em solid ${colors.secondaryDark}`};
     &:hover {
         opacity: .7;
     } 

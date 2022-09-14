@@ -37,7 +37,7 @@ const Collections = () => {
       }
     
     return (
-      <Flex margin="0 0 5em 0" flexDirection="column" alignItems="left" justifyContent="flex-start">
+      <Flex  margin="0 0 5em 0" flexDirection="column" alignItems="left" justifyContent="flex-start">
    
             {!loading && <><Flex>
               <H1 fontSize="1.5rem">Your Collections</H1>

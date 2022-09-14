@@ -5,6 +5,7 @@ import { createContext, FunctionComponent, ReactNode, useCallback, useContext, u
 import { CHAIN_CONFIG, CHAIN_CONFIG_TYPE } from "./chainConfig";
 import { WEB3AUTH_NETWORK_TYPE } from "../constants";
 import { getWalletProvider, IWalletProvider } from "./walletProvider";
+import {WEB3AUTH_CLIENT_ID} from "../constants";
 
 export interface IWeb3AuthContext {
   web3Auth: Web3Auth | null;
@@ -95,7 +96,7 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
     async function init() {
       try {
         setIsLoading(true);
-        const clientId = "BGxkBWK7vys1C_Obsc8FP2gYhitvoYr8jfwSWVHMbXS4WlMAKkiUioXey1gHJFC4MCPsVfoPAh2nM8uzFn5Fd2g";
+        const clientId = WEB3AUTH_CLIENT_ID;
         const web3AuthInstance = new Web3Auth({
           chainConfig: currentChainConfig,
           clientId,

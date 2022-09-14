@@ -18,7 +18,6 @@ type Props = {
 }
 
 function ArtistProfileHeader({artist, collectors, collectibles}: Props) {
-    console.log(artist)
     return (
        artist ? <ProfileHeader>
             {artist && artist.images[0]?.url ? <ProfileImage disabled={true} src={artist.images[0]?.url}/> : artist && artist.name ?<LetterProfileImage text={artist.name} /> : null}
