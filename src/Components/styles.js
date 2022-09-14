@@ -1095,9 +1095,7 @@ export const FooterActionsWrapper = styled.div`
     justify-content: flex-end;
     margin-right: 2em;
     text-align:center;
-
 `
-
 
 export const StyledBurger = styled.div`
   width: 1.5rem;
@@ -1115,16 +1113,20 @@ export const StyledBurger = styled.div`
     background-color: ${({ open }) => open ? colors.primaryLight : colors.primaryLight};
     border-radius: 10px;
     transform-origin: 1px;
+    -webkit-transform-origin: 1px;
     transition: all 0.3s linear;
     &:nth-child(1) {
       transform: ${({ open }) => open ? 'rotate(45deg)' : 'rotate(0)'};
+      -webkit-transform: ${({ open }) => open ? 'rotate(45deg)' : 'rotate(0)'};
     }
     &:nth-child(2) {
       transform: ${({ open }) => open ? 'translateX(100%)' : 'translateX(0)'};
+      -webkit-transform: ${({ open }) => open ? 'translateX(100%)' : 'translateX(0)'};
       opacity: ${({ open }) => open ? 0 : 1};
     }
     &:nth-child(3) {
       transform: ${({ open }) => open ? 'rotate(-45deg)' : 'rotate(0)'};
+      -webkit-transform: ${({ open }) => open ? 'rotate(-45deg)' : 'rotate(0)'};
     }
   }
 `;
@@ -1142,6 +1144,26 @@ export const MobileNavUl = styled.ul`
     background-color: ${colors.primaryDark};
     position: fixed;
     transform: ${({ open }) => open ? 'translateX(0)' : 'translateX(100%)'};
+    -webkit-transform: ${({ open }) => open ? 'translateX(0)' : 'translateX(100%)'};
+    margin-top:0;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 100%;
+    z-index:19;
+    transition: transform 0.3s ease-in-out;
+    li {
+      color: #fff;
+    }
+  }
+
+  @media screen and (-webkit-min-device-pixel-ratio:0) { 
+
+    flex-flow: column nowrap;
+    background-color: ${colors.primaryDark};
+    position: fixed;
+    transform: ${({ open }) => open ? 'translateX(0)' : 'translateX(100%)'};
+    -webkit-transform: ${({ open }) => open ? 'translateX(0)' : 'translateX(100%)'};
     margin-top:0;
     top: 0;
     right: 0;

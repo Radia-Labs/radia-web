@@ -20,7 +20,7 @@ import { ModalProvider } from 'styled-react-modal'
 import { Overlay, Spinner } from '../Components/styles';
 
 function AllCollectibles() {
-    const [loadingData, setLoadingData] = useState(false);
+    const [loadingData, setLoadingData] = useState(true);
     const [nfts, setNFTs] = useState<Array<object>>();
     const [showErrorModal, setShowErrorModal] = useState(false);
     const [nextUrl, setNextUrl] = useState<string|undefined>();
