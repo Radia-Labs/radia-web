@@ -598,18 +598,6 @@ export const ProfileHeader = styled.div`
 
 export const ProfileImageWrapper = styled.div`
     position: relative;
-    &:hover:after {
-        position: absolute;
-        top: 2px;
-        right: 2px;
-        opacity:.9;
-        background: url(${MEDIA_CDN_HOST}/edit-icon-white.svg);
-        background-size: contain;
-        background-repeat: no-repeat;
-        width: 1.3em;
-        height: 1.3em;  
-        content: '';       
-    }
 `
 
 export const ProfileLabel = styled.label`
@@ -757,19 +745,7 @@ export const ProfileUserName = styled.div`
             cursor: pointer;
             opacity: .9;
         }
-        
-        &:hover:after {
-            opacity:.9;
-            position: absolute;
-            top: 2px;
-            right:0px;
-            background: url(${MEDIA_CDN_HOST}/edit-icon-white.svg);
-            background-size: contain;
-            background-repeat: no-repeat;
-            width: 1em;
-            height: 1em;  
-            content: ''; 
-        }  
+
     `}
 
 `
