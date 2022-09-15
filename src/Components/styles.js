@@ -513,8 +513,8 @@ export const LetterAvatar = styled.div`
     justify-content: center;
     align-items: center;
     font-size:1em;
-    width:6em;
-    height:6em;
+    width:7em;
+    height:7em;
     text-align:center;
     border-radius:8px;
     background:${colors.secondaryDark};
@@ -528,20 +528,25 @@ export const LetterAvatar = styled.div`
         font-size:1.5em;
     }
 
+    @media (max-width: ${size.mobileL}) { 
+        width: 9.75em;
+        height: 9.75em;
+    }       
+    
     @media ${device.laptop} { 
-        width: 6em;
-        height: 6em;
+        width: 7em;
+        height: 7em;
     }
 
     @media ${device.laptopL} { 
-        width: 7em;
-        height: 7em;
+        width: 7.5em;
+        height: 7.5em;
     }    
     
     @media ${device.desktop} {
-        width: 7em;
-        height: 7em;
-    }    
+        width: 8em;
+        height: 8em;
+    }  
 `
 
 export const LetterAvatarSm = styled.div`
@@ -687,7 +692,6 @@ export const LetterProfileImage = styled.div`
     width: 8em;
     height: 8em;
     border-radius: 20px;
-    margin-bottom: 1em;
     background-size: cover;
     background-repeat: no-repeat;
     background:${colors.primaryDark};
