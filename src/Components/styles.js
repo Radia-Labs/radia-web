@@ -409,6 +409,21 @@ export const PaginateBackBtn = styled.div`
     background-position: center;
 `
 
+export const TopArtistWrapper = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+
+    @media (max-width: ${size.mobileL}) { 
+        justify-content: center;
+
+        & > div:last-child {
+            margin-right: auto;
+        }
+    }
+`
+
 export const ArtistWrapper = styled.div`
     cursor: pointer;
     transition: all .2s ease-in-out;
@@ -426,28 +441,32 @@ export const ArtistWrapper = styled.div`
 `
 
 export const ArtistImage = styled.div`
-    width: 6em;
-    height: 6em;
+    width: 7em;
+    height: 7em;
     border-radius: 8px;
     background-image: url('${props => props.image}');
     background-size: cover;
     background-repeat: no-repeat;
     margin-bottom: 1em;
-    
 
+    @media (max-width: ${size.mobileL}) { 
+        width: 9.5em;
+        height: 9.5em;
+    }       
+    
     @media ${device.laptop} { 
-        width: 6em;
-        height: 6em;
+        width: 7em;
+        height: 7em;
     }
 
     @media ${device.laptopL} { 
-        width: 7em;
-        height: 7em;
+        width: 7.5em;
+        height: 7.5em;
     }    
     
     @media ${device.desktop} {
-        width: 7em;
-        height: 7em;
+        width: 8em;
+        height: 8em;
     }
 
 `
@@ -738,6 +757,7 @@ export const ProfileUserName = styled.div`
     font-weight: 700;
     margin-bottom: .5em;
     position: relative;
+    transition: all .2s ease-in-out;
     
 
     ${props => !props.disabled && `

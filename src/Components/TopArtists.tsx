@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import { useWeb3Auth } from "../Services/web3auth";
 import {Flex} from "../styles";
-import {H1} from './styles';
+import {TopArtistWrapper, H1} from './styles';
 import Pagination from './Pagination';
 import { getArtists } from "../utils";
 import Artist from '../Components/Artist';
@@ -58,7 +58,7 @@ const TopArtists = () => {
           <Pagination loadingNext={loadingNext} loadingBack={loadingBack} onBack={getPreviousArtists} onNext={getNextArtists} disabledBack={index == 9} disabledNext={index >= allArtists.length}/>
         </Flex>
 
-        <Flex justifyContent="flex-start" alignItems="center">
+        <TopArtistWrapper >
             {artists?.map((artist:any) => {
             return <Artist 
             key={artist.id}
@@ -66,7 +66,7 @@ const TopArtists = () => {
             artistName={artist.name} 
             onClick={() => goToArtist(artist)}/>
             })}
-        </Flex>
+        </TopArtistWrapper>
       </Flex> : null
     );
  
