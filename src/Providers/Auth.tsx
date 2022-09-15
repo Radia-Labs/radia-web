@@ -125,7 +125,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
         }         
       
       // We've redirected from Spotify with authorization code in query params, create spotify integration.
-      if (code && user) {
+      if (code) {
         setSpotifyModalIsOpen(false)
         let spotifyAuth = await getSpotifyAuth(user?.idToken as string, appPubKey, code as string)
         if (spotifyAuth) {
@@ -150,26 +150,33 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
           alert("Could not veryify Spotify authorization. Please try again.")
           setSpotifyModalIsOpen(true)
         }
+      } else {
+        const spotifyUser = await getSpotifyUser(user?.idToken as string, appPubKey as string, user?.verifierId as string)
+        if (spotifyUser.Count === 0) {
+          // If user not found, then create user in radia
+          // Trigger spotify login flow, get accessTokens and add to radia database 
+          setSpotifyModalIsOpen(true)
+        }            
       }
     }
     if (web3Auth && provider)
       init()
   }, [web3Auth, provider])  
 
-  useEffect(() => {
-    const init = async () => {
-      const spotifyUser = await getSpotifyUser(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.verifierId as string)
-      if (spotifyUser.Count === 0) {
-        // If user not found, then create user in radia
-        // Trigger spotify login flow, get accessTokens and add to radia database 
-        setSpotifyModalIsOpen(true)
-      }    
-    }
+  // useEffect(() => {
+  //   const init = async () => {
+  //     const spotifyUser = await getSpotifyUser(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.verifierId as string)
+  //     if (spotifyUser.Count === 0) {
+  //       // If user not found, then create user in radia
+  //       // Trigger spotify login flow, get accessTokens and add to radia database 
+  //       setSpotifyModalIsOpen(true)
+  //     }    
+  //   }
 
-    if (currentUser)
-      init()
+  //   if (currentUser && !isSpotifyLoadingModalOpen)
+  //     init()
       
-  }, [currentUser])
+  // }, [currentUser, isSpotifyLoadingModalOpen])
 
   useEffect(() => {
     const init = async () => {
