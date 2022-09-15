@@ -15,9 +15,10 @@ import Collections from '../Components/Collections';
 import { useCurrentUser } from "../Providers/Auth"
 import { ModalProvider } from 'styled-react-modal'
 import {StyledModal} from '../styles';
+import { Overlay, Spinner } from '../Components/styles';
 import PrivateKeyModalBody from '../Components/PrivateKeyModalBody';
 import UpdateUserNameModalBody from '../Components/UpdateUserNameModalBody'
-import { useNavigate } from 'react-router-dom';
+import { useWeb3Auth } from "../Services/web3auth";
 
 function UserProfile() {
     const [loading, setLoading] = useState(false);
@@ -30,7 +31,7 @@ function UserProfile() {
     const [isPrivateKeyModalOpen, setIsPrivateKeyModalOpen] = useState(false);
     const [isUpdateUserNameModalOpen, setIsUpdateUserNameModalOpen] = useState(false);
     const { currentUser, setCurrentUser } = useCurrentUser()
-    const navigate = useNavigate();
+    const { provider, user } = useWeb3Auth();
 
 
     useEffect(() => {
@@ -85,10 +86,8 @@ function UserProfile() {
             const formData = new FormData()
             const blob = await (await fetch(result)).blob();
             formData.append("file", blob as Blob, fileList[0].name);
-            formData.forEach(file => console.log("File: ", file));
             const posted = await postImage(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.verifierId as string, formData)
             if (posted.url) {
-                console.log(posted.url)
                 const data = {profileImage: posted.url}
                 await updateUser(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.verifierId as string, data)
                 const obj = {...currentUser, profileImage: posted.url}
@@ -114,7 +113,7 @@ function UserProfile() {
 
     return (
         <>
-        {/* {loading && <Overlay>Loading...&nbsp;<Spinner/></Overlay>} */}
+        {!provider && user ? <Overlay>Loading...&nbsp;<Spinner/></Overlay> : null}
         <UserProfileHeader 
         loading={loading}
         user={currentUser as User} 
