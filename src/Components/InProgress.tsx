@@ -26,7 +26,7 @@ const InProgress = () => {
             let lastEvaluatedKey;
             const collectibles = await getCollectibles(currentUser?.idToken as string, currentUser.appPubKey as string, currentUser.verifierId as string, limit, lastEvaluatedKey)
             const filteredCollectibles = collectibles.Items.filter((collectible: {transaction: object}) => !("status" in collectible))
-            const sorted = filteredCollectibles.sort((a:{streamedMilliseconds: number},b:{streamedMilliseconds: number}) => b.streamedMilliseconds - a.streamedMilliseconds);
+            const sorted = filteredCollectibles.sort((a:{streamedMilliseconds: number},b:{streamedMilliseconds: number}) => parseInt(calculateProgress(b) as string) - parseInt(calculateProgress(a) as string) );
             setAllCollectibles(sorted)
             setCollectibles(sorted.slice(0, 4))
             setLoading(false)
@@ -55,10 +55,10 @@ const InProgress = () => {
 
     const calculateProgress = (collectible:{streamedMilliseconds: number}) => {
       if (collectible.streamedMilliseconds <= 3600000 ) {
-        if (parseInt((collectible.streamedMilliseconds / 3600000).toFixed(1)) >= 1)
-          return (collectible.streamedMilliseconds / 3600000).toFixed(0)
+        if (parseInt(((collectible.streamedMilliseconds / 3600000) * 100).toFixed(1)) >= 1)
+          return ((collectible.streamedMilliseconds / 3600000) * 100).toFixed(0)
         else
-          return (collectible.streamedMilliseconds / 3600000).toFixed(1)
+          return ((collectible.streamedMilliseconds / 3600000) * 100).toFixed(1)
       }
   
       if (collectible.streamedMilliseconds >= 3600000 && collectible.streamedMilliseconds < 3600000 * 5) {

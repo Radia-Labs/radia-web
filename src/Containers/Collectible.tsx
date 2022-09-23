@@ -77,10 +77,10 @@ function Collectible() {
 
     let transaction;
     if (collectible?.achievement === 'streamedTrackInFirst24Hours') {
-      transaction = await claimTrackCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.addresses.polygon as string, collectible?.track as object)
+      transaction = await claimTrackCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string, currentUser?.addresses.polygon as string, collectible?.track as object)
       await createUserTrackCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string, collectible?.artist as object, collectible?.track as object, collectible?.achievement as string, currentUser as object, status, transaction);
     } else {
-      transaction = await claimArtistCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.addresses.polygon as string, collectible?.artist as object, collectible?.streamedMilliseconds as number)
+      transaction = await claimArtistCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string, currentUser?.addresses.polygon as string, collectible?.artist as object, collectible?.streamedMilliseconds as number)
       await createUserArtistCollectible(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string, collectible?.artist as object, collectible?.achievement as string, collectible?.streamedMilliseconds as number, currentUser as object, status, transaction);
     }
     

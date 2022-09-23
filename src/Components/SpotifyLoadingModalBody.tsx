@@ -10,18 +10,13 @@ import {
 } from "./styles";
 import {Flex} from "../styles";
 
-type Props = {
-    setSpotifyLoadingModalIsOpen: (isOpen:boolean) => void;
-}
-
-const SpotifyLoadingModalBody = ({setSpotifyLoadingModalIsOpen}: Props) => {
+const SpotifyLoadingModalBody = () => {
     const [progress, setProgress] = useState(0);
     useEffect(() => {
         const intervalId = setInterval(() => {
           setProgress((prev) => {
             if (prev >= 100) {
               clearInterval(intervalId);
-              setSpotifyLoadingModalIsOpen(false)
               window.location.reload();
               return 100;
             } else {

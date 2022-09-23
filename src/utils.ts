@@ -260,26 +260,26 @@ export const deleteCollection = async (idToken:string, appPubKey:string, pk:stri
     return await response.json();    
 }
 
-export const claimArtistCollectible = async (idToken:string, appPubKey:string, walletAddress:string, artist:object, streamedMilliseconds:number) => {
+export const claimArtistCollectible = async (idToken:string, appPubKey:string, pk:string, walletAddress:string, artist:object, streamedMilliseconds:number) => {
     const response = await fetch(`${SERVER_URL}/nft/mint/spotify/artist?appPubKey=${appPubKey}`, {
         method: 'POST',
         headers: {
             Authorization: `Bearer ${idToken}`,
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({walletAddress, artist, streamedMilliseconds})  
+        body: JSON.stringify({pk, walletAddress, artist, streamedMilliseconds})  
     });
     return await response.json();   
 }
 
-export const claimTrackCollectible = async (idToken:string, appPubKey:string, walletAddress:string, track:object,) => {
+export const claimTrackCollectible = async (idToken:string, appPubKey:string, pk:string, walletAddress:string, track:object,) => {
     const response = await fetch(`${SERVER_URL}/nft/mint/spotify/track?appPubKey=${appPubKey}`, {
         method: 'POST',
         headers: {
             Authorization: `Bearer ${idToken}`,
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({walletAddress, track})  
+        body: JSON.stringify({pk, walletAddress, track})  
     });
     return await response.json(); 
 }
@@ -354,10 +354,7 @@ export const postImage = async (idToken:string, appPubKey:string, pk:string, for
 }
 
 export const getCollectibleType = (collectible:any) => {
-    let acheivement 
-    // console.log(collectible)
-    // if (collectible.status === 'readyToMint')
-    //     acheivement = getEarnedAcheivement(collectible)    
+    let acheivement   
     
     if (collectible.achievement === 'streamedMilliseconds')
         acheivement = getCurrentAcheivement(collectible)

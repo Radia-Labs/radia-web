@@ -1,4 +1,5 @@
 import { ADAPTER_EVENTS, WALLET_ADAPTERS, SafeEventEmitterProvider } from "@web3auth/base";
+import { LOGIN_MODAL_EVENTS } from "@web3auth/ui";
 import { Web3Auth } from "@web3auth/web3auth";
 import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
 import { createContext, FunctionComponent, ReactNode, useCallback, useContext, useEffect, useState } from "react";
@@ -11,6 +12,7 @@ export interface IWeb3AuthContext {
   web3Auth: Web3Auth | null;
   provider: IWalletProvider | null;
   isLoading: boolean;
+  isAuthModal: boolean;
   user: unknown;
   chain: string;
   login: () => Promise<void>;
@@ -27,6 +29,7 @@ export const Web3AuthContext = createContext<IWeb3AuthContext>({
   web3Auth: null,
   provider: null,
   isLoading: false,
+  isAuthModal: false,
   user: null,
   chain: "",
   login: async () => {},
@@ -59,6 +62,7 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
   const [provider, setProvider] = useState<IWalletProvider | null>(null);
   const [user, setUser] = useState<unknown | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isAuthModal, setIsAuthModal] = useState(false);
   
   const setWalletProvider = useCallback(
     (web3authProvider: SafeEventEmitterProvider) => {
@@ -89,6 +93,15 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
       web3auth.on(ADAPTER_EVENTS.ERRORED, (error) => {
         console.error("some error or user has cancelled login request", error);
       });
+
+      web3auth.on(LOGIN_MODAL_EVENTS.MODAL_VISIBILITY, (isVisible) => {
+        console.log("is modal visible", isVisible);
+      }); 
+      
+      web3auth.on(LOGIN_MODAL_EVENTS.MODAL_VISIBILITY, (isVisible) => {
+        console.log("is modal visible", isVisible);
+        setIsAuthModal(isVisible);
+      });      
     };
 
     const currentChainConfig = CHAIN_CONFIG[chain];
@@ -266,6 +279,7 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
     provider,
     user,
     isLoading,
+    isAuthModal,
     login,
     logout,
     getUserInfo,

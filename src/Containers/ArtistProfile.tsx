@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
     getArtist,
+    getSpotifyArtist,
     getArtistCollectibles,
     getArtistCollectors,
     getCollectibles,
@@ -39,8 +40,13 @@ function ArtistProfile() {
         const init = async () => {
             setLoading(true)
             const _artist = await getArtist(currentUser?.idToken as string, currentUser?.appPubKey as string, params.id as string);
-            setArtist(_artist.Items[0] as Artist)               
-
+            const spotify = await getSpotifyUser(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string);
+            if (_artist.Count == 0) {
+                const _artist = await getSpotifyArtist(currentUser?.idToken as string, currentUser?.appPubKey as string, params.id as string, spotify.Items[0].refresh_token );
+                setArtist(_artist)
+            } else {
+                setArtist(_artist.Items[0] as Artist)
+            }
             getArtistCollectibles(currentUser?.idToken as string, currentUser?.appPubKey as string, params.id as string)
             .then(_collectibles => setCollectibles(_collectibles))
             
@@ -67,7 +73,6 @@ function ArtistProfile() {
             })
             
             
-            const spotify = await getSpotifyUser(currentUser?.idToken as string, currentUser?.appPubKey as string, currentUser?.pk as string);
             const _similarArtists = await getSimilarArtists(currentUser?.idToken as string, currentUser?.appPubKey as string, params.id as string, spotify.Items[0].refresh_token);
             setSimilarArtists(_similarArtists.artists.slice(0, 4))               
 
@@ -93,14 +98,14 @@ function ArtistProfile() {
             <Flex justifyContent="flex-start" alignItems="flex-start" >
                 <SimilarArtist
                 key={1}
-                collectibleId={collectibles?.Items[0].sk}
+                collectibleId={collectibles?.Items[0]?.sk || artist?.id}
                 collectibleImage={`${MEDIA_CDN_HOST}/ready-to-claim.png`}
                 collectibleName={`1 Hour Streamed of ${artist?.name}`}
                 goToCollectible={goToCollectible}
                 /> 
                 <SimilarArtist
                 key={2}
-                collectibleId={collectibles?.Items[0].sk}
+                collectibleId={collectibles?.Items[0]?.sk || artist?.id}
                 collectibleImage={`${MEDIA_CDN_HOST}/ready-to-claim.png`}
                 collectibleName={`5 Hours Streamed of ${artist?.name}`}
                 goToCollectible={goToCollectible}
@@ -108,7 +113,7 @@ function ArtistProfile() {
 
                 <SimilarArtist
                 key={3}
-                collectibleId={collectibles?.Items[0].sk}
+                collectibleId={collectibles?.Items[0]?.sk || artist?.id}
                 collectibleImage={`${MEDIA_CDN_HOST}/ready-to-claim.png`}
                 collectibleName={`10 Hours Streamed of ${artist?.name}`}
                 goToCollectible={goToCollectible}
@@ -116,7 +121,7 @@ function ArtistProfile() {
 
                 <SimilarArtist
                 key={4}
-                collectibleId={collectibles?.Items[0].sk}
+                collectibleId={collectibles?.Items[0]?.sk || artist?.id}
                 collectibleImage={`${MEDIA_CDN_HOST}/ready-to-claim.png`}
                 collectibleName={`15 Hours Streamed of ${artist?.name}`}
                 goToCollectible={goToCollectible}

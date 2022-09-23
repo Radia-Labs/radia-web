@@ -31,11 +31,12 @@ function UserProfile() {
     const [isPrivateKeyModalOpen, setIsPrivateKeyModalOpen] = useState(false);
     const [isUpdateUserNameModalOpen, setIsUpdateUserNameModalOpen] = useState(false);
     const { currentUser, setCurrentUser } = useCurrentUser()
-    const { provider, user } = useWeb3Auth();
+    const { isAuthModal } = useWeb3Auth();
 
 
     useEffect(() => {
         const init = async () => {
+            setLoading(true)
             setCreatedAt(currentUser?.created as any)
             setCurrentUser(currentUser as User)
             setWalletAddress(currentUser?.addresses.polygon)
@@ -53,6 +54,7 @@ function UserProfile() {
             })
             setCompletedCollectibles(completed.length)
             setArtistsSupported(supported.length)
+            setLoading(false)
         }
 
         if (currentUser)
@@ -113,7 +115,7 @@ function UserProfile() {
 
     return (
         <>
-        {!provider && user ? <Overlay>Loading...&nbsp;<Spinner/></Overlay> : null}
+        {!currentUser && !isAuthModal ? <Overlay>Loading...&nbsp;<Spinner/></Overlay> : null}
         <UserProfileHeader 
         loading={loading}
         user={currentUser as User} 

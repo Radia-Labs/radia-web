@@ -127,9 +127,9 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
       // We've redirected from Spotify with authorization code in query params, create spotify integration.
       if (code) {
         setSpotifyModalIsOpen(false)
+        setSpotifyLoadingModalIsOpen(true)
         let spotifyAuth = await getSpotifyAuth(user?.idToken as string, appPubKey, code as string)
         if (spotifyAuth) {
-          setSpotifyLoadingModalIsOpen(true)         
           await createSpotifyIntegration(user?.idToken as string, appPubKey, user?.verifierId as string, spotifyAuth)
           // Update the Auth| model with spotify email, if none exists on that user.
           if (!authUser?.verifierId) {
@@ -201,7 +201,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
             isOpen={isSpotifyLoadingModalOpen}
             onBackgroundClick={null}
             onEscapeKeydown={null}>
-            <SpotifyLoadingModalBody setSpotifyLoadingModalIsOpen={setSpotifyLoadingModalIsOpen}/>
+            <SpotifyLoadingModalBody/>
         </StyledModal>        
       </ModalProvider>
     </AuthContext.Provider>

@@ -1002,7 +1002,7 @@ export const NFTDetailsWrapper = styled.div`
     background-color: ${colors.secondaryDark};
     padding: 1em;
     margin: ${props => props.margin || `0`};
-    width: 40%;
+    width: -webkit-fill-available;
     overflow: hidden;
     white-space: nowrap;
     
